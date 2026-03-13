@@ -25,5 +25,6 @@
 - [x] **[Claude]** Scoring expansion (load_expanded_surnames from DB with variants).
 - [x] **[Claude]** Rate limiter infrastructure (per-domain semaphore + jitter).
 - [x] **[Claude]** DB seeded: 241 original surnames (93 T1 + 148 T2) + 25 Fratellanze clusters.
+- [/] **[Antigravity]** Deployment su GitHub (Repository & GitHub Pages).
 - [ ] Integration test tra i moduli di entrambi gli agenti.
-- [ ] **[Antigravity]** Premium HUD Design (React frontend con i nuovi dati dal DB).
+- [ ] **[Antigravity]** Premium HUD Design (React frontend con i nuovi dati dal DB).旋
