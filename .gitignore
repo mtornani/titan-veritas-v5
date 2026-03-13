@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+data/global_players.csv
+titan_veritas.db
+.env
+旋
+
+# JS / React
+node_modules/
+dist/
+.vite/
+
+# Report & Temp
+reports/
+/tmp/
+download_data.py

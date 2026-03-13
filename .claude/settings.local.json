@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/AI/titan_veritas -type f -name package.json -o -name requirements.txt -o -name pyproject.toml -o -name .env* -o -name settings.py -o -name config.py)",
+      "Bash(find /d/AI/titan_veritas -maxdepth 2 -name *.md -o -name *.txt)",
+      "Bash(python -c \"from titan_veritas.db import get_db, init_db, seed_surnames, SurnameRepo; print\\(''DB layer: OK''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.db import get_db, init_db, seed_surnames, SurnameRepo; print\\(''DB layer: OK''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.core.models import PlayerProfile, SurnameVariant, CommunityContact, IntelResult, PipelineStats, RawArchiveRecord; print\\(''Models: OK''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.core.scoring import load_expanded_surnames, TIER_1_NAMES, TIER_2_NAMES; print\\(f''Scoring: OK, T1={len\\(TIER_1_NAMES\\)}, T2={len\\(TIER_2_NAMES\\)}''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.osint import VariantEngine, FratellanzeScraper, EllisIslandScraper, CEMLAScraper; print\\(''OSINT module: OK''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.scrapers.youth_leagues import AsyncLeagueScraper, LeagueRegistry; print\\(''Youth leagues: OK''\\)\")",
+      "Bash(venv/Scripts/python.exe -c \"from titan_veritas.outreach import OutreachCoordinator, GmailPoller, IntelProcessor, TelegramRouter, EmailComposer, ContactExtractor; print\\(''Outreach module: OK''\\)\")",
+      "Bash(venv/Scripts/pip.exe install:*)",
+      "Bash(venv/Scripts/python.exe titan.py --help)",
+      "Bash(venv/Scripts/python.exe titan.py init-db --seed)",
+      "Bash(venv/Scripts/python.exe titan.py db --stats)",
+      "Bash(venv/Scripts/python.exe titan.py db --surname gasperoni)",
+      "Bash(venv/Scripts/python.exe titan.py db --clusters)",
+      "Bash(venv/Scripts/python.exe titan.py rosetta --dry-run)",
+      "Bash(venv/Scripts/python.exe titan.py outreach --mode status)",
+      "Bash(venv/Scripts/python.exe -c \":*)"
+    ]
+  }
+}
