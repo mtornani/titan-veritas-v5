@@ -149,6 +149,56 @@ class CandidateRepo:
         }
 
 
+    def import_from_seed(self, seed_path: str) -> int:
+        """Import candidates from a JSON seed file (offline mode).
+
+        Returns the number of records imported.
+        """
+        import json as _json
+        from datetime import date as _date
+        from pathlib import Path
+
+        from titan_veritas.core.models import PlayerProfile
+        from titan_veritas.core.scoring import score_player
+
+        data = _json.loads(Path(seed_path).read_text(encoding="utf-8"))
+        count = 0
+
+        for rec in data:
+            dob = None
+            if rec.get("date_of_birth"):
+                try:
+                    dob = _date.fromisoformat(rec["date_of_birth"])
+                except (ValueError, TypeError):
+                    pass
+
+            p = PlayerProfile(
+                first_name=rec.get("first_name", ""),
+                last_name=rec.get("last_name", ""),
+                wikidata_qid=rec.get("wikidata_qid"),
+                bdfa_id=rec.get("bdfa_id"),
+                api_football_id=rec.get("api_football_id"),
+                date_of_birth=dob,
+                age=rec.get("age"),
+                birth_place=rec.get("birth_place"),
+                birth_country=rec.get("birth_country"),
+                nationalities=rec.get("nationalities", []),
+                current_club=rec.get("current_club"),
+                current_league=rec.get("current_league"),
+                position=rec.get("position"),
+                career_start_year=rec.get("career_start_year"),
+            )
+
+            p = score_player(p)
+            try:
+                self.upsert(p)
+                count += 1
+            except Exception:
+                pass
+
+        return count
+
+
 class CacheRepo:
     """API response cache to avoid wasting quota."""
 

@@ -58,8 +58,10 @@ def cli(ctx, db):
 
 @cli.command("init-db")
 @click.option("--seed/--no-seed", default=True, help="Seed surnames and clusters")
+@click.option("--offline", is_flag=True, default=False, help="Import candidates from seed JSON (no internet needed)")
+@click.option("--seed-file", default="data/seed_candidates.json", help="Path to seed JSON")
 @click.pass_context
-def cmd_init_db(ctx, seed):
+def cmd_init_db(ctx, seed, offline, seed_file):
     """Initialise the database schema and optionally seed reference data."""
     db = ctx.obj["db"]
     init_db(db)
@@ -69,6 +71,16 @@ def cmd_init_db(ctx, seed):
         n_surnames = seed_surnames(db)
         n_clusters = seed_clusters(db)
         console.print(f"[green]✓[/] Seeded {n_surnames} surnames, {n_clusters} geographic clusters")
+
+    if offline:
+        import os
+        if not os.path.exists(seed_file):
+            console.print(f"[red]✗[/] Seed file not found: {seed_file}")
+            console.print("  Run 'titan.py seed-export' first to generate it from a populated DB")
+            return
+        repo = CandidateRepo(db)
+        n = repo.import_from_seed(seed_file)
+        console.print(f"[green]✓[/] Imported {n} candidates from offline seed")
 
 
 # ─── search ────────────────────────────────────────────────────────────────
@@ -296,6 +308,45 @@ def cmd_export(ctx, json_out, csv_out):
     n_csv = export_csv(db, csv_out)
     console.print(f"[green]✓[/] Exported {n_json} candidates to JSON: {json_out}")
     console.print(f"[green]✓[/] Exported {n_csv} candidates to CSV: {csv_out}")
+
+
+# ─── seed-export ───────────────────────────────────────────────────────────
+
+@cli.command("seed-export")
+@click.option("--output", "-o", default="data/seed_candidates.json", help="Output seed file path")
+@click.pass_context
+def cmd_seed_export(ctx, output):
+    """Export current DB candidates to a seed JSON for offline use."""
+    db = ctx.obj["db"]
+    repo = CandidateRepo(db)
+    candidates = repo.get_all(include_filtered=False)
+
+    records = []
+    for c in candidates:
+        rec = {
+            "first_name": c["first_name"],
+            "last_name": c["last_name"],
+            "date_of_birth": c["date_of_birth"],
+            "age": c["age"],
+            "birth_place": c["birth_place"],
+            "birth_country": c["birth_country"],
+            "nationalities": json.loads(c["nationalities"]) if c["nationalities"] else [],
+            "current_club": c["current_club"],
+            "current_league": c["current_league"],
+            "position": c["position"],
+            "career_start_year": c["career_start_year"],
+            "wikidata_qid": c["wikidata_qid"],
+            "bdfa_id": c["bdfa_id"],
+            "api_football_id": c["api_football_id"],
+        }
+        records.append(rec)
+
+    from pathlib import Path
+    out = Path(output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
+    console.print(f"[green]✓[/] Seed exported: {len(records)} candidates → {output}")
+    console.print("  Use 'titan.py init-db --offline' to import on any machine")
 
 
 # ─── stats ─────────────────────────────────────────────────────────────────
