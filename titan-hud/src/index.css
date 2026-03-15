@@ -415,6 +415,41 @@ h1 {
   font-size: 0.65rem;
 }
 
+/* Card Links */
+.card-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.profile-link {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 10px;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.profile-link:hover {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+.profile-link.bdfa-link {
+  color: var(--accent-gold);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+.profile-link.bdfa-link:hover {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
 /* Expanded */
 .expanded-details {
   margin-top: 0.75rem;
@@ -426,24 +461,6 @@ h1 {
   font-size: 0.8rem;
   color: var(--text-dim);
   margin-bottom: 0.3rem;
-}
-
-.profile-link {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  color: var(--accent-blue);
-  text-decoration: none;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid rgba(14, 165, 233, 0.2);
-  border-radius: 10px;
-  transition: all 0.2s;
-}
-
-.profile-link:hover {
-  background: rgba(14, 165, 233, 0.1);
-  border-color: rgba(14, 165, 233, 0.4);
 }
 
 /* Footer */

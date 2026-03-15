@@ -195,10 +195,19 @@ function App() {
                 </div>
               )}
 
-              {isExpanded && (
+              <div className="card-links">
+                {p.wikidata_url && (
+                  <a href={p.wikidata_url} target="_blank" rel="noopener noreferrer" className="profile-link"
+                     onClick={(e) => e.stopPropagation()}>Wikidata &#8599;</a>
+                )}
+                {p.bdfa_url && (
+                  <a href={p.bdfa_url} target="_blank" rel="noopener noreferrer" className="profile-link bdfa-link"
+                     onClick={(e) => e.stopPropagation()}>BDFA &#8599;</a>
+                )}
+              </div>
+              {isExpanded && p.date_of_birth && (
                 <div className="expanded-details">
-                  {p.date_of_birth && <div className="exp-row">Data nascita: {p.date_of_birth}</div>}
-                  {p.wikidata_url && <a href={p.wikidata_url} target="_blank" rel="noopener noreferrer" className="profile-link">Wikidata &#8599;</a>}
+                  <div className="exp-row">Data nascita: {p.date_of_birth}</div>
                 </div>
               )}
             </div>
