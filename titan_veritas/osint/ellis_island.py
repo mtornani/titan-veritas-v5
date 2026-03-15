@@ -1,135 +1,184 @@
-"""Scraper for Ellis Island / Statue of Liberty - Ellis Island Foundation archives.
+"""Ellis Island passenger records scraper.
 
-Target: https://www.libertyellisfoundation.org/passenger
-Strategy: Search for passengers with "San Marino" as place of origin.
-
-IMPORTANT: This is a heavy anti-bot site. We use conservative rate limiting
-(3 req/min, 5-10s jitter) and respect robots.txt.
+Generates parametric URL queries for the American Family Immigration History Center
+database (65M arrival records, 1820–1957). Searches for San Marino origin passengers.
+Uses async HTTP for concurrent surname lookups.
 """
 
-import logging
-from typing import List, Optional
-import httpx
-from bs4 import BeautifulSoup
+from __future__ import annotations
 
-from ..core.models import RawArchiveRecord
-from ..core.rate_limiter import RateLimiter, get_random_user_agent
+import asyncio
+import logging
+import random
+import re
+from dataclasses import dataclass, field
+from typing import Optional
+from urllib.parse import urlencode
+
+import aiohttp
+
+from titan_veritas.config import USER_AGENTS, DEFAULT_DELAY_MIN, DEFAULT_DELAY_MAX
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://heritage.statueofliberty.org"
-SEARCH_URL = f"{BASE_URL}/passenger"
+ELLIS_ISLAND_BASE = "https://heritage.statueofliberty.org"
+SEARCH_PATH = "/passenger-result/czovMQ==/"
 
 
-class EllisIslandScraper:
-    """Search Ellis Island passenger records for San Marino emigrants."""
+@dataclass
+class EllisIslandRecord:
+    """A single Ellis Island passenger manifest record."""
+    surname: str
+    given_name: str = ""
+    age: Optional[int] = None
+    ethnicity: str = ""
+    residence: str = ""
+    arrival_date: str = ""
+    ship_name: str = ""
+    port_of_departure: str = ""
 
-    def __init__(self, rate_limiter: Optional[RateLimiter] = None):
-        self.rate_limiter = rate_limiter or RateLimiter(
-            requests_per_minute=3, jitter_range=(5.0, 10.0)
-        )
 
-    async def search_by_surname(self, surname: str) -> List[RawArchiveRecord]:
-        """Search Ellis Island records for a specific surname from San Marino."""
-        records = []
+@dataclass
+class EllisIslandResult:
+    """Result of an Ellis Island surname search."""
+    surname: str
+    search_url: str = ""
+    records: list[EllisIslandRecord] = field(default_factory=list)
+    san_marino_hits: int = 0
+    total_hits: int = 0
+    error: Optional[str] = None
 
-        async with httpx.AsyncClient(timeout=45.0, follow_redirects=True) as client:
-            try:
-                async with self.rate_limiter:
-                    # The Liberty Ellis Foundation has a search API
-                    # We search by last name and filter results for San Marino origin
-                    response = await client.get(
-                        SEARCH_URL,
-                        params={
-                            "lastName": surname,
-                            "birthCountry": "San Marino",
-                        },
-                        headers={
-                            "User-Agent": get_random_user_agent(),
-                            "Accept": "text/html,application/xhtml+xml",
-                            "Accept-Language": "en-US,en;q=0.9",
-                        },
-                    )
+    @property
+    def has_san_marino_connection(self) -> bool:
+        return self.san_marino_hits > 0
 
-                if response.status_code != 200:
-                    logger.warning(
-                        f"[Ellis] HTTP {response.status_code} for surname={surname}"
-                    )
-                    return records
 
-                records = self._parse_results(response.text, surname)
-                logger.info(f"[Ellis] {surname}: found {len(records)} records")
+def build_search_url(
+    surname: str,
+    town_of_origin: str = "San Marino",
+    match_mode: str = "starts_with",
+) -> str:
+    """Build a parametric search URL for Ellis Island database.
 
-            except httpx.TimeoutException:
-                logger.warning(f"[Ellis] Timeout searching for {surname}")
-            except Exception as e:
-                logger.warning(f"[Ellis] Error searching for {surname}: {e}")
+    Args:
+        surname: Last name to search.
+        town_of_origin: Filter for city of origin (default: "San Marino").
+        match_mode: One of 'exact', 'starts_with', 'sounds_like', 'contains'.
+    """
+    params = {
+        "lastName": surname,
+        "lastNameMatchMode": match_mode,
+        "townOfOrigin": town_of_origin,
+    }
+    return f"{ELLIS_ISLAND_BASE}{SEARCH_PATH}?{urlencode(params)}"
 
-        return records
 
-    async def search_all_surnames(self, surnames: List[str]) -> List[RawArchiveRecord]:
-        """Search for multiple surnames. Respects rate limits between queries."""
-        all_records = []
-        for surname in surnames:
-            results = await self.search_by_surname(surname)
-            all_records.extend(results)
-        return all_records
+def _random_headers() -> dict:
+    return {
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept": "text/html,application/xhtml+xml",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
 
-    def _parse_results(self, html: str, search_surname: str) -> List[RawArchiveRecord]:
-        """Parse the search results page for passenger records."""
-        records = []
-        soup = BeautifulSoup(html, "html.parser")
 
-        # Look for result rows/cards containing passenger data
-        # The actual CSS selectors depend on the site's current layout
-        result_items = soup.select(".result-item, .passenger-record, tr.record")
+async def _search_ellis_island(
+    session: aiohttp.ClientSession,
+    surname: str,
+) -> EllisIslandResult:
+    """Query Ellis Island for passenger records matching surname + San Marino origin."""
+    url = build_search_url(surname)
+    result = EllisIslandResult(surname=surname, search_url=url)
 
-        for item in result_items:
-            try:
-                # Extract surname from result
-                name_el = item.select_one(".name, .passenger-name, td:first-child")
-                if not name_el:
+    try:
+        await asyncio.sleep(random.uniform(DEFAULT_DELAY_MIN, DEFAULT_DELAY_MAX))
+
+        async with session.get(url, headers=_random_headers()) as resp:
+            if resp.status != 200:
+                result.error = f"HTTP {resp.status}"
+                return result
+
+            html = await resp.text()
+
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html, "lxml")
+
+            # Parse the passenger results table
+            rows = soup.find_all("tr", class_=re.compile(r"(passenger|result|record)", re.I))
+            if not rows:
+                # Fallback: find any table with passenger data
+                tables = soup.find_all("table")
+                for table in tables:
+                    trs = table.find_all("tr")[1:]
+                    rows.extend(trs)
+
+            for row in rows:
+                cells = row.find_all("td")
+                if len(cells) < 3:
                     continue
 
-                full_name = name_el.get_text(strip=True)
-                surname = full_name.split()[-1] if full_name else search_surname
+                record = EllisIslandRecord(surname=surname)
+                cell_texts = [c.get_text(strip=True) for c in cells]
 
-                # Extract year of arrival
-                year_el = item.select_one(".year, .arrival-year, td.year")
-                year = None
-                if year_el:
-                    year_text = year_el.get_text(strip=True)
-                    try:
-                        year = int(year_text[:4])
-                    except (ValueError, IndexError):
-                        pass
+                # Map cells to fields
+                if len(cell_texts) >= 1:
+                    record.given_name = cell_texts[0]
+                if len(cell_texts) >= 2 and cell_texts[1]:
+                    record.surname = cell_texts[1]
+                if len(cell_texts) >= 3:
+                    record.ethnicity = cell_texts[2]
+                if len(cell_texts) >= 4:
+                    record.residence = cell_texts[3]
+                if len(cell_texts) >= 5:
+                    record.arrival_date = cell_texts[4]
+                if len(cell_texts) >= 6:
+                    record.ship_name = cell_texts[5]
+                if len(cell_texts) >= 7:
+                    record.port_of_departure = cell_texts[6]
 
-                # Extract origin
-                origin_el = item.select_one(".origin, .birthplace, td.origin")
-                origin = "San Marino"
-                if origin_el:
-                    origin = origin_el.get_text(strip=True)
+                result.records.append(record)
+                result.total_hits += 1
 
-                # Build the detail URL if available
-                link = item.select_one("a[href]")
-                source_url = ""
-                if link:
-                    href = link.get("href", "")
-                    if href.startswith("/"):
-                        source_url = f"{BASE_URL}{href}"
-                    elif href.startswith("http"):
-                        source_url = href
+                # Check for San Marino connection
+                all_text = " ".join(cell_texts).lower()
+                if any(kw in all_text for kw in ("san marino", "sammarinese", "repubblica")):
+                    result.san_marino_hits += 1
 
-                records.append(RawArchiveRecord(
-                    surname=surname,
-                    origin=origin,
-                    destination="New York, USA",
-                    year=year,
-                    source_url=source_url,
-                ))
+        logger.info(
+            f"Ellis Island '{surname}': {result.total_hits} records, "
+            f"{result.san_marino_hits} San Marino hits"
+        )
+    except asyncio.TimeoutError:
+        result.error = "Timeout"
+        logger.warning(f"Ellis Island timeout for '{surname}'")
+    except Exception as e:
+        result.error = str(e)
+        logger.warning(f"Ellis Island error for '{surname}': {e}")
 
-            except Exception as e:
-                logger.debug(f"[Ellis] Failed to parse result item: {e}")
-                continue
+    return result
 
-        return records
+
+async def search_surnames(surnames: list[str], max_concurrent: int = 3) -> list[EllisIslandResult]:
+    """Search Ellis Island for multiple surnames concurrently."""
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    async def _limited(session: aiohttp.ClientSession, name: str) -> EllisIslandResult:
+        async with semaphore:
+            return await _search_ellis_island(session, name)
+
+    timeout = aiohttp.ClientTimeout(total=30)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = [_limited(session, s) for s in surnames]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    clean = []
+    for r, s in zip(results, surnames):
+        if isinstance(r, Exception):
+            clean.append(EllisIslandResult(surname=s, error=str(r)))
+        else:
+            clean.append(r)
+    return clean
+
+
+def search_surnames_sync(surnames: list[str]) -> list[EllisIslandResult]:
+    """Synchronous wrapper for async Ellis Island search."""
+    return asyncio.run(search_surnames(surnames))

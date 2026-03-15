@@ -1,204 +1,219 @@
-import os
-import sqlite3
-from typing import List, Tuple, Optional
+"""Dynamic scoring engine with Bayesian-inspired weighting.
 
-from .models import PlayerProfile
+Formula:
+    S_base = (W_geo + W_name + M_athletic) × V_osint
+    A_bonus = exact age bonus if DOB known, else proxy estimation
+    S_total = S_base + A_bonus
+
+Proxy age estimation: if DOB unknown, deduce approximate age from
+career_start_year (assuming debut at ~18) or league level.
+"""
+
+from __future__ import annotations
+
+from datetime import date
+
+from titan_veritas.config import TIER1_SURNAMES, TIER2_SURNAMES, DIASPORA_HUBS
+from titan_veritas.core.models import PlayerProfile
+
+# ─── Lethal filters (immediate rejection) ──────────────────────────────────
+
+ELITE_NOISE = {
+    "messi", "ronaldo", "mbappé", "mbappe", "neymar", "haaland",
+    "salah", "de bruyne", "modric", "benzema", "lewandowski",
+    "vinicius", "bellingham", "saka", "palmer",
+}
+
+SM_CLUBS = {
+    "tre penne", "la fiorita", "tre fiori", "folgore", "libertas",
+    "virtus", "murata", "faetano", "domagnano", "pennarossa",
+    "cosmos", "cailungo", "fiorentino", "juvenes/dogana",
+    "san giovanni",
+}
+
+ITALIAN_LEAGUES = {
+    "serie a", "serie b", "serie c", "serie d",
+    "eccellenza", "promozione", "prima categoria",
+    "seconda categoria", "terza categoria",
+}
 
 
-def load_expanded_surnames(db_path: Optional[str] = None) -> Tuple[List[str], List[str]]:
-    """Load surname lists from DB, including high-confidence variants.
+def _is_elite_noise(p: PlayerProfile) -> str | None:
+    full = p.full_name.lower()
+    for name in ELITE_NOISE:
+        if name in full:
+            return f"Elite noise: {name}"
+    return None
 
-    Falls back to hardcoded lists if DB is not available.
-    Returns (tier1_names, tier2_names).
+
+def _has_sm_or_italian_nationality(p: PlayerProfile) -> str | None:
+    for nat in p.nationalities:
+        nat_l = nat.lower()
+        if "san marino" in nat_l or "sammarinese" in nat_l:
+            return "Already has San Marino nationality"
+    return None
+
+
+def _is_in_sm_club(p: PlayerProfile) -> str | None:
+    if p.current_club:
+        for club in SM_CLUBS:
+            if club in p.current_club.lower():
+                return f"Already in SM club: {p.current_club}"
+    return None
+
+
+def _is_in_italian_league(p: PlayerProfile) -> str | None:
+    if p.current_league:
+        for league in ITALIAN_LEAGUES:
+            if league in p.current_league.lower():
+                return f"Italian league: {p.current_league}"
+    return None
+
+
+def _age_out_of_range(p: PlayerProfile) -> str | None:
+    age = p.estimated_age
+    if age is not None and (age < 16 or age > 38):
+        return f"Age out of range: {age}"
+    return None
+
+
+LETHAL_FILTERS = [
+    _is_elite_noise,
+    _has_sm_or_italian_nationality,
+    _is_in_sm_club,
+    _is_in_italian_league,
+    _age_out_of_range,
+]
+
+
+# ─── Scoring components ───────────────────────────────────────────────────
+
+def _surname_score(p: PlayerProfile) -> tuple[float, int]:
+    """Returns (W_name, tier)."""
+    last = p.last_name.strip()
+    for s in TIER1_SURNAMES:
+        if s.lower() == last.lower():
+            return 45.0, 1
+    for s in TIER2_SURNAMES:
+        if s.lower() == last.lower():
+            return 30.0, 2
+    return 0.0, 3
+
+
+def _geographic_score(p: PlayerProfile) -> float:
+    """W_geo — based on birth country or nationalities."""
+    # Check birth country
+    if p.birth_country:
+        for country, weight in DIASPORA_HUBS.items():
+            if country.lower() in p.birth_country.lower():
+                return float(weight)
+    # Check nationalities
+    for nat in p.nationalities:
+        for country, weight in DIASPORA_HUBS.items():
+            if country.lower() in nat.lower():
+                return float(weight)
+    return 0.0
+
+
+def _athletic_score(p: PlayerProfile) -> float:
+    """M_athletic — based on club/league verification."""
+    if p.current_club:
+        if p.current_league:
+            league_l = p.current_league.lower()
+            # Youth/development leagues → higher athletic interest
+            if any(kw in league_l for kw in ("proyección", "reserva", "primera d", "primera c")):
+                return 25.0
+            if any(kw in league_l for kw in ("federal", "primera b", "primera nacional")):
+                return 20.0
+            return 15.0  # Known club, any league
+        return 10.0  # Club but no league info
+    return 0.0  # Unknown club status
+
+
+def _osint_multiplier(p: PlayerProfile) -> float:
+    """V_osint — CEMLA/Ellis Island confirmation multiplier."""
+    if p.cemla_hit and p.ellis_island_hit:
+        return 1.8  # Both sources confirm
+    if p.cemla_hit or p.ellis_island_hit:
+        return 1.5  # One source confirms
+    return 1.0  # No OSINT confirmation
+
+
+def _age_bonus(p: PlayerProfile) -> tuple[float, str]:
+    """A_bonus — exact if DOB known, proxy if estimated.
+
+    Returns (bonus, method_description).
     """
-    path = db_path or os.environ.get("TITAN_DB_PATH", "titan_veritas.db")
-    if not os.path.exists(path):
-        return TIER_1_NAMES, TIER_2_NAMES
+    age = p.estimated_age
+    if age is None:
+        # No age data at all — use league-level proxy
+        return _league_proxy_bonus(p), "league_proxy"
 
-    try:
-        conn = sqlite3.connect(path)
-        conn.row_factory = sqlite3.Row
+    # Determine if this is exact or proxy-estimated
+    method = "exact" if p.date_of_birth else "career_proxy"
 
-        tier1 = []
-        tier2 = []
-
-        for row in conn.execute("SELECT name, tier FROM original_surname"):
-            if row["tier"] == 1:
-                tier1.append(row["name"].lower())
-            else:
-                tier2.append(row["name"].lower())
-
-        for row in conn.execute(
-            """SELECT sv.variant, os.tier FROM surname_variant sv
-               JOIN original_surname os ON sv.original_surname_id = os.id
-               WHERE sv.confidence >= 75"""
-        ):
-            name = row["variant"].lower()
-            target = tier1 if row["tier"] == 1 else tier2
-            if name not in target:
-                target.append(name)
-
-        conn.close()
-
-        if tier1 or tier2:
-            return tier1, tier2
-    except Exception:
-        pass
-
-    return TIER_1_NAMES, TIER_2_NAMES
+    if 16 <= age <= 21:
+        return 20.0, method
+    elif 22 <= age <= 26:
+        return 10.0, method
+    elif 27 <= age <= 31:
+        return 0.0, method
+    elif age >= 32:
+        return -10.0, method
+    return 0.0, method
 
 
-TIER_1_NAMES = [
-    "gasperoni", "mularoni", "zonzini", "zafferani", "vitaioli", "bacciocchi", 
-    "capicchioni", "tamagnini", "simoncini", "podeschi", "muraccini", "stolfi", 
-    "cioncolini", "volpinari", "marquisio", "carchia", "guidi", "giardi", 
-    "ghiotti", "maiani", "francini", "ercolani", "matteoni", "raschi", 
-    "stefanelli", "benedettini", "tura", "mazzotti", "michelotti", "renzetti", 
-    "salvini", "graziani", "zoli", "arcangeletti", "babboni", "bacchini", 
-    "baffoni", "barberini", "bassanelli", "berdini", "biolini", "bufalini", 
-    "bulletti", "busilacchi", "caciagli", "cagnoli", "calanca", "caporossi", 
-    "caratu", "carosella", "carraresi", "cenerelli", "chiocci", "ciarlanti", 
-    "cocchioni", "corgnoli", "cornacchia", "corvatta", "dall'olmo", "d'annibale", 
-    "de biagi", "della balda", "della chiesa", "fagli", "falcinelli", "fancelli", 
-    "focaccia", "forcellini", "galeotti", "ganganelli", "garantini", "ghinelli", 
-    "grazzini", "gremigni", "gubinelli", "guagnelli", "leardini", "maniconi", 
-    "mengucci", "mercadini", "molari", "muccioli", "pelliccioni", "pensi", 
-    "petriccioli", "sancisi", "sassolini", "soncini", "stacchini", 
-    "tomasucci", "vandi", "vignali", "zavoli"
-]
+def _league_proxy_bonus(p: PlayerProfile) -> float:
+    """When no age data exists, estimate youth probability from league level."""
+    if p.current_league:
+        league_l = p.current_league.lower()
+        # Youth/reserve leagues → likely young
+        if any(kw in league_l for kw in ("proyección", "reserva", "youth", "juvenil")):
+            return 15.0
+        # Lower divisions → slightly more likely to be young
+        if any(kw in league_l for kw in ("primera d", "primera c")):
+            return 8.0
+    return 0.0  # Can't estimate — no penalty
 
-TIER_2_NAMES = [
-    "casadei", "zanotti", "selva", "rossi", "bianchi", "valentini", "ceci", 
-    "della valle", "felici", "nanni", "pasolini", "berardi", "lombardi", 
-    "riva", "amati", "angelini", "antonioli", "arlotti", "babbi", "bacci", 
-    "balducci", "ballarini", "bartolini", "bellini", "beltrami", "benedetti", 
-    "benvenuti", "bernardi", "berti", "bertoni", "bettini", "biagini", 
-    "bolognesi", "bonelli", "boni", "bonini", "borghesi", "bortolotti", 
-    "boschetti", "brandi", "brunelli", "calzolari", "capelli", "cardelli", 
-    "cardinali", "carli", "carloni", "carnevali", "carpentieri", "carpi", 
-    "carretti", "casali", "casini", "cassani", "castelli", "cattani", 
-    "cavallini", "cenci", "cesarini", "cimatti", "cipriani", "cittadini", 
-    "clementi", "cola", "coli", "colonna", "conti", "cordelli", "costantini", 
-    "crespi", "crescenzi", "cugini", "d'addario", "damiani", "d'angelo", 
-    "de carolis", "de luigi", "de marini", "de mattia", "de nittis", 
-    "de santis", "dei", "del bianco", "demin", "dini", "donati", "donini", 
-    "fabbri", "fabrizi", "falconi", "fattori", "federici", "fenucci", "fermi", 
-    "ferracci", "ferrari", "ferretti", "filippi", "fiorini", "folli", "fonti", 
-    "foschi", "franchi", "franco", "frisoni", "fuselli", "galassi", "gambetti", 
-    "gambi", "gandolfi", "gatti", "giannini", "gobbi", "gori", "graziosi", 
-    "guerrini", "lazzarini", "levi", "lisi", "lombardini", "lombardo", 
-    "manuzzi", "marchetti", "marconi", "migani", "montanari", "morri", 
-    "paolini", "pazzini", "proietti", "righi", "rinaldi", "santi", "sarzetto", 
-    "sereni", "severi", "signorini", "sole", "sparta", "succi", "terenzi", 
-    "tinti", "ugolini", "urbinati", "valenti", "venturini", "villa", "zaccaria"
-]
 
-# Blacklist di nomi che generano rumore OSINT (Giocatori Elite o non compatibili)
-ELITE_NOISE_BLACKLIST = [
-    "mbappe", "salah", "neymar", "haaland", "kane", "messi", "ronaldo", 
-    "vinicius", "lewandowski", "de bruyne", "modric", "bellingham", "yamal",
-    "osemhen", "gakpo", "xhaka", "lukaku", "pedri", "gavi"
-]
+# ─── Main scoring function ─────────────────────────────────────────────────
 
-def apply_filters_and_score(player: PlayerProfile) -> PlayerProfile:
-    # 0. Filtro Elite Noise (Anti-Karpathy Noise)
-    full_name = player.known_as.lower()
-    if any(noise in full_name for noise in ELITE_NOISE_BLACKLIST):
-        player.is_lethal_filtered = True
-        player.filter_reason = "Noise Filter: Giocatore Elite (Non Eligibile)"
-        return player
+def score_player(p: PlayerProfile) -> PlayerProfile:
+    """Apply lethal filters and dynamic scoring to a player.
 
-    # 1. Filtri Letali
-    nats = [n.lower() for n in player.nationalities]
-    if "italy" in nats or "italia" in nats or "italian" in nats:
-        player.is_lethal_filtered = True
-        player.filter_reason = "Nazionalità Italiana"
-        return player
-        
-    if "san marino" in nats or "sammarinese" in nats:
-        player.is_lethal_filtered = True
-        player.filter_reason = "Già Sammarinese"
-        return player
-        
-    if player.age is not None:
-        if player.age < 16 or player.age > 32:
-            player.is_lethal_filtered = True
-            player.filter_reason = f"Età fuori stratosfera ({player.age})"
-            return player
+    Modifies and returns the same PlayerProfile with score fields populated.
+    """
+    # Step 1: Lethal filters
+    for filter_fn in LETHAL_FILTERS:
+        reason = filter_fn(p)
+        if reason:
+            p.is_filtered_out = True
+            p.filter_reason = reason
+            p.titan_score = 0.0
+            return p
 
-    # Controllo lega sammarinese
-    club = (player.current_club or "").lower()
-    smr_clubs = ["tre penne", "la fiorita", "tre fiori", "folgore", "murata", "virtus", "pennarossa", "faetano", "domagnano", "fiorentino", "juvenes", "san giovanni", "cosmos", "cailungo", "victor san marino"]
-    if any(c in club for c in smr_clubs):
-        player.is_lethal_filtered = True
-        player.filter_reason = f"Club Sammarinese/Limitrofo ({club})"
-        return player
-        
-    # Controllo lega italiana
-    league = (player.current_league or "").lower()
-    if "italy" in league or "italia" in league or "serie a" in league or "serie b" in league or "serie c" in league or "serie d" in league or "eccellenza" in league or "promozione" in league:
-        player.is_lethal_filtered = True
-        player.filter_reason = f"Campionato Italiano ({league})"
-        return player
+    # Step 2: Calculate score components
+    w_name, tier = _surname_score(p)
+    w_geo = _geographic_score(p)
+    m_athletic = _athletic_score(p)
+    v_osint = _osint_multiplier(p)
+    a_bonus, age_method = _age_bonus(p)
 
-    # 2. Scoring
-    score = 0
-    player.score_breakdown = []
-    ln = player.last_name.lower().strip()
-    
-    # Tier Cognome
-    if ln in TIER_1_NAMES:
-        score += 45
-        player.tier = 1
-        player.score_breakdown.append(f"Cognome Sammarinese Raro (Tier 1): +45pt")
-    elif ln in TIER_2_NAMES:
-        score += 15
-        player.tier = 2
-        player.score_breakdown.append(f"Cognome Diffuso (Tier 2): +15pt")
-    else:
-        player.tier = 3
-        
-    # Geografia (Nazione e Nascita)
-    country = (player.birth_country or "").lower()
-    birth_place = (player.birth_city or "").lower()
-    geo_string = f"{country} {birth_place}"
-    
-    # Cluster storici Sammarinesi (Bonus +15)
-    historical_hubs = ["detroit", "troy", "buenos aires", "pergamino", "cordoba", "san nicolas", "viedma"]
-    matched_hubs = [h for h in historical_hubs if h in geo_string]
-    if matched_hubs:
-        score += 15
-        player.score_breakdown.append(f"Cluster storico emigrazione ({', '.join(matched_hubs).capitalize()}): +15pt")
-    
-    if "argentina" in geo_string:
-        score += 25
-        player.score_breakdown.append(f"Nato in Argentina: +25pt")
-    elif any(c in geo_string for c in ["usa", "united states", "brazil", "brasil", "france", "belgium"]):
-        score += 20
-        player.score_breakdown.append(f"Nato in nazione target (USA/BR/FR/BE): +20pt")
-    elif country and country != "unknown":
-        score += 10
-        player.score_breakdown.append(f"Nato all'estero: +10pt")
-        
-    # Età
-    age = player.age
-    if age:
-        if 16 <= age <= 21:
-            score += 15
-            player.score_breakdown.append(f"Fascia Prospetto (16-21 anni): +15pt")
-        elif 22 <= age <= 26:
-            score += 10
-            player.score_breakdown.append(f"Fascia Prime (22-26 anni): +10pt")
-        elif 27 <= age <= 32:
-            score += 5
-            player.score_breakdown.append(f"Fascia Esperto (27-32 anni): +5pt")
+    # S_base = (W_geo + W_name + M_athletic) × V_osint
+    s_base = (w_geo + w_name + m_athletic) * v_osint
+    s_total = s_base + a_bonus
 
-    if "div 1" in league or "premier" in league or "ncaa" in league:
-        score += 15
-        player.score_breakdown.append(f"Livello Sportivo Elevato: +15pt")
-    elif league:
-        score += 5
-        player.score_breakdown.append(f"Campionato Attivo Schedato: +5pt")
-        
-    player.titan_score = score
-    return player
+    p.titan_score = round(max(0, s_total), 1)
+    p.tier = tier
+    p.score_breakdown = {
+        "W_name": w_name,
+        "W_geo": w_geo,
+        "M_athletic": m_athletic,
+        "V_osint": v_osint,
+        "A_bonus": a_bonus,
+        "age_method": age_method,
+        "S_base": round(s_base, 1),
+        "S_total": round(s_total, 1),
+    }
+
+    return p

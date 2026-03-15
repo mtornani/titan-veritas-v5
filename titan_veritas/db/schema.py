@@ -1,156 +1,156 @@
-"""DDL constants and database initialization for TITAN VERITAS v5.0."""
+"""Database schema DDL and seed data."""
 
-SCHEMA_SQL = """
-CREATE TABLE IF NOT EXISTS original_surname (
+from __future__ import annotations
+
+from titan_veritas.config import TIER1_SURNAMES, TIER2_SURNAMES
+from titan_veritas.db.connection import Database
+
+DDL = """
+CREATE TABLE IF NOT EXISTS surname (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    tier        INTEGER NOT NULL CHECK(tier IN (1, 2, 3)),
-    created_at  TEXT DEFAULT (datetime('now'))
+    name        TEXT    NOT NULL UNIQUE,
+    tier        INTEGER NOT NULL DEFAULT 3,
+    incidence   INTEGER NOT NULL DEFAULT 0,
+    created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE TABLE IF NOT EXISTS surname_variant (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-    original_surname_id INTEGER NOT NULL REFERENCES original_surname(id),
-    variant             TEXT NOT NULL COLLATE NOCASE,
-    confidence          REAL NOT NULL CHECK(confidence >= 0 AND confidence <= 100),
-    method              TEXT NOT NULL,
-    source              TEXT,
-    source_url          TEXT,
-    created_at          TEXT DEFAULT (datetime('now')),
-    UNIQUE(original_surname_id, variant, method)
+    surname_id          INTEGER NOT NULL REFERENCES surname(id),
+    variant             TEXT    NOT NULL,
+    confidence          REAL    NOT NULL DEFAULT 0.0,
+    method              TEXT,
+    UNIQUE(surname_id, variant)
 );
 
 CREATE TABLE IF NOT EXISTS geographic_cluster (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    city             TEXT NOT NULL,
-    region           TEXT,
-    country          TEXT NOT NULL,
-    fratellanza_name TEXT,
-    contact_email    TEXT,
-    contact_phone    TEXT,
-    contact_name     TEXT,
-    website_url      TEXT,
-    last_scraped_at  TEXT,
-    created_at       TEXT DEFAULT (datetime('now'))
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    city                TEXT    NOT NULL,
+    country             TEXT    NOT NULL,
+    fratellanza_name    TEXT,
+    contact_info        TEXT,
+    UNIQUE(city, country)
 );
 
 CREATE TABLE IF NOT EXISTS candidate (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name          TEXT,
-    last_name           TEXT NOT NULL,
-    known_as            TEXT,
-    birth_date          TEXT,
+    first_name          TEXT    NOT NULL,
+    last_name           TEXT    NOT NULL,
+    wikidata_qid        TEXT,
+    bdfa_id             TEXT,
+    api_football_id     INTEGER,
+    date_of_birth       TEXT,
     age                 INTEGER,
-    birth_city          TEXT,
+    birth_place         TEXT,
     birth_country       TEXT,
-    nationalities       TEXT,
+    nationalities       TEXT    DEFAULT '[]',
     current_club        TEXT,
     current_league      TEXT,
-    source              TEXT NOT NULL,
-    source_url          TEXT,
-    titan_score         INTEGER DEFAULT 0,
-    tier                INTEGER,
-    score_breakdown     TEXT,
-    is_lethal_filtered  INTEGER DEFAULT 0,
+    position            TEXT,
+    career_start_year   INTEGER,
+    titan_score         REAL    NOT NULL DEFAULT 0.0,
+    tier                INTEGER NOT NULL DEFAULT 3,
+    score_breakdown     TEXT    DEFAULT '{}',
+    is_filtered_out     INTEGER NOT NULL DEFAULT 0,
     filter_reason       TEXT,
-    surname_variant_id  INTEGER REFERENCES surname_variant(id),
-    cluster_id          INTEGER REFERENCES geographic_cluster(id),
-    created_at          TEXT DEFAULT (datetime('now')),
-    updated_at          TEXT DEFAULT (datetime('now'))
+    cemla_hit           INTEGER NOT NULL DEFAULT 0,
+    ellis_island_hit    INTEGER NOT NULL DEFAULT 0,
+    osint_details       TEXT    DEFAULT '{}',
+    created_at          TEXT    NOT NULL DEFAULT (datetime('now')),
+    updated_at          TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(first_name, last_name, date_of_birth)
 );
 
-CREATE TABLE IF NOT EXISTS outreach_log (
-    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    candidate_id     INTEGER REFERENCES candidate(id),
-    cluster_id       INTEGER REFERENCES geographic_cluster(id),
-    target_email     TEXT NOT NULL,
-    target_name      TEXT,
-    email_subject    TEXT,
-    email_body_hash  TEXT,
-    status           TEXT NOT NULL DEFAULT 'DRAFT'
-                     CHECK(status IN ('DRAFT','SENT','DELIVERED','REPLIED','PROCESSING','VALIDATED','DEAD','BOUNCED')),
-    sent_at          TEXT,
-    replied_at       TEXT,
-    gmail_message_id TEXT,
-    gmail_thread_id  TEXT,
-    llm_extraction   TEXT,
-    llm_confidence   REAL,
-    telegram_sent    INTEGER DEFAULT 0,
-    notes            TEXT,
-    created_at       TEXT DEFAULT (datetime('now')),
-    updated_at       TEXT DEFAULT (datetime('now'))
+CREATE TABLE IF NOT EXISTS api_cache (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    source      TEXT    NOT NULL,
+    key         TEXT    NOT NULL,
+    payload     TEXT    NOT NULL,
+    fetched_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(source, key)
 );
 
-CREATE INDEX IF NOT EXISTS idx_variant_original ON surname_variant(original_surname_id);
-CREATE INDEX IF NOT EXISTS idx_candidate_surname ON candidate(last_name COLLATE NOCASE);
-CREATE INDEX IF NOT EXISTS idx_candidate_source ON candidate(source);
-CREATE INDEX IF NOT EXISTS idx_outreach_status ON outreach_log(status);
-CREATE INDEX IF NOT EXISTS idx_outreach_gmail_thread ON outreach_log(gmail_thread_id);
+CREATE INDEX IF NOT EXISTS idx_candidate_last_name ON candidate(last_name);
+CREATE INDEX IF NOT EXISTS idx_candidate_score ON candidate(titan_score DESC);
+CREATE INDEX IF NOT EXISTS idx_candidate_tier ON candidate(tier);
+CREATE INDEX IF NOT EXISTS idx_surname_variant_sid ON surname_variant(surname_id);
+CREATE INDEX IF NOT EXISTS idx_api_cache_lookup ON api_cache(source, key);
 """
 
+# Tier-1 incidence data from Forebears/Geneanet
+TIER1_INCIDENCE = {
+    "Gualandi": 54, "Terenzi": 41, "Stacchini": 39, "Belluzzi": 38,
+    "Cecchetti": 37, "Bianchi": 36, "Macina": 35, "Gennari": 33,
+    "Taddei": 31, "Rossi": 30, "Stefanelli": 30, "Ciavatta": 28,
+    "Bollini": 27, "Albani": 24, "Selva": 23, "Ceccoli": 22,
+    "Gasperoni": 22, "Guidi": 22, "Biordi": 20, "Santini": 20,
+    "Mularoni": 18, "Zonzini": 16, "Galassi": 15, "Michelotti": 14,
+    "Berardi": 13, "Valentini": 12, "Zanotti": 11, "Lonfernini": 10,
+}
 
-def init_db(conn):
+CLUSTERS = [
+    ("Detroit", "United States", "Fratellanza Sammarinese di Detroit"),
+    ("New York", "United States", "San Marino Society of Greater NY"),
+    ("Buenos Aires", "Argentina", "Associazione Sammarinese di Buenos Aires"),
+    ("Pergamino", "Argentina", "Comunità Sammarinese di Pergamino"),
+    ("Córdoba", "Argentina", "Comunità Sammarinese di Córdoba"),
+    ("General Baldissera", "Argentina", "Fratellanza di General Baldissera"),
+    ("Rosario", "Argentina", None),
+    ("Jujuy", "Argentina", None),
+    ("Patagonia", "Argentina", None),
+    ("São Paulo", "Brazil", "Associazione Sammarinese del Brasile"),
+    ("Paris", "France", "Association des Sammarinais de France"),
+    ("Bruxelles", "Belgium", None),
+    ("Lyon", "France", None),
+    ("Rimini", "Italy", None),
+    ("Bologna", "Italy", None),
+]
+
+
+def init_db(db: Database) -> None:
     """Create all tables and indexes."""
-    conn.executescript(SCHEMA_SQL)
-    conn.commit()
+    db.conn.executescript(DDL)
+    db.commit()
 
 
-def seed_surnames(conn):
-    """Seed the database with the hardcoded Tier 1 and Tier 2 surname lists."""
-    from titan_veritas.core.scoring import TIER_1_NAMES, TIER_2_NAMES
-
-    cursor = conn.cursor()
-    for name in TIER_1_NAMES:
-        cursor.execute(
-            "INSERT OR IGNORE INTO original_surname (name, tier) VALUES (?, 1)",
-            (name,),
-        )
-    for name in TIER_2_NAMES:
-        cursor.execute(
-            "INSERT OR IGNORE INTO original_surname (name, tier) VALUES (?, 2)",
-            (name,),
-        )
-    conn.commit()
-    count = cursor.execute("SELECT COUNT(*) FROM original_surname").fetchone()[0]
+def seed_surnames(db: Database) -> int:
+    """Insert tier-1 and tier-2 surnames. Returns count inserted."""
+    count = 0
+    for name in TIER1_SURNAMES:
+        inc = TIER1_INCIDENCE.get(name, 0)
+        try:
+            db.execute(
+                "INSERT OR IGNORE INTO surname (name, tier, incidence) VALUES (?, 1, ?)",
+                (name, inc),
+            )
+            count += 1
+        except Exception:
+            pass
+    for name in TIER2_SURNAMES:
+        try:
+            db.execute(
+                "INSERT OR IGNORE INTO surname (name, tier, incidence) VALUES (?, 2, 0)",
+                (name,),
+            )
+            count += 1
+        except Exception:
+            pass
+    db.commit()
     return count
 
 
-def seed_clusters(conn):
-    """Seed known San Marino diaspora geographic clusters (the 25 Fratellanze)."""
-    clusters = [
-        ("Detroit", "Michigan", "USA", "Fratellanza Sammarinese di Detroit"),
-        ("Troy", "Michigan", "USA", "Comunità Sammarinese di Troy"),
-        ("New York", "New York", "USA", "Associazione Sammarinese di New York"),
-        ("Pergamino", "Buenos Aires", "Argentina", "Fratellanza Sammarinese di Pergamino"),
-        ("Córdoba", "Córdoba", "Argentina", "Comunità Sammarinese di Córdoba"),
-        ("Buenos Aires", "Buenos Aires", "Argentina", "Associazione Sammarinese di Buenos Aires"),
-        ("San Nicolás de los Arroyos", "Buenos Aires", "Argentina", "Comunità Sammarinese di San Nicolás"),
-        ("Viedma", "Río Negro", "Argentina", "Fratellanza Sammarinese di Viedma"),
-        ("Rosario", "Santa Fe", "Argentina", "Comunità Sammarinese di Rosario"),
-        ("Mar del Plata", "Buenos Aires", "Argentina", "Associazione Sammarinese di Mar del Plata"),
-        ("Paris", "Île-de-France", "France", "Communauté Saint-Marinaise de Paris"),
-        ("Lyon", "Auvergne-Rhône-Alpes", "France", "Association Saint-Marinaise de Lyon"),
-        ("Brussels", "Brussels-Capital", "Belgium", "Comunità Sammarinese del Belgio"),
-        ("São Paulo", "São Paulo", "Brazil", "Comunidade São-Marinense de São Paulo"),
-        ("Rio de Janeiro", "Rio de Janeiro", "Brazil", "Associação São-Marinense do Rio"),
-        ("Washington D.C.", "District of Columbia", "USA", "Comunità Sammarinese di Washington"),
-        ("Chicago", "Illinois", "USA", "Associazione Sammarinese di Chicago"),
-        ("San Francisco", "California", "USA", "Comunità Sammarinese della California"),
-        ("Mendoza", "Mendoza", "Argentina", "Fratellanza Sammarinese di Mendoza"),
-        ("Montevideo", None, "Uruguay", "Comunità Sammarinese dell'Uruguay"),
-        ("London", "England", "UK", "San Marino Society UK"),
-        ("Munich", "Bavaria", "Germany", "Comunità Sammarinese di Monaco"),
-        ("Zürich", "Zürich", "Switzerland", "Associazione Sammarinese Svizzera"),
-        ("Bahía Blanca", "Buenos Aires", "Argentina", "Comunità Sammarinese di Bahía Blanca"),
-        ("La Plata", "Buenos Aires", "Argentina", "Fratellanza Sammarinese di La Plata"),
-    ]
-
-    cursor = conn.cursor()
-    for city, region, country, name in clusters:
-        cursor.execute(
-            "INSERT OR IGNORE INTO geographic_cluster (city, region, country, fratellanza_name) VALUES (?, ?, ?, ?)",
-            (city, region, country, name),
-        )
-    conn.commit()
-    count = cursor.execute("SELECT COUNT(*) FROM geographic_cluster").fetchone()[0]
+def seed_clusters(db: Database) -> int:
+    """Insert geographic clusters. Returns count inserted."""
+    count = 0
+    for city, country, frat in CLUSTERS:
+        try:
+            db.execute(
+                "INSERT OR IGNORE INTO geographic_cluster (city, country, fratellanza_name) "
+                "VALUES (?, ?, ?)",
+                (city, country, frat),
+            )
+            count += 1
+        except Exception:
+            pass
+    db.commit()
     return count

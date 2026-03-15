@@ -3,17 +3,28 @@ venv/
 __pycache__/
 *.py[cod]
 *$py.class
-data/global_players.csv
+*.egg-info/
+
+# Database
 titan_veritas.db
+*.db-journal
+*.db-wal
+
+# Environment
 .env
-旋
+
+# Data exports
+data/*.csv
+data/*.json
 
 # JS / React
 node_modules/
 dist/
 .vite/
 
-# Report & Temp
+# Reports & Temp
 reports/
 /tmp/
-download_data.py
+
+# Legacy backup
+_legacy_v5/

@@ -1,273 +1,178 @@
-"""Repository classes for CRUD operations on the TITAN VERITAS database."""
+"""CRUD repositories for each domain entity."""
+
+from __future__ import annotations
 
 import json
-import hashlib
-import sqlite3
-from typing import List, Optional, Tuple
+from datetime import date
+from typing import Optional
+
+from titan_veritas.core.models import PlayerProfile
+from titan_veritas.db.connection import Database
 
 
 class SurnameRepo:
-    def __init__(self, conn: sqlite3.Connection):
-        self.conn = conn
+    def __init__(self, db: Database):
+        self.db = db
 
-    def get_all_originals(self, tier: Optional[int] = None) -> List[dict]:
+    def get_all(self, tier: int | None = None) -> list[dict]:
         if tier:
-            rows = self.conn.execute(
-                "SELECT * FROM original_surname WHERE tier = ? ORDER BY name", (tier,)
-            ).fetchall()
+            rows = self.db.execute("SELECT * FROM surname WHERE tier = ?", (tier,))
         else:
-            rows = self.conn.execute(
-                "SELECT * FROM original_surname ORDER BY tier, name"
-            ).fetchall()
-        return [dict(r) for r in rows]
+            rows = self.db.execute("SELECT * FROM surname ORDER BY tier, incidence DESC")
+        return [dict(r) for r in rows.fetchall()]
 
-    def get_original_by_name(self, name: str) -> Optional[dict]:
-        row = self.conn.execute(
-            "SELECT * FROM original_surname WHERE name = ? COLLATE NOCASE", (name,)
-        ).fetchone()
+    def get_by_name(self, name: str) -> dict | None:
+        row = self.db.execute("SELECT * FROM surname WHERE name = ?", (name,)).fetchone()
         return dict(row) if row else None
 
-    def add_original(self, name: str, tier: int) -> int:
-        cursor = self.conn.execute(
-            "INSERT OR IGNORE INTO original_surname (name, tier) VALUES (?, ?)",
-            (name, tier),
+    def add_variant(self, surname_id: int, variant: str, confidence: float, method: str):
+        self.db.execute(
+            "INSERT OR IGNORE INTO surname_variant (surname_id, variant, confidence, method) "
+            "VALUES (?, ?, ?, ?)",
+            (surname_id, variant, confidence, method),
         )
-        self.conn.commit()
-        return cursor.lastrowid
+        self.db.commit()
 
-    def add_variant(self, original_surname_id: int, variant: str, confidence: float,
-                    method: str, source: str = "", source_url: str = "") -> int:
-        cursor = self.conn.execute(
-            """INSERT OR IGNORE INTO surname_variant
-               (original_surname_id, variant, confidence, method, source, source_url)
-               VALUES (?, ?, ?, ?, ?, ?)""",
-            (original_surname_id, variant, confidence, method, source, source_url),
+    def get_variants(self, surname_id: int) -> list[dict]:
+        rows = self.db.execute(
+            "SELECT * FROM surname_variant WHERE surname_id = ? ORDER BY confidence DESC",
+            (surname_id,),
         )
-        self.conn.commit()
-        return cursor.lastrowid
-
-    def get_variants(self, original_surname_id: int) -> List[dict]:
-        rows = self.conn.execute(
-            "SELECT * FROM surname_variant WHERE original_surname_id = ? ORDER BY confidence DESC",
-            (original_surname_id,),
-        ).fetchall()
-        return [dict(r) for r in rows]
-
-    def get_all_expanded_surnames(self) -> Tuple[List[str], List[str]]:
-        """Return (tier1_names, tier2_names) including high-confidence variants."""
-        tier1 = []
-        tier2 = []
-        rows = self.conn.execute(
-            "SELECT name, tier FROM original_surname"
-        ).fetchall()
-        for r in rows:
-            if r["tier"] == 1:
-                tier1.append(r["name"].lower())
-            else:
-                tier2.append(r["name"].lower())
-
-        # Add high-confidence variants (>= 75%) to their parent's tier
-        variant_rows = self.conn.execute(
-            """SELECT sv.variant, os.tier FROM surname_variant sv
-               JOIN original_surname os ON sv.original_surname_id = os.id
-               WHERE sv.confidence >= 75"""
-        ).fetchall()
-        for r in variant_rows:
-            name = r["variant"].lower()
-            if r["tier"] == 1:
-                if name not in tier1:
-                    tier1.append(name)
-            else:
-                if name not in tier2:
-                    tier2.append(name)
-
-        return tier1, tier2
-
-    def get_stats(self) -> dict:
-        originals = self.conn.execute("SELECT COUNT(*) as c FROM original_surname").fetchone()["c"]
-        variants = self.conn.execute("SELECT COUNT(*) as c FROM surname_variant").fetchone()["c"]
-        t1 = self.conn.execute("SELECT COUNT(*) as c FROM original_surname WHERE tier=1").fetchone()["c"]
-        t2 = self.conn.execute("SELECT COUNT(*) as c FROM original_surname WHERE tier=2").fetchone()["c"]
-        return {"originals": originals, "variants": variants, "tier1": t1, "tier2": t2}
-
-
-class ClusterRepo:
-    def __init__(self, conn: sqlite3.Connection):
-        self.conn = conn
-
-    def get_all(self) -> List[dict]:
-        rows = self.conn.execute(
-            "SELECT * FROM geographic_cluster ORDER BY country, city"
-        ).fetchall()
-        return [dict(r) for r in rows]
-
-    def get_by_country(self, country: str) -> List[dict]:
-        rows = self.conn.execute(
-            "SELECT * FROM geographic_cluster WHERE country = ? COLLATE NOCASE ORDER BY city",
-            (country,),
-        ).fetchall()
-        return [dict(r) for r in rows]
-
-    def update_contact(self, cluster_id: int, email: str = None, phone: str = None,
-                       contact_name: str = None):
-        updates = []
-        params = []
-        if email:
-            updates.append("contact_email = ?")
-            params.append(email)
-        if phone:
-            updates.append("contact_phone = ?")
-            params.append(phone)
-        if contact_name:
-            updates.append("contact_name = ?")
-            params.append(contact_name)
-        if not updates:
-            return
-        params.append(cluster_id)
-        self.conn.execute(
-            f"UPDATE geographic_cluster SET {', '.join(updates)} WHERE id = ?", params
-        )
-        self.conn.commit()
-
-    def upsert(self, city: str, country: str, region: str = None,
-               fratellanza_name: str = None, **kwargs) -> int:
-        existing = self.conn.execute(
-            "SELECT id FROM geographic_cluster WHERE city = ? AND country = ? COLLATE NOCASE",
-            (city, country),
-        ).fetchone()
-        if existing:
-            return existing["id"]
-        cursor = self.conn.execute(
-            """INSERT INTO geographic_cluster (city, region, country, fratellanza_name,
-               contact_email, contact_phone, contact_name, website_url)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-            (city, region, country, fratellanza_name,
-             kwargs.get("contact_email"), kwargs.get("contact_phone"),
-             kwargs.get("contact_name"), kwargs.get("website_url")),
-        )
-        self.conn.commit()
-        return cursor.lastrowid
+        return [dict(r) for r in rows.fetchall()]
 
 
 class CandidateRepo:
-    def __init__(self, conn: sqlite3.Connection):
-        self.conn = conn
+    def __init__(self, db: Database):
+        self.db = db
 
-    def upsert(self, first_name: str, last_name: str, source: str, **kwargs) -> int:
-        existing = self.conn.execute(
-            """SELECT id FROM candidate
-               WHERE first_name = ? COLLATE NOCASE AND last_name = ? COLLATE NOCASE AND source = ?""",
-            (first_name, last_name, source),
+    def upsert(self, p: PlayerProfile) -> int:
+        """Insert or update a candidate. Returns the row id."""
+        existing = self.db.execute(
+            "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+            "AND (date_of_birth = ? OR date_of_birth IS NULL)",
+            (p.first_name, p.last_name, p.date_of_birth.isoformat() if p.date_of_birth else None),
         ).fetchone()
+
+        dob_str = p.date_of_birth.isoformat() if p.date_of_birth else None
+        nationalities_json = json.dumps(p.nationalities, ensure_ascii=False)
+        breakdown_json = json.dumps(p.score_breakdown, ensure_ascii=False)
+        osint_json = json.dumps(p.osint_details, ensure_ascii=False)
+
         if existing:
+            self.db.execute(
+                """UPDATE candidate SET
+                    wikidata_qid=?, bdfa_id=?, api_football_id=?,
+                    date_of_birth=?, age=?, birth_place=?, birth_country=?,
+                    nationalities=?, current_club=?, current_league=?, position=?,
+                    career_start_year=?, titan_score=?, tier=?, score_breakdown=?,
+                    is_filtered_out=?, filter_reason=?,
+                    cemla_hit=?, ellis_island_hit=?, osint_details=?,
+                    updated_at=datetime('now')
+                WHERE id=?""",
+                (
+                    p.wikidata_qid, p.bdfa_id, p.api_football_id,
+                    dob_str, p.estimated_age, p.birth_place, p.birth_country,
+                    nationalities_json, p.current_club, p.current_league, p.position,
+                    p.career_start_year, p.titan_score, p.tier, breakdown_json,
+                    int(p.is_filtered_out), p.filter_reason,
+                    int(p.cemla_hit), int(p.ellis_island_hit), osint_json,
+                    existing["id"],
+                ),
+            )
+            self.db.commit()
             return existing["id"]
 
-        nats = kwargs.get("nationalities", [])
-        breakdown = kwargs.get("score_breakdown", [])
-        cursor = self.conn.execute(
-            """INSERT INTO candidate (first_name, last_name, known_as, birth_date, age,
-               birth_city, birth_country, nationalities, current_club, current_league,
-               source, source_url, titan_score, tier, score_breakdown,
-               is_lethal_filtered, filter_reason, surname_variant_id, cluster_id)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (first_name, last_name, kwargs.get("known_as"), kwargs.get("birth_date"),
-             kwargs.get("age"), kwargs.get("birth_city"), kwargs.get("birth_country"),
-             json.dumps(nats) if isinstance(nats, list) else nats,
-             kwargs.get("current_club"), kwargs.get("current_league"),
-             source, kwargs.get("source_url", ""),
-             kwargs.get("titan_score", 0), kwargs.get("tier"),
-             json.dumps(breakdown) if isinstance(breakdown, list) else breakdown,
-             1 if kwargs.get("is_lethal_filtered") else 0,
-             kwargs.get("filter_reason"),
-             kwargs.get("surname_variant_id"), kwargs.get("cluster_id")),
+        cur = self.db.execute(
+            """INSERT INTO candidate (
+                first_name, last_name, wikidata_qid, bdfa_id, api_football_id,
+                date_of_birth, age, birth_place, birth_country, nationalities,
+                current_club, current_league, position, career_start_year,
+                titan_score, tier, score_breakdown, is_filtered_out, filter_reason,
+                cemla_hit, ellis_island_hit, osint_details
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                p.first_name, p.last_name, p.wikidata_qid, p.bdfa_id, p.api_football_id,
+                dob_str, p.estimated_age, p.birth_place, p.birth_country,
+                nationalities_json, p.current_club, p.current_league, p.position,
+                p.career_start_year, p.titan_score, p.tier, breakdown_json,
+                int(p.is_filtered_out), p.filter_reason,
+                int(p.cemla_hit), int(p.ellis_island_hit), osint_json,
+            ),
         )
-        self.conn.commit()
-        return cursor.lastrowid
+        self.db.commit()
+        return cur.lastrowid
 
-    def get_top_scored(self, limit: int = 50) -> List[dict]:
-        rows = self.conn.execute(
-            """SELECT * FROM candidate WHERE is_lethal_filtered = 0
-               ORDER BY titan_score DESC LIMIT ?""",
-            (limit,),
-        ).fetchall()
-        return [dict(r) for r in rows]
+    def get_all(self, include_filtered: bool = False) -> list[dict]:
+        if include_filtered:
+            rows = self.db.execute("SELECT * FROM candidate ORDER BY titan_score DESC")
+        else:
+            rows = self.db.execute(
+                "SELECT * FROM candidate WHERE is_filtered_out = 0 ORDER BY titan_score DESC"
+            )
+        return [dict(r) for r in rows.fetchall()]
 
-    def get_by_source(self, source: str) -> List[dict]:
-        rows = self.conn.execute(
-            "SELECT * FROM candidate WHERE source = ? ORDER BY titan_score DESC",
-            (source,),
-        ).fetchall()
-        return [dict(r) for r in rows]
+    def get_by_surname(self, surname: str) -> list[dict]:
+        rows = self.db.execute(
+            "SELECT * FROM candidate WHERE last_name = ? ORDER BY titan_score DESC",
+            (surname,),
+        )
+        return [dict(r) for r in rows.fetchall()]
+
+    def count(self, include_filtered: bool = False) -> int:
+        if include_filtered:
+            row = self.db.execute("SELECT COUNT(*) as c FROM candidate")
+        else:
+            row = self.db.execute("SELECT COUNT(*) as c FROM candidate WHERE is_filtered_out = 0")
+        return row.fetchone()["c"]
+
+    def stats(self) -> dict:
+        total = self.count(include_filtered=True)
+        active = self.count(include_filtered=False)
+        with_dob = self.db.execute(
+            "SELECT COUNT(*) as c FROM candidate WHERE date_of_birth IS NOT NULL"
+        ).fetchone()["c"]
+        with_club = self.db.execute(
+            "SELECT COUNT(*) as c FROM candidate WHERE current_club IS NOT NULL"
+        ).fetchone()["c"]
+        avg_score = self.db.execute(
+            "SELECT AVG(titan_score) as a FROM candidate WHERE is_filtered_out = 0"
+        ).fetchone()["a"] or 0
+        return {
+            "total": total,
+            "active": active,
+            "filtered_out": total - active,
+            "with_dob": with_dob,
+            "with_club": with_club,
+            "avg_score": round(avg_score, 1),
+            "dob_coverage": f"{with_dob / total * 100:.1f}%" if total else "0%",
+            "club_coverage": f"{with_club / total * 100:.1f}%" if total else "0%",
+        }
 
 
-class OutreachRepo:
-    def __init__(self, conn: sqlite3.Connection):
-        self.conn = conn
+class CacheRepo:
+    """API response cache to avoid wasting quota."""
 
-    def create_draft(self, target_email: str, subject: str, body: str,
-                     cluster_id: int = None, target_name: str = None,
-                     candidate_id: int = None) -> int:
-        body_hash = hashlib.sha256(body.encode()).hexdigest()
-        # Check for duplicate
-        existing = self.conn.execute(
-            "SELECT id FROM outreach_log WHERE email_body_hash = ? AND target_email = ?",
-            (body_hash, target_email),
+    def __init__(self, db: Database):
+        self.db = db
+
+    def get(self, source: str, key: str) -> Optional[str]:
+        row = self.db.execute(
+            "SELECT payload FROM api_cache WHERE source = ? AND key = ?",
+            (source, key),
         ).fetchone()
-        if existing:
-            return existing["id"]
+        return row["payload"] if row else None
 
-        cursor = self.conn.execute(
-            """INSERT INTO outreach_log (candidate_id, cluster_id, target_email, target_name,
-               email_subject, email_body_hash, status)
-               VALUES (?, ?, ?, ?, ?, ?, 'DRAFT')""",
-            (candidate_id, cluster_id, target_email, target_name, subject, body_hash),
+    def put(self, source: str, key: str, payload: str):
+        self.db.execute(
+            "INSERT OR REPLACE INTO api_cache (source, key, payload, fetched_at) "
+            "VALUES (?, ?, ?, datetime('now'))",
+            (source, key, payload),
         )
-        self.conn.commit()
-        return cursor.lastrowid
+        self.db.commit()
 
-    def mark_sent(self, outreach_id: int, gmail_message_id: str, gmail_thread_id: str):
-        self.conn.execute(
-            """UPDATE outreach_log SET status='SENT', sent_at=datetime('now'),
-               gmail_message_id=?, gmail_thread_id=?, updated_at=datetime('now')
-               WHERE id=?""",
-            (gmail_message_id, gmail_thread_id, outreach_id),
-        )
-        self.conn.commit()
-
-    def mark_replied(self, outreach_id: int):
-        self.conn.execute(
-            """UPDATE outreach_log SET status='REPLIED', replied_at=datetime('now'),
-               updated_at=datetime('now') WHERE id=?""",
-            (outreach_id,),
-        )
-        self.conn.commit()
-
-    def mark_validated(self, outreach_id: int, llm_extraction: str, confidence: float):
-        self.conn.execute(
-            """UPDATE outreach_log SET status='VALIDATED', llm_extraction=?,
-               llm_confidence=?, updated_at=datetime('now') WHERE id=?""",
-            (llm_extraction, confidence, outreach_id),
-        )
-        self.conn.commit()
-
-    def mark_status(self, outreach_id: int, status: str, notes: str = None):
-        self.conn.execute(
-            """UPDATE outreach_log SET status=?, notes=?, updated_at=datetime('now')
-               WHERE id=?""",
-            (status, notes, outreach_id),
-        )
-        self.conn.commit()
-
-    def get_pending_threads(self) -> List[dict]:
-        """Get all outreach records awaiting reply (SENT or DELIVERED)."""
-        rows = self.conn.execute(
-            """SELECT * FROM outreach_log WHERE status IN ('SENT', 'DELIVERED')
-               AND gmail_thread_id IS NOT NULL ORDER BY sent_at""",
-        ).fetchall()
-        return [dict(r) for r in rows]
-
-    def get_stats(self) -> dict:
-        rows = self.conn.execute(
-            "SELECT status, COUNT(*) as c FROM outreach_log GROUP BY status"
-        ).fetchall()
-        return {r["status"]: r["c"] for r in rows}
+    def has(self, source: str, key: str) -> bool:
+        row = self.db.execute(
+            "SELECT 1 FROM api_cache WHERE source = ? AND key = ?",
+            (source, key),
+        ).fetchone()
+        return row is not None
