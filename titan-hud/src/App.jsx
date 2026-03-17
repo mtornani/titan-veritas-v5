@@ -189,9 +189,35 @@ function App() {
               {Object.keys(bd).length > 0 && (
                 <div className="breakdown">
                   <div className="breakdown-title">Formula TITAN Score</div>
-                  <ul>
-                    {Object.values(bd).map((v, i) => <li key={i}>{v}</li>)}
-                  </ul>
+                  <div className="formula-grid">
+                    <div className="formula-section">
+                      <span className="formula-label">Cognome (W<sub>name</sub>)</span>
+                      <span className="formula-val">{bd.W_name ?? '-'}</span>
+                    </div>
+                    <div className="formula-section">
+                      <span className="formula-label">Geografia (W<sub>geo</sub>)</span>
+                      <span className="formula-val">{bd.W_geo ?? '-'}</span>
+                    </div>
+                    <div className="formula-section">
+                      <span className="formula-label">Club (M<sub>athletic</sub>)</span>
+                      <span className="formula-val">{bd.M_athletic ?? '-'}</span>
+                    </div>
+                    <div className="formula-section">
+                      <span className="formula-label">OSINT (V<sub>osint</sub>)</span>
+                      <span className="formula-val">{bd.V_osint ?? '-'}x</span>
+                    </div>
+                    <div className="formula-section">
+                      <span className="formula-label">
+                        Età ({bd.age_method === 'exact' ? 'DOB' : bd.age_method === 'career_proxy' ? 'stima carriera' : 'stima lega'})
+                      </span>
+                      <span className="formula-val">{bd.A_bonus > 0 ? '+' : ''}{bd.A_bonus ?? '-'}</span>
+                    </div>
+                    <div className="formula-divider"></div>
+                    <div className="formula-section formula-total">
+                      <span className="formula-label">S<sub>base</sub> × V<sub>osint</sub> + A<sub>bonus</sub></span>
+                      <span className="formula-val">{bd.S_total ?? p.titan_score}</span>
+                    </div>
+                  </div>
                 </div>
               )}
 

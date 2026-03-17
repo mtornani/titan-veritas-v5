@@ -70,11 +70,24 @@ CREATE TABLE IF NOT EXISTS api_cache (
     UNIQUE(source, key)
 );
 
+CREATE TABLE IF NOT EXISTS api_queue (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    league_id   INTEGER NOT NULL,
+    league_name TEXT    NOT NULL,
+    team_id     INTEGER NOT NULL,
+    team_name   TEXT    NOT NULL DEFAULT '',
+    status      TEXT    NOT NULL DEFAULT 'pending',
+    processed_at TEXT,
+    players_found INTEGER NOT NULL DEFAULT 0,
+    UNIQUE(league_id, team_id)
+);
+
 CREATE INDEX IF NOT EXISTS idx_candidate_last_name ON candidate(last_name);
 CREATE INDEX IF NOT EXISTS idx_candidate_score ON candidate(titan_score DESC);
 CREATE INDEX IF NOT EXISTS idx_candidate_tier ON candidate(tier);
 CREATE INDEX IF NOT EXISTS idx_surname_variant_sid ON surname_variant(surname_id);
 CREATE INDEX IF NOT EXISTS idx_api_cache_lookup ON api_cache(source, key);
+CREATE INDEX IF NOT EXISTS idx_api_queue_status ON api_queue(status);
 """
 
 # Tier-1 incidence data from Forebears/Geneanet

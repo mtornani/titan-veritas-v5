@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TITAN VERITAS v6 — Executive Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+    .glass { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] .chevron { transform: rotate(180deg); }
+  </style>
+</head>
+<body class="min-h-screen text-slate-200 font-sans">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 glass border-b border-slate-700/50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-white">TITAN VERITAS <span class="text-blue-400">v6</span></h1>
+        <p class="text-slate-400 text-xs">San Marino Diaspora Football Intelligence</p>
+      </div>
+      <div class="text-right">
+        <p class="text-slate-400 text-xs">Report generato il</p>
+        <p class="text-white text-sm font-medium">17/03/2026 21:25</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+    <!-- KPI Cards -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4 text-center">
+        <p class="text-3xl font-bold text-white">613</p>
+        <p class="text-slate-400 text-xs mt-1">Candidati Attivi</p>
+      </div>
+      <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4 text-center">
+        <p class="text-3xl font-bold text-emerald-400">163.0</p>
+        <p class="text-slate-400 text-xs mt-1">Score Massimo</p>
+      </div>
+      <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4 text-center">
+        <p class="text-3xl font-bold text-blue-400">49.1</p>
+        <p class="text-slate-400 text-xs mt-1">Score Medio</p>
+      </div>
+      <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4 text-center">
+        <p class="text-3xl font-bold text-amber-400">29.5%</p>
+        <p class="text-slate-400 text-xs mt-1">Copertura DOB</p>
+      </div>
+    </section>
+
+    <!-- Tutorial Accordion -->
+    <section>
+      <details class="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
+        <summary class="px-5 py-4 flex items-center justify-between hover:bg-slate-700/30 transition-colors">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-white font-semibold">Come leggere questo report &mdash; La Formula TITAN</span>
+          </div>
+          <svg class="w-5 h-5 text-slate-400 chevron transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </summary>
+        <div class="px-5 pb-5 space-y-4 text-sm text-slate-300 border-t border-slate-700/50 pt-4">
+          <p>
+            <strong class="text-white">TITAN VERITAS</strong> e un sistema di intelligence sportiva progettato per
+            identificare calciatori della diaspora sammarinese che potrebbero avere diritto alla
+            cittadinanza per <em>Jure Sanguinis</em> (diritto di sangue).
+          </p>
+          <div class="bg-slate-900/60 rounded-lg p-4 space-y-3">
+            <h4 class="text-white font-semibold">L'approccio Bayesiano semplificato</h4>
+            <p>
+              Il sistema non valuta solo le statistiche sportive. Combina tre livelli di evidenza:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300">
+              <li>
+                <strong class="text-blue-400">Probabilita di base (Prior):</strong>
+                Quanto e comune il cognome a San Marino? Un <em>Gasperoni</em> o <em>Gualandi</em>
+                ha una probabilita endemica altissima (Tier 1); un <em>Rossi</em> e comune sia a
+                San Marino che in tutta Italia (Tier 2).
+              </li>
+              <li>
+                <strong class="text-emerald-400">Evidenza geografica:</strong>
+                Il giocatore e nato o gioca in Argentina, USA o Brasile &mdash; paesi con
+                comunita sammarinesi storicamente documentate? Questo aumenta la probabilita.
+              </li>
+              <li>
+                <strong class="text-amber-400">Conferma documentale (OSINT):</strong>
+                I registri navali dell'epoca (CEMLA per l'Argentina, Ellis Island per gli USA)
+                confermano che famiglie con quel cognome sono emigrate da San Marino?
+                Questa e l'evidenza piu forte e funge da moltiplicatore.
+              </li>
+            </ol>
+            <p>
+              Il <strong class="text-white">Punteggio TITAN</strong> finale sintetizza tutti questi fattori.
+              Un punteggio alto indica un'alta probabilita che il giocatore abbia diritto alla
+              cittadinanza sammarinese e meriti un approfondimento genealogico.
+            </p>
+          </div>
+          <div class="bg-slate-900/60 rounded-lg p-4 space-y-2">
+            <h4 class="text-white font-semibold">Status OSINT</h4>
+            <ul class="space-y-1">
+              <li><span class="text-emerald-400 font-medium">Verificato:</span> Cognome confermato nei registri navali CEMLA + Ellis Island</li>
+              <li><span class="text-amber-400 font-medium">Parziale:</span> Confermato in una sola fonte (CEMLA o Ellis Island)</li>
+              <li><span class="text-slate-400 font-medium">In Attesa:</span> Non ancora verificato nei registri &mdash; richiede ricerca manuale</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Player Cards Grid -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-white">Top 50 Candidati</h2>
+        <p class="text-slate-400 text-sm">Ordinati per Punteggio TITAN</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#1</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">T. Rossi</h3>
+                <p class="text-slate-400 text-sm">Godoy Cruz &mdash; Liga Profesional</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">163.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">26 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">Defender</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#2</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nicolás Valentini</h3>
+                <p class="text-slate-400 text-sm">H. Verona</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">154.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">24 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q106768944" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a> &middot; <a href="https://www.bdfa.com.ar/jugadores-NICOLÁS-VALENTINI-132432.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#3</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Fabrizio Guidi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">136.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">23 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-FABRIZIO-GUIDI-150927.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#4</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Franco Valentini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">136.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">24 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-FRANCO-VALENTINI-143732.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#5</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nicolas Valentini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">136.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">24 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-NICOLAS-VALENTINI-132432.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#6</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Agustin Daniel Rossi</h3>
+                <p class="text-slate-400 text-sm">327</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">134.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">34 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-AGUSTIN-DANIEL-ROSSI-71051.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#7</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nahuel Valentini</h3>
+                <p class="text-slate-400 text-sm">Ascoli Calcio 1898 FC</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">134.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q6037529" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#8</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Carlos Guidi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">126.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q659755" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#9</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Hector Juan Guidi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">126.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-HECTOR-JUAN-GUIDI-910.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#10</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Juan Carlos Valentini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">126.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-JUAN-CARLOS-VALENTINI-18261.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#11</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Gustavo Galassi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">126.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-GUSTAVO-GALASSI-19294.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#12</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nicolás Stefanelli</h3>
+                <p class="text-slate-400 text-sm">Allmänna Idrottsklubben Fotboll</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">120.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">31 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q25407676" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#13</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Marco Guidini Guidi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">116.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">38 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-MARCO-GUIDINI-GUIDI-45297.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#14</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Fernando Manuel Selva</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">116.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">36 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-FERNANDO-MANUEL-SELVA-114426.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#15</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Mateo Valentini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">116.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">34 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-MATEO-VALENTINI-92230.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#16</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Milton Tomas Zanotti</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">115.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">22 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-MILTON-TOMAS-ZANOTTI-85837.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#17</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Gabriel Valentini</h3>
+                <p class="text-slate-400 text-sm">Al-Nasr Sports Club</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">109.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">25 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q72423930" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#18</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Mario Enrique Zanotti</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">105.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-MARIO-ENRIQUE-ZANOTTI-4370.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#19</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Enzo Stefanelli</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">105.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">29 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-ENZO-STEFANELLI-117541.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#20</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Fabricio Stefanelli</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">105.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-FABRICIO-STEFANELLI-44276.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#21</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Raul Santini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">105.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-RAUL-SANTINI-16585.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#22</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Omar Gennarini Gennari</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">105.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-OMAR-GENNARINI-GENNARI-9327.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#23</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Dominique Guidi</h3>
+                <p class="text-slate-400 text-sm">Gazélec Football Club Ajaccio</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">30 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q56043510" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#24</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Jorge Fabian Casali</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-blue-400 text-xs">Tier 2 — Probabile</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-JORGE-FABIAN-CASALI-36838.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#25</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Jonathan Casalis Casali</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">28 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-blue-400 text-xs">Tier 2 — Probabile</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-JONATHAN-CASALIS-CASALI-112105.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#26</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Ediberto Luis Righi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-blue-400 text-xs">Tier 2 — Probabile</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-EDIBERTO-LUIS-RIGHI-761.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#27</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Emma Guidi</h3>
+                <p class="text-slate-400 text-sm">Unione Sportiva Dilettantistica San Zaccaria</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">29 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q59459263" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#28</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Marco Berardi</h3>
+                <p class="text-slate-400 text-sm">FC Südtirol</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">29 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q43384072" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#29</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Stefan Valentini</h3>
+                <p class="text-slate-400 text-sm">Balcatta SC</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">99.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">29 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q21064053" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#30</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nicolas Marcelo Stefanelli</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">95.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">32 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-NICOLAS-MARCELO-STEFANELLI-103586.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#31</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Gabriel Santini</h3>
+                <p class="text-slate-400 text-sm">Kalba SCC</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">92.5</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">25 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q92667684" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#32</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Diallo Guidilleye Guidi</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">91.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">25 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-DIALLO-GUIDILLEYE-GUIDI-106147.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#33</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">GAETANO Berardi</h3>
+                <p class="text-slate-400 text-sm">nazionale Under-19 di calcio della Svizzera</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q549640" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#34</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">ALESSANDRO Berardi</h3>
+                <p class="text-slate-400 text-sm">SS Lazio</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">35 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q43549262" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#35</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">ENRICO Valentini</h3>
+                <p class="text-slate-400 text-sm">1. Fußball-Club Nürnberg Verein für Leibesübungen</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q1343910" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#36</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">ALEX Valentini</h3>
+                <p class="text-slate-400 text-sm">Football Club Lugano</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q4717920" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#37</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Gaetano Berardi</h3>
+                <p class="text-slate-400 text-sm">nazionale Under-19 di calcio della Svizzera</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q549640" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#38</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Enrico Valentini</h3>
+                <p class="text-slate-400 text-sm">1. Fußball-Club Nürnberg Verein für Leibesübungen</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q1343910" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#39</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Damian Leandro Casalinuovo Casali</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">38 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-blue-400 text-xs">Tier 2 — Probabile</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.bdfa.com.ar/jugadores-DAMIAN-LEANDRO-CASALINUOVO-CASALI-63039.html" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">BDFA</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#40</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Massimiliano Taddei</h3>
+                <p class="text-slate-400 text-sm">ACF Fiorentina</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">34 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q6784698" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#41</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Alessandro Berardi</h3>
+                <p class="text-slate-400 text-sm">SS Lazio</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">35 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q43549262" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#42</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Alex Valentini</h3>
+                <p class="text-slate-400 text-sm">Football Club Lugano</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">89.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">37 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q4717920" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#43</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Margherita Santini</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">87.5</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">21 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q105723746" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#44</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Nicola Stefanelli</h3>
+                <p class="text-slate-400 text-sm">Unione Calcio AlbinoLeffe</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">82.5</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">28 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q43374126" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#45</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">Luca Zanotti</h3>
+                <p class="text-slate-400 text-sm">Como 1907</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">82.5</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">31 anni</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-amber-400 bg-amber-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Parziale</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q44291909" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#46</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">ALEX Gasperoni</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">81.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q1856363" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#47</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">FEDERICO Gasperoni</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">81.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q2270435" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#48</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">FABIO Gasperoni</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">81.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q3737723" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#49</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">LEONE Gasperoni</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">81.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q3830514" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 hover:border-slate-600 transition-all duration-200">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <span class="text-slate-500 text-sm font-mono">#50</span>
+              <div>
+                <h3 class="text-white font-semibold text-lg leading-tight">LORENZO Gasperoni</h3>
+                <p class="text-slate-400 text-sm">Sconosciuto</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-emerald-400 text-2xl font-bold">81.0</span>
+              <p class="text-slate-500 text-xs">TITAN Score</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-sm mb-3">
+            <div>
+              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Ruolo</span>
+              <span class="text-slate-200">N/D</span>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs block">Cognome</span>
+              <span class="text-emerald-400 text-xs">Tier 1 — Endemico</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-emerald-400 bg-emerald-400/10 text-xs font-medium px-2.5 py-1 rounded-full">Verificato</span>
+            <span class="text-slate-500 text-xs"><a href="https://www.wikidata.org/wiki/Q3836958" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs">Wikidata</a></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 border-t border-slate-700/50">
+      <p class="text-slate-500 text-xs">
+        TITAN VERITAS v6 &mdash; Federazione Sammarinese Giuoco Calcio
+      </p>
+      <p class="text-slate-600 text-xs mt-1">
+        Report automatico &middot; Dati: Wikidata, BDFA, API-Football, CEMLA, Ellis Island
+      </p>
+    </footer>
+
+  </main>
+
+</body>
+</html>

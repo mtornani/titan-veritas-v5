@@ -1,7 +1,11 @@
-"""BDFA (Base de Datos del Fútbol Argentino) scraper.
+"""BDFA (Base de Datos del Futbol Argentino) scraper.
 
-Uses semantic DOM selectors (not absolute/index-based) with BeautifulSoup.
-Uses pandas.read_html() for club history tables to avoid fragile HTML parsing.
+Uses Scrapling's Fetcher with curl_cffi TLS impersonation for HTTP.
+Uses Scrapling's adaptive DOM parser (replaces BeautifulSoup).
+Uses pandas.read_html() for club history tables.
+
+Note: BDFA serves pages as ISO-8859-1. We decode raw bytes manually
+and build a Scrapling Adaptor from the decoded HTML string.
 """
 
 from __future__ import annotations
@@ -11,15 +15,15 @@ import random
 import re
 import time
 from datetime import date
+from io import StringIO
 from typing import Optional
 
-import httpx
 import pandas as pd
-from bs4 import BeautifulSoup
+from scrapling import Fetcher
+from scrapling.parser import Adaptor
 
 from titan_veritas.config import (
     BDFA_BASE,
-    USER_AGENTS,
     DEFAULT_DELAY_MIN,
     DEFAULT_DELAY_MAX,
 )
@@ -28,43 +32,42 @@ from titan_veritas.core.models import PlayerProfile
 logger = logging.getLogger(__name__)
 
 
-def _get_headers() -> dict:
-    return {
-        "User-Agent": random.choice(USER_AGENTS),
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "es-AR,es;q=0.9,en;q=0.5",
-    }
-
-
 def _polite_delay():
     time.sleep(random.uniform(DEFAULT_DELAY_MIN, DEFAULT_DELAY_MAX))
 
 
-def search_players(surname: str, client: httpx.Client | None = None) -> list[dict]:
-    """Search BDFA for players matching a surname. Returns list of {name, url, bdfa_id}."""
-    close_client = False
-    if client is None:
-        client = httpx.Client(timeout=20, follow_redirects=True)
-        close_client = True
+def _fetch_page(url: str, params: dict | None = None) -> tuple:
+    """Fetch a page via Fetcher. Returns (Adaptor, html_str) handling Latin-1 encoding."""
+    resp = Fetcher.get(
+        url,
+        params=params,
+        impersonate="chrome",
+        stealthy_headers=True,
+        follow_redirects=True,
+        timeout=20,
+    )
+    raw = resp.body
+    if isinstance(raw, bytes):
+        html = raw.decode("latin-1", errors="replace")
+    else:
+        html = str(raw)
+    doc = Adaptor(html, auto_match=False)
+    return doc, html
 
+
+def search_players(surname: str) -> list[dict]:
+    """Search BDFA for players matching a surname. Returns list of {name, url, bdfa_id}."""
     results = []
     try:
         search_url = f"{BDFA_BASE}/buscar.asp"
-        resp = client.get(
-            search_url,
-            params={"q": surname, "tipo": "jugadores"},
-            headers=_get_headers(),
-        )
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "lxml")
+        doc, _ = _fetch_page(search_url, params={"q": surname, "tipo": "jugadores"})
 
-        # Find player links — look for anchors pointing to player profiles
-        for link in soup.find_all("a", href=True):
-            href = link["href"]
+        # Use Scrapling's CSS selector to find player links
+        for link in doc.css("a[href]"):
+            href = link.attrib.get("href", "")
             if "jugador" in href.lower() or "player" in href.lower():
-                name = link.get_text(strip=True)
+                name = link.text.strip() if link.text else ""
                 if surname.lower() in name.lower():
-                    # Extract numeric ID from URL
                     id_match = re.search(r"(\d+)", href)
                     bdfa_id = id_match.group(1) if id_match else None
                     full_url = href if href.startswith("http") else f"{BDFA_BASE}/{href.lstrip('/')}"
@@ -73,45 +76,48 @@ def search_players(surname: str, client: httpx.Client | None = None) -> list[dic
                         "url": full_url,
                         "bdfa_id": bdfa_id,
                     })
-        logger.info(f"BDFA search: {len(results)} results for '{surname}'")
-    except httpx.HTTPStatusError as e:
-        logger.warning(f"BDFA search HTTP error: {e.response.status_code}")
+        logger.info("BDFA search: %d results for '%s'", len(results), surname)
     except Exception as e:
-        logger.warning(f"BDFA search error: {e}")
-    finally:
-        if close_client:
-            client.close()
+        logger.warning("BDFA search error: %s", e)
 
     return results
 
 
-def _extract_dob_from_soup(soup: BeautifulSoup) -> Optional[date]:
-    """Extract date of birth using semantic selectors, not positional."""
+def _extract_dob_from_page(doc, html: str) -> Optional[date]:
+    """Extract date of birth using Scrapling's adaptive selectors."""
     # Strategy 1: Look for 'data-stat' attributes
-    dob_cell = soup.find("td", {"data-stat": "birth_date"})
+    dob_cell = doc.css("td[data-stat='birth_date']")
     if dob_cell:
-        text = dob_cell.get_text(strip=True)
-        return _parse_date_text(text)
-
-    # Strategy 2: Find text patterns like "Nacimiento:" or "Fecha de nacimiento"
-    for label_text in ("nacimiento", "fecha de nacimiento", "born", "birth"):
-        label_el = soup.find(string=re.compile(label_text, re.IGNORECASE))
-        if label_el:
-            # Navigate to the sibling/parent that contains the date
-            parent = label_el.find_parent()
-            if parent:
-                text = parent.get_text(strip=True)
-                parsed = _parse_date_text(text)
-                if parsed:
-                    return parsed
-
-    # Strategy 3: Search for date patterns in the header/bio section
-    bio_section = soup.find("div", class_=re.compile(r"(bio|info|header|perfil)", re.I))
-    if bio_section:
-        text = bio_section.get_text()
+        text = dob_cell[0].text.strip() if dob_cell[0].text else ""
         parsed = _parse_date_text(text)
         if parsed:
             return parsed
+
+    # Strategy 2: Find text containing birth-related keywords
+    for label_text in ("nacimiento", "fecha de nacimiento", "born", "birth"):
+        matches = doc.find_by_text(label_text, first_match=False)
+        if matches:
+            for match in (matches if isinstance(matches, list) else [matches]):
+                parent = match.parent
+                if parent:
+                    text = parent.get_all_text() if hasattr(parent, 'get_all_text') else (parent.text or "")
+                    parsed = _parse_date_text(text)
+                    if parsed:
+                        return parsed
+
+    # Strategy 3: Search for date patterns in bio/header sections
+    for selector in ("div[class*='bio']", "div[class*='info']", "div[class*='header']", "div[class*='perfil']"):
+        sections = doc.css(selector)
+        if sections:
+            text = sections[0].get_all_text() if hasattr(sections[0], 'get_all_text') else (sections[0].text or "")
+            parsed = _parse_date_text(text)
+            if parsed:
+                return parsed
+
+    # Strategy 4: Brute-force — scan entire HTML for date patterns
+    parsed = _parse_date_text(html)
+    if parsed:
+        return parsed
 
     return None
 
@@ -135,12 +141,11 @@ def _parse_date_text(text: str) -> Optional[date]:
     return None
 
 
-def _extract_career_start(soup: BeautifulSoup) -> Optional[int]:
-    """Extract the earliest year from career stats to estimate debut year."""
-    # Look for 4-digit years in stat tables
+def _extract_career_start(doc) -> Optional[int]:
+    """Extract the earliest year from career stats."""
     years = []
-    for cell in soup.find_all(["td", "th"]):
-        text = cell.get_text(strip=True)
+    for cell in doc.css("td, th"):
+        text = (cell.text or "").strip()
         m = re.match(r"^(19|20)\d{2}$", text)
         if m:
             years.append(int(text))
@@ -148,25 +153,17 @@ def _extract_career_start(soup: BeautifulSoup) -> Optional[int]:
 
 
 def _extract_club_from_tables(html: str) -> Optional[str]:
-    """Use pandas.read_html to extract the most recent club from stat tables.
-
-    This avoids fragile manual <tr>/<td> traversal — pandas handles
-    inconsistent headers, missing cells, and encoding issues natively.
-    """
+    """Use pandas.read_html to extract the most recent club from stat tables."""
     try:
-        tables = pd.read_html(html, flavor="lxml")
+        tables = pd.read_html(StringIO(html), flavor="lxml")
     except ValueError:
-        # No tables found
         return None
     except Exception as e:
-        logger.debug(f"pandas.read_html error: {e}")
+        logger.debug("pandas.read_html error: %s", e)
         return None
 
     for df in tables:
-        # Normalise column names
         cols_lower = [str(c).lower().strip() for c in df.columns]
-
-        # Look for a column named 'club', 'equipo', 'team'
         club_col = None
         for i, col_name in enumerate(cols_lower):
             if col_name in ("club", "equipo", "team"):
@@ -174,10 +171,8 @@ def _extract_club_from_tables(html: str) -> Optional[str]:
                 break
 
         if club_col is not None:
-            # Drop NaN rows and get the last non-empty entry (most recent)
             series = df[club_col].dropna()
             if not series.empty:
-                # Last row = most recent season (BDFA lists chronologically)
                 club = str(series.iloc[-1]).strip()
                 if club and club.lower() not in ("", "-", "nan"):
                     return club
@@ -185,89 +180,72 @@ def _extract_club_from_tables(html: str) -> Optional[str]:
     return None
 
 
-def scrape_profile(url: str, client: httpx.Client | None = None) -> dict:
+def scrape_profile(url: str) -> dict:
     """Scrape a BDFA player profile page. Returns metadata dict."""
-    close_client = False
-    if client is None:
-        client = httpx.Client(timeout=20, follow_redirects=True)
-        close_client = True
-
     result: dict = {"url": url}
     try:
-        resp = client.get(url, headers=_get_headers())
-        resp.raise_for_status()
-        html = resp.text
-        soup = BeautifulSoup(html, "lxml")
+        doc, html = _fetch_page(url)
 
-        # Extract date of birth (semantic selectors)
-        dob = _extract_dob_from_soup(soup)
+        # Extract date of birth (adaptive selectors)
+        dob = _extract_dob_from_page(doc, html)
         if dob:
             result["date_of_birth"] = dob
 
         # Extract career start year
-        career_start = _extract_career_start(soup)
+        career_start = _extract_career_start(doc)
         if career_start:
             result["career_start_year"] = career_start
 
         # Extract current club via pandas.read_html
-        club = _extract_club_from_tables(html)
-        if club:
-            result["current_club"] = club
+        if html:
+            club = _extract_club_from_tables(html)
+            if club:
+                result["current_club"] = club
 
         # Extract position
-        for label_text in ("posición", "puesto", "position"):
-            el = soup.find(string=re.compile(label_text, re.IGNORECASE))
-            if el:
-                parent = el.find_parent()
+        for label_text in ("posicion", "puesto", "position"):
+            matches = doc.find_by_text(label_text, first_match=True)
+            if matches:
+                el = matches if not isinstance(matches, list) else matches[0]
+                parent = el.parent
                 if parent:
-                    text = parent.get_text(strip=True)
-                    # Remove the label itself
+                    text = parent.get_all_text() if hasattr(parent, 'get_all_text') else (parent.text or "")
                     pos = re.sub(rf"(?i){label_text}\s*:?\s*", "", text).strip()
                     if pos:
                         result["position"] = pos
                         break
 
-    except httpx.HTTPStatusError as e:
-        logger.warning(f"BDFA profile HTTP error for {url}: {e.response.status_code}")
     except Exception as e:
-        logger.warning(f"BDFA profile error for {url}: {e}")
-    finally:
-        if close_client:
-            client.close()
+        logger.warning("BDFA profile error for %s: %s", url, e)
 
     return result
 
 
 def search_and_scrape(surname: str) -> list[PlayerProfile]:
     """Full BDFA pipeline: search → scrape each profile → build PlayerProfiles."""
-    client = httpx.Client(timeout=20, follow_redirects=True)
     players = []
 
-    try:
-        search_results = search_players(surname, client)
+    search_results = search_players(surname)
 
-        for entry in search_results:
-            _polite_delay()
-            profile_data = scrape_profile(entry["url"], client)
+    for entry in search_results:
+        _polite_delay()
+        profile_data = scrape_profile(entry["url"])
 
-            name_parts = entry["name"].rsplit(" ", 1)
-            first_name = name_parts[0] if len(name_parts) > 1 else ""
-            last_name = name_parts[-1]
+        name_parts = entry["name"].rsplit(" ", 1)
+        first_name = name_parts[0] if len(name_parts) > 1 else ""
+        last_name = name_parts[-1]
 
-            player = PlayerProfile(
-                first_name=first_name,
-                last_name=last_name,
-                bdfa_id=entry.get("bdfa_id"),
-                date_of_birth=profile_data.get("date_of_birth"),
-                current_club=profile_data.get("current_club"),
-                position=profile_data.get("position"),
-                career_start_year=profile_data.get("career_start_year"),
-                birth_country="Argentina",  # BDFA is exclusively Argentine football
-            )
-            players.append(player)
+        player = PlayerProfile(
+            first_name=first_name,
+            last_name=last_name,
+            bdfa_id=entry.get("bdfa_id"),
+            date_of_birth=profile_data.get("date_of_birth"),
+            current_club=profile_data.get("current_club"),
+            position=profile_data.get("position"),
+            career_start_year=profile_data.get("career_start_year"),
+            birth_country="Argentina",
+        )
+        players.append(player)
 
-        logger.info(f"BDFA: scraped {len(players)} profiles for surname '{surname}'")
-    finally:
-        client.close()
-
+    logger.info("BDFA: scraped %d profiles for surname '%s'", len(players), surname)
     return players

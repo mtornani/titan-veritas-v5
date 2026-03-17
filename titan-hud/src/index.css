@@ -398,21 +398,54 @@ h1 {
   letter-spacing: 1px;
 }
 
-.breakdown ul { list-style: none; padding: 0; margin: 0; }
-
-.breakdown li {
-  font-size: 0.8rem;
-  color: var(--text-main);
-  margin-bottom: 0.2rem;
-  padding-left: 1.2rem;
-  position: relative;
+.formula-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-.breakdown li::before {
-  content: '\26A1';
-  position: absolute;
-  left: 0;
-  font-size: 0.65rem;
+.formula-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+}
+
+.formula-label {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+.formula-label sub {
+  font-size: 0.6rem;
+  color: var(--accent-blue);
+}
+
+.formula-val {
+  color: var(--text-main);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.formula-divider {
+  border-top: 1px solid var(--glass-border);
+  margin: 0.2rem 0;
+}
+
+.formula-total .formula-label {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+.formula-total .formula-label sub {
+  color: var(--accent-gold);
+}
+
+.formula-total .formula-val {
+  color: var(--accent-gold);
+  font-size: 1rem;
+  font-weight: 800;
 }
 
 /* Card Links */
