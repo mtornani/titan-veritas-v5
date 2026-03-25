@@ -16,11 +16,11 @@ API_FOOTBALL_DAILY_LIMIT = int(os.getenv("API_FOOTBALL_DAILY_LIMIT", "100"))
 # Argentine lower-division league IDs in API-Football
 ARGENTINA_LEAGUES = {
     "Liga Profesional": 128,
-    "Primera Nacional": 131,
-    "Primera B Metropolitana": 132,
-    "Torneo Federal A": 133,
-    "Primera C": 134,
-    "Primera D": 135,
+    "Primera Nacional": 96,
+    "Primera B Metropolitana": 233,
+    "Torneo Federal A": 232,
+    "Primera C": 234,
+    "Primera D": 235,
     "Torneo Proyección": 521,
 }
 

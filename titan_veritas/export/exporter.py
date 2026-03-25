@@ -175,7 +175,7 @@ def export_html(
           </div>
           <div class="grid grid-cols-3 gap-3 text-sm mb-3">
             <div>
-              <span class="text-slate-500 text-xs block">Eta</span>
+              <span class="text-slate-500 text-xs block">Et&agrave;</span>
               <span class="text-slate-200">{age_str}</span>
             </div>
             <div>
@@ -262,7 +262,7 @@ def export_html(
         </summary>
         <div class="px-5 pb-5 space-y-4 text-sm text-slate-300 border-t border-slate-700/50 pt-4">
           <p>
-            <strong class="text-white">TITAN VERITAS</strong> e un sistema di intelligence sportiva progettato per
+            <strong class="text-white">TITAN VERITAS</strong> &egrave; un sistema di intelligence sportiva progettato per
             identificare calciatori della diaspora sammarinese che potrebbero avere diritto alla
             cittadinanza per <em>Jure Sanguinis</em> (diritto di sangue).
           </p>
@@ -273,26 +273,26 @@ def export_html(
             </p>
             <ol class="list-decimal list-inside space-y-2 text-slate-300">
               <li>
-                <strong class="text-blue-400">Probabilita di base (Prior):</strong>
-                Quanto e comune il cognome a San Marino? Un <em>Gasperoni</em> o <em>Gualandi</em>
-                ha una probabilita endemica altissima (Tier 1); un <em>Rossi</em> e comune sia a
+                <strong class="text-blue-400">Probabilit&agrave; di base (Prior):</strong>
+                Quanto &egrave; comune il cognome a San Marino? Un <em>Gasperoni</em> o <em>Gualandi</em>
+                ha una probabilit&agrave; endemica altissima (Tier 1); un <em>Rossi</em> &egrave; comune sia a
                 San Marino che in tutta Italia (Tier 2).
               </li>
               <li>
                 <strong class="text-emerald-400">Evidenza geografica:</strong>
-                Il giocatore e nato o gioca in Argentina, USA o Brasile &mdash; paesi con
-                comunita sammarinesi storicamente documentate? Questo aumenta la probabilita.
+                Il giocatore &egrave; nato o gioca in Argentina, USA o Brasile &mdash; paesi con
+                comunit&agrave; sammarinesi storicamente documentate? Questo aumenta la probabilit&agrave;.
               </li>
               <li>
                 <strong class="text-amber-400">Conferma documentale (OSINT):</strong>
                 I registri navali dell'epoca (CEMLA per l'Argentina, Ellis Island per gli USA)
                 confermano che famiglie con quel cognome sono emigrate da San Marino?
-                Questa e l'evidenza piu forte e funge da moltiplicatore.
+                Questa &egrave; l'evidenza pi&ugrave; forte e funge da moltiplicatore.
               </li>
             </ol>
             <p>
               Il <strong class="text-white">Punteggio TITAN</strong> finale sintetizza tutti questi fattori.
-              Un punteggio alto indica un'alta probabilita che il giocatore abbia diritto alla
+              Un punteggio alto indica un'alta probabilit&agrave; che il giocatore abbia diritto alla
               cittadinanza sammarinese e meriti un approfondimento genealogico.
             </p>
           </div>
