@@ -47,11 +47,46 @@ class CandidateRepo:
 
     def upsert(self, p: PlayerProfile) -> int:
         """Insert or update a candidate. Returns the row id."""
-        existing = self.db.execute(
-            "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
-            "AND (date_of_birth = ? OR date_of_birth IS NULL)",
-            (p.first_name, p.last_name, p.date_of_birth.isoformat() if p.date_of_birth else None),
-        ).fetchone()
+        dob_iso = p.date_of_birth.isoformat() if p.date_of_birth else None
+
+        if dob_iso:
+            # Exact match on name + DOB (strong identity)
+            existing = self.db.execute(
+                "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+                "AND date_of_birth = ?",
+                (p.first_name, p.last_name, dob_iso),
+            ).fetchone()
+            if not existing:
+                # Also match records with NULL DOB (fill in missing DOB)
+                existing = self.db.execute(
+                    "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+                    "AND date_of_birth IS NULL",
+                    (p.first_name, p.last_name),
+                ).fetchone()
+        else:
+            # No DOB: require additional context to match (birth_country or current_club)
+            existing = None
+            if p.birth_country:
+                existing = self.db.execute(
+                    "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+                    "AND date_of_birth IS NULL AND birth_country = ?",
+                    (p.first_name, p.last_name, p.birth_country),
+                ).fetchone()
+            if not existing and p.current_club:
+                existing = self.db.execute(
+                    "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+                    "AND date_of_birth IS NULL AND current_club = ?",
+                    (p.first_name, p.last_name, p.current_club),
+                ).fetchone()
+            if not existing:
+                # Last resort: only match if there's exactly one record with this name
+                rows = self.db.execute(
+                    "SELECT id FROM candidate WHERE first_name = ? AND last_name = ? "
+                    "AND date_of_birth IS NULL",
+                    (p.first_name, p.last_name),
+                ).fetchall()
+                if len(rows) == 1:
+                    existing = rows[0]
 
         dob_str = p.date_of_birth.isoformat() if p.date_of_birth else None
         nationalities_json = json.dumps(p.nationalities, ensure_ascii=False)

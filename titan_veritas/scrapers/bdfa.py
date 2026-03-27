@@ -58,24 +58,34 @@ def _fetch_page(url: str, params: dict | None = None) -> tuple:
 def search_players(surname: str) -> list[dict]:
     """Search BDFA for players matching a surname. Returns list of {name, url, bdfa_id}."""
     results = []
+    seen_urls = set()
     try:
         search_url = f"{BDFA_BASE}/buscar.asp"
-        doc, _ = _fetch_page(search_url, params={"q": surname, "tipo": "jugadores"})
+        doc, _ = _fetch_page(search_url, params={"apellido": surname, "tipo": "jugadores"})
 
         # Use Scrapling's CSS selector to find player links
         for link in doc.css("a[href]"):
             href = link.attrib.get("href", "")
             if "jugador" in href.lower() or "player" in href.lower():
+                # Extract name from link text or from URL slug
                 name = link.text.strip() if link.text else ""
-                if surname.lower() in name.lower():
-                    id_match = re.search(r"(\d+)", href)
+                if not name:
+                    # Parse name from URL: jugadores-FIRSTNAME-LASTNAME-ID.html
+                    slug_match = re.match(r"jugadores?-(.+?)-(\d+)\.html", href, re.I)
+                    if slug_match:
+                        name = slug_match.group(1).replace("-", " ").title()
+
+                if surname.lower() in name.lower() or surname.lower() in href.lower():
+                    id_match = re.search(r"-(\d+)\.html", href)
                     bdfa_id = id_match.group(1) if id_match else None
                     full_url = href if href.startswith("http") else f"{BDFA_BASE}/{href.lstrip('/')}"
-                    results.append({
-                        "name": name,
-                        "url": full_url,
-                        "bdfa_id": bdfa_id,
-                    })
+                    if full_url not in seen_urls:
+                        seen_urls.add(full_url)
+                        results.append({
+                            "name": name,
+                            "url": full_url,
+                            "bdfa_id": bdfa_id,
+                        })
         logger.info("BDFA search: %d results for '%s'", len(results), surname)
     except Exception as e:
         logger.warning("BDFA search error: %s", e)

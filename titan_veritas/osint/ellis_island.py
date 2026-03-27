@@ -97,6 +97,13 @@ def _search_live(surname: str) -> EllisIslandResult:
 
         doc = Adaptor(html, auto_match=False)
 
+        # Detect JS-rendered SPA shell (no real content)
+        if '<div id="root"></div>' in html and len(html) < 5000:
+            logger.warning(f"Ellis Island: JS-rendered SPA detected, falling back to static for '{surname}'")
+            result.error = "JS-rendered SPA, no content"
+            result.method = "failed"
+            return result
+
         # Look for result rows — site uses table or list-based layouts
         rows = doc.find_all("tr")
         for row in rows:

@@ -1,0 +1,351 @@
+{
+  "project": {
+    "name": "TITAN VERITAS",
+    "version": "6.1",
+    "purpose": "OSINT system to identify football players of San Marino diaspora origin (primarily Argentina) who may qualify for citizenship via Jus Sanguinis, for recruitment by FSGC (Federazione Sammarinese Giuoco Calcio)",
+    "repo": "https://github.com/mtornani/titan-veritas-v5.git",
+    "branch": "master",
+    "hud_live_url": "https://mtornani.github.io/titan-veritas-v5/",
+    "platform": "Windows 11, Python 3.12, Node.js (React 18 + Vite 5)",
+    "database": "SQLite (titan_veritas.db, 1.2 MB)",
+    "last_audit_date": "2026-03-27"
+  },
+
+  "architecture": {
+    "cli": {
+      "file": "titan.py (30.7 KB)",
+      "framework": "Click",
+      "commands": [
+        "init-db — Create schema, seed surnames/clusters, optional JSON import",
+        "search — Full pipeline: Wikidata + BDFA + API-Football per surname",
+        "enrich — OSINT enrichment via CEMLA + Ellis Island",
+        "dedupe — Fuzzy deduplication with RapidFuzz",
+        "tier3-cutoff — Filter low-value Tier 3 candidates",
+        "api-queue — Populate/process API-Football team queue",
+        "bdfa-enrich — Scrape BDFA profiles to fill gaps",
+        "score — Recalculate TITAN scores for all candidates",
+        "export — Export to JSON (React HUD) and CSV",
+        "export-html — Generate static executive HTML report",
+        "seed-export — Dump DB to offline JSON seed",
+        "stats — Print DB statistics and top 10"
+      ]
+    },
+    "package_structure": {
+      "titan_veritas/__init__.py": "Package init, __version__ = 6.0.0",
+      "titan_veritas/config.py": "Central config, loads .env, defines surnames/hubs/URLs/rate limits",
+      "titan_veritas/core/models.py": "Dataclasses: PlayerProfile, SurnameEntry, GeographicCluster",
+      "titan_veritas/core/scoring.py": "TITAN scoring formula + lethal filters",
+      "titan_veritas/core/deduplication.py": "RapidFuzz-based dedup engine (ID match + fuzzy name)",
+      "titan_veritas/db/connection.py": "Thread-safe SQLite singleton with WAL mode",
+      "titan_veritas/db/schema.py": "DDL for 6 tables + seed data",
+      "titan_veritas/db/repository.py": "CandidateRepo, CacheRepo, SurnameRepo CRUD",
+      "titan_veritas/scrapers/wikidata.py": "SPARQL + REST API via scrapling.Fetcher",
+      "titan_veritas/scrapers/bdfa.py": "bdfa.com.ar scraper via scrapling.Fetcher",
+      "titan_veritas/scrapers/api_football.py": "API-Football client with queue system + caching",
+      "titan_veritas/osint/cemla.py": "CEMLA immigration archives via StealthyFetcher + static fallback",
+      "titan_veritas/osint/ellis_island.py": "Ellis Island archives via Fetcher + static fallback",
+      "titan_veritas/export/exporter.py": "JSON, CSV, HTML export pipeline"
+    },
+    "frontend": {
+      "directory": "titan-hud/",
+      "stack": "React 18.2 + Vite 5.2, pure CSS (glassmorphism)",
+      "data_source": "Static JSON (titan-hud/src/data.json, 514 KB, 613 players)",
+      "standalone": true,
+      "deployed_to": "GitHub Pages (gh-pages branch)"
+    },
+    "db_tables": [
+      "surname — SM surnames with tier and incidence",
+      "surname_variant — spelling variants with confidence",
+      "geographic_cluster — 15 diaspora communities",
+      "candidate — 23 columns, UNIQUE(first_name, last_name, date_of_birth)",
+      "api_cache — response cache (source, key)",
+      "api_queue — API-Football team processing queue"
+    ]
+  },
+
+  "scoring_formula": {
+    "formula": "S_total = (W_geo + W_name + M_athletic) * V_osint + A_bonus",
+    "components": {
+      "W_name": "Surname weight: Tier 1 = 45, Tier 2 = 30, Tier 3 = 0",
+      "W_geo": "Geography: birth/nationality in diaspora hub = 15-25 pts",
+      "M_athletic": "Club presence + league level = 0-25 pts",
+      "V_osint": "Multiplier: both CEMLA+Ellis = 1.8x, one source = 1.5x, none = 1.0x",
+      "A_bonus": "Age: 16-21 = +20, 22-26 = +10, 27-31 = 0, 32+ = -10"
+    },
+    "lethal_filters": [
+      "Elite noise names (Messi, Ronaldo, etc.)",
+      "Already has San Marino nationality",
+      "Already in SM club",
+      "Plays in Italian league (already scoutable)",
+      "Age < 16 or > 38"
+    ],
+    "max_observed_score": 163,
+    "score_thresholds": {
+      "elite": ">=70 (gold badge)",
+      "high": ">=50 (green badge)",
+      "mid": ">=30",
+      "low": "<30"
+    }
+  },
+
+  "data_sources": {
+    "wikidata": {
+      "type": "SPARQL + REST API",
+      "url": "https://query.wikidata.org/sparql",
+      "method": "Phase 1: SPARQL finds footballers (P106=Q937857) by surname. Phase 2: wbgetentities in batches of 50 for enrichment",
+      "properties": ["P569 (DOB)", "P19 (birth place)", "P54 (team)", "P27 (citizenship)"],
+      "http_client": "scrapling.Fetcher (curl_cffi TLS impersonation), StealthyFetcher as fallback"
+    },
+    "bdfa": {
+      "type": "Web scraping",
+      "url": "https://www.bdfa.com.ar",
+      "method": "Search via buscar.asp, then profile scraping for DOB/club/position",
+      "http_client": "scrapling.Fetcher",
+      "encoding": "ISO-8859-1 (latin-1)"
+    },
+    "api_football": {
+      "type": "REST API",
+      "url": "https://v3.football.api-sports.io",
+      "free_tier_limit": "100 requests/day",
+      "endpoints": ["/teams", "/players/squads"],
+      "queue_system": "SQLite api_queue table for multi-day processing",
+      "caching": "Full response caching in api_cache table",
+      "target_leagues": {
+        "Liga Profesional": 128,
+        "Primera Nacional": 96,
+        "Federal A": 232,
+        "B Metropolitana": 233,
+        "Primera C": 234,
+        "Primera D": 235,
+        "Copa Argentina": 521
+      }
+    },
+    "cemla": {
+      "type": "OSINT - immigration archives",
+      "url": "https://search.cemla.com/",
+      "coverage": "Argentine immigration records 1800-1960",
+      "method": "StealthyFetcher (Camoufox/Playwright) with page_action callback for form automation",
+      "challenge": "BotDetect CAPTCHA — live scraping often fails",
+      "fallback": "Static lookup: 57 known SM emigrant surnames",
+      "sm_keywords": ["san marino", "sammarinese", "sanmarinese", "repubblica di san"]
+    },
+    "ellis_island": {
+      "type": "OSINT - immigration archives",
+      "url": "https://heritage.statueofliberty.org/passenger",
+      "coverage": "65M US immigration records 1820-1957",
+      "method": "scrapling.Fetcher with townOfOrigin=San+Marino parameter",
+      "challenge": "Likely JS-rendered SPA — Fetcher may get empty results",
+      "fallback": "Static lookup: 19 known SM-USA emigrant surnames"
+    }
+  },
+
+  "database_state": {
+    "total_candidates": 2149,
+    "active_candidates": 613,
+    "filtered_out": 1536,
+    "distinct_surnames": 48,
+    "tier_distribution": {
+      "tier_1_active": 282,
+      "tier_2_active": 77,
+      "tier_3_active": 254
+    },
+    "filter_reasons": {
+      "age_out_of_range": 1277,
+      "tier3_cutoff": 1058,
+      "already_sm_nationality": 38,
+      "already_sm_club": 2
+    },
+    "osint_enriched": 407,
+    "with_known_age": 231,
+    "countries_represented": 29,
+    "average_score": 49,
+    "top_score": 163,
+    "top_player": "T. Rossi (Godoy Cruz, Liga Profesional, Age 26)",
+    "api_cache_entries": 140
+  },
+
+  "surnames": {
+    "tier_1_endemic": [
+      "Gasperoni", "Gualandi", "Mularoni", "Zonzini", "Zafferani", "Valentini",
+      "Berardi", "Beccari", "Bollini", "Cenci", "Cervellini", "Ciacci",
+      "Della Valle", "Fabbri", "Galassi", "Giancecchi", "Giovagnoli", "Guidi",
+      "Lazzarini", "Manzaroli", "Matteoni", "Moroni", "Muccioli", "Renzi",
+      "Righi", "Selva", "Stacchini", "Zanotti"
+    ],
+    "tier_2_high_probability": [
+      "Belluzzi", "Bianchi", "Casali", "Cecchetti", "Gennari", "Giacomini",
+      "Macina", "Mazza", "Montanari", "Pellicioni", "Podeschi", "Rossi",
+      "Sapigni", "Taddei", "Terenzi", "Tomassoni", "Ugolini", "Vannucci",
+      "Venturini", "Vitali"
+    ],
+    "legacy_v5_total": 669,
+    "note": "v5 had 669 target surnames; v6 focuses on 48 highest-value surnames"
+  },
+
+  "diaspora_hubs": {
+    "Argentina": ["Buenos Aires", "Rosario", "Córdoba", "Mendoza", "Santa Fe", "Pergamino", "Junín", "San Nicolás", "Bahía Blanca", "La Plata", "Mar del Plata", "Tucumán", "Paraná", "General Baldissera", "Sunchales", "Rafaela", "Reconquista", "Resistencia", "Corrientes", "San Juan", "San Luis", "Neuquén", "Comodoro Rivadavia", "Ushuaia", "Río Gallegos"],
+    "USA": ["Detroit", "New York", "Cleveland", "Chicago", "San Francisco", "Los Angeles", "Boston", "Philadelphia", "Baltimore", "Pittsburgh", "Hartford", "Providence", "Newark", "Trenton", "Stamford", "Bridgeport", "Youngstown", "Akron", "Warren", "Canton"],
+    "Brazil": ["São Paulo", "Porto Alegre", "Curitiba", "Belo Horizonte", "Rio de Janeiro", "Florianópolis", "Caxias do Sul", "Joinville", "Blumenau", "Londrina", "Maringá", "Campinas", "Santos", "Sorocaba", "Ribeirão Preto", "Uberlândia", "Juiz de Fora", "Vitória", "Recife", "Salvador"],
+    "France": ["Paris", "Lyon", "Marseille", "Nice", "Toulouse", "Strasbourg", "Bordeaux", "Lille", "Nantes", "Montpellier", "Grenoble", "Saint-Étienne", "Mulhouse", "Metz", "Nancy"],
+    "Belgium": ["Bruxelles", "Charleroi", "Liège", "Mons", "La Louvière", "Namur", "Tournai", "Verviers", "Genk", "Hasselt", "Leuven", "Mechelen", "Antwerpen", "Gent", "Bruges"]
+  },
+
+  "hud_features": {
+    "implemented": [
+      "6 KPI cards (total, elite, Tier 1, countries, age coverage, avg score)",
+      "Full-text search (name + club)",
+      "6 filters: Tier dropdown, Country cluster, Score slider, Age toggle, OSINT toggle",
+      "Player cards with color-coded score badges (gold/green/blue/gray)",
+      "Analisi Candidato section with human-readable labels (Endemico/Probabile/Generico)",
+      "External links to Wikidata and BDFA profiles",
+      "Expandable DOB row on click",
+      "Responsive layout (mobile breakpoint 768px)",
+      "Results capped at top 150 by score",
+      "Italian language throughout"
+    ],
+    "missing": [
+      "No CSV/PDF export from filtered results",
+      "No sorting options (only by score descending)",
+      "No pagination beyond 150 results",
+      "No comparison tool",
+      "No map visualization",
+      "No data freshness timestamp",
+      "No dark/light mode toggle"
+    ]
+  },
+
+  "known_bugs": {
+    "critical": [
+      {
+        "id": "BUG-001",
+        "file": "titan_veritas/core/scoring.py",
+        "description": "score_player() resets is_filtered_out based only on lethal filters, overwriting manual filters (tier3_cutoff, duplicate_of). Running 'score' command after 'tier3-cutoff' or 'dedupe' undoes those filters.",
+        "workaround": "Always run tier3-cutoff and dedupe AFTER score, never before",
+        "fix": "Modify score_player() to preserve existing filter_reason if it starts with 'tier3_cutoff' or 'duplicate_of'"
+      },
+      {
+        "id": "BUG-002",
+        "file": "titan_veritas/db/repository.py",
+        "description": "CandidateRepo.upsert() matches on (first_name, last_name, date_of_birth=? OR date_of_birth IS NULL). When DOB is None (most API-Football imports), any existing player with same name gets overwritten regardless of actual DOB. Causes false merges for common names like Rossi.",
+        "fix": "Tighten match: require at least one additional field match (club, birth_country) when DOB is NULL"
+      },
+      {
+        "id": "BUG-003",
+        "file": "titan_veritas/scrapers/bdfa.py",
+        "description": "Search uses parameter ?q=surname instead of ?apellido=surname (which legacy v5 used). The ?q parameter is unverified against BDFA's actual ASP backend and likely returns 0 results silently.",
+        "fix": "Change to ?apellido= or verify which parameter BDFA actually accepts"
+      }
+    ],
+    "minor": [
+      {
+        "id": "BUG-004",
+        "file": "requirements.txt",
+        "description": "Missing scrapling and rapidfuzz (critical runtime deps). Contains 5 unused deps: beautifulsoup4, jellyfish, thefuzz, python-Levenshtein, tenacity, aiohttp",
+        "fix": "Add scrapling, rapidfuzz. Remove dead deps."
+      },
+      {
+        "id": "BUG-005",
+        "file": "titan_veritas/config.py",
+        "description": "ARGENTINA_LEAGUES has wrong IDs for lower leagues (131-135 return 0 teams). Correct IDs: Primera Nacional=96, B Metro=233, C=234, D=235, Federal A=232. The api_football.py queue code uses correct IDs but config.py still has wrong ones.",
+        "fix": "Update config.py ARGENTINA_LEAGUES to match correct IDs"
+      },
+      {
+        "id": "BUG-006",
+        "file": "titan_veritas/osint/ellis_island.py",
+        "description": "heritage.statueofliberty.org is likely a JS-rendered SPA. scrapling.Fetcher (non-browser) gets empty HTML shell. Silently falls through to static fallback without detecting the failure.",
+        "fix": "Switch to StealthyFetcher for live scraping, or add content detection to trigger fallback explicitly"
+      }
+    ]
+  },
+
+  "dependencies": {
+    "actually_used": [
+      "scrapling (Fetcher, StealthyFetcher, Adaptor) — HTTP + browser automation",
+      "rapidfuzz — fuzzy string matching for deduplication",
+      "httpx — API-Football HTTP client",
+      "pandas — BDFA HTML table parsing",
+      "click — CLI framework",
+      "rich — terminal formatting",
+      "tqdm — progress bars",
+      "python-dotenv — .env loading"
+    ],
+    "declared_but_unused": [
+      "beautifulsoup4 (replaced by scrapling.Adaptor)",
+      "jellyfish (not imported anywhere)",
+      "thefuzz (replaced by rapidfuzz)",
+      "python-Levenshtein (not imported)",
+      "tenacity (not imported)",
+      "aiohttp (not imported)"
+    ]
+  },
+
+  "git_history": [
+    "4038a7d HUD: replace technical formula with human-readable analysis labels",
+    "c4eb504 Fix API-Football league IDs and Italian accents in executive report",
+    "7a50357 TITAN VERITAS v6.1: OSINT pipeline fix, deduplication, executive report",
+    "9a6997c Add source links to player cards (Wikidata + BDFA)",
+    "49083b0 TITAN VERITAS HUD v6.0: rebuilt React frontend with dynamic scoring",
+    "0f93700 Add offline database seed: 2031 candidates from v5 legacy DB",
+    "c1e9fbd TITAN VERITAS v6.0: complete rebuild from scratch",
+    "52f9099 Fix build config and prepare for GH Pages",
+    "f5ebe58 Initial commit v5.0: Rosetta Stone OSINT Pipeline & Premium HUD"
+  ],
+
+  "legacy_v5_modules_not_ported": [
+    "outreach/coordinator.py — orchestrates Gmail polling + Telegram routing + email composition",
+    "outreach/gmail_poller.py — monitors Gmail for scout responses",
+    "outreach/telegram_router.py — Telegram bot integration for notifications",
+    "outreach/email_composer.py — generates outreach emails to clubs/scouts",
+    "outreach/intel_processor.py — processes intelligence from scout replies",
+    "outreach/contact_extractor.py — extracts contact info from club websites",
+    "scrapers/youth_leagues/ — Córdoba, Pergamino, Michigan SYSA regional league scrapers",
+    "core/rosetta.py — surname variant engine (spelling mutations)",
+    "osint/fratellanze.py — Fratellanze scraper for SM mutual aid societies",
+    "osint/variant_engine.py — advanced surname variant generation",
+    "core/rate_limiter.py — centralized rate limiting",
+    "core/archive_data.py — historical archive data management"
+  ],
+
+  "gap_analysis": {
+    "complete": [
+      "Wikidata SPARQL discovery pipeline",
+      "API-Football integration with queue + caching",
+      "BDFA profile scraping (DOB, club, position)",
+      "TITAN scoring formula with lethal filters",
+      "RapidFuzz deduplication (ID + fuzzy name)",
+      "Tier 3 cutoff filter",
+      "SQLite database with 2149 candidates (613 active)",
+      "React HUD with search/filters, deployed to GitHub Pages",
+      "JSON/CSV/HTML export pipeline",
+      "Executive HTML report with Tailwind CSS",
+      "Static OSINT fallback (57 CEMLA + 19 Ellis Island surnames)"
+    ],
+    "incomplete": [
+      "requirements.txt outdated (missing 2 critical deps, 5 dead deps)",
+      "OSINT live scraping (CEMLA blocked by CAPTCHA, Ellis Island likely JS-rendered)",
+      "BDFA search parameter possibly wrong (?q= vs ?apellido=)",
+      "Scoring overwrites manual filters (needs preservation logic)",
+      "Upsert DOB match too permissive for common names",
+      "API-Football config league IDs still wrong in config.py",
+      "Version string inconsistency (6.0.0 vs 6.1)"
+    ],
+    "missing_entirely": [
+      "README.md — no documentation",
+      "Test suite — zero tests in v6",
+      "CI/CD pipeline — no GitHub Actions",
+      "Outreach pipeline (Gmail, Telegram, email) — not ported from v5",
+      "Youth league scrapers — not ported from v5",
+      "Structured logging — no log files, only console output",
+      "Retry/backoff — no systematic error recovery"
+    ],
+    "priority_order": [
+      "1. Fix requirements.txt (add scrapling, rapidfuzz; remove dead deps) — 5 min",
+      "2. Fix scoring bug (preserve manual filters in score_player) — 15 min",
+      "3. Fix BDFA search param (?q= → ?apellido=) — 10 min",
+      "4. Fix upsert DOB match logic — 15 min",
+      "5. Update config.py league IDs (96, 232-235) — 5 min",
+      "6. Add README.md with setup/usage instructions — 30 min",
+      "7. Rebuild + redeploy HUD — 10 min"
+    ]
+  }
+}

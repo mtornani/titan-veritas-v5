@@ -192,6 +192,16 @@ def score_player(p: PlayerProfile) -> PlayerProfile:
             p.titan_score = 0.0
             return p
 
+    # Step 1b: Preserve manual filters (tier3_cutoff, duplicate_of)
+    _MANUAL_PREFIXES = ("tier3_cutoff", "duplicate_of")
+    existing_reason = getattr(p, "filter_reason", None) or ""
+    if existing_reason.startswith(_MANUAL_PREFIXES):
+        # Keep the manual filter — only update the score, don't un-filter
+        pass
+    else:
+        p.is_filtered_out = False
+        p.filter_reason = None
+
     # Step 2: Calculate score components
     w_name, tier = _surname_score(p)
     w_geo = _geographic_score(p)

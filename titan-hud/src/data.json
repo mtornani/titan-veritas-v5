@@ -921,7 +921,7 @@
     "first_name": "Marco",
     "last_name": "Berardi",
     "full_name": "Marco Berardi",
-    "age": 29,
+    "age": 30,
     "date_of_birth": "1996-03-25",
     "birth_place": "Massa Marittima",
     "birth_country": null,
@@ -16679,40 +16679,6 @@
     "wikidata_url": null,
     "bdfa_id": "46117",
     "bdfa_url": "https://www.bdfa.com.ar/jugadores-DAMIAN-CASADEI-46117.html"
-  },
-  {
-    "id": 1378,
-    "first_name": "Alejandro Martin Giardino",
-    "last_name": "Giardi",
-    "full_name": "Alejandro Martin Giardino Giardi",
-    "age": 38,
-    "date_of_birth": "1987-03-20",
-    "birth_place": "Posición:  Arquero",
-    "birth_country": "Argentina",
-    "nationalities": [
-      "Argentina"
-    ],
-    "current_club": null,
-    "current_league": null,
-    "position": null,
-    "titan_score": 15.0,
-    "tier": 3,
-    "score_breakdown": {
-      "W_name": 0.0,
-      "W_geo": 25.0,
-      "M_athletic": 0.0,
-      "V_osint": 1.0,
-      "A_bonus": -10.0,
-      "age_method": "exact",
-      "S_base": 25.0,
-      "S_total": 15.0
-    },
-    "cemla_hit": false,
-    "ellis_island_hit": false,
-    "wikidata_qid": null,
-    "wikidata_url": null,
-    "bdfa_id": "112524",
-    "bdfa_url": "https://www.bdfa.com.ar/jugadores-ALEJANDRO-MARTIN-GIARDINO-GIARDI-112524.html"
   },
   {
     "id": 1436,
