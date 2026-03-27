@@ -57,7 +57,7 @@ function App() {
     <div className="hud-container">
       <header>
         <div className="logo-group">
-          <h1>TITAN VERITAS <span className="v-tag">v6.0</span></h1>
+          <h1>TITAN VERITAS <span className="v-tag">v6.2</span></h1>
           <span className="subtitle">San Marino Diaspora Football Intelligence</span>
         </div>
       </header>
