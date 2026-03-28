@@ -528,7 +528,10 @@ def cmd_score(ctx):
     candidates = repo.get_all(include_filtered=True)
 
     # Save manually-applied filters so we can restore them after scoring
-    MANUAL_FILTER_PREFIXES = ("tier3_cutoff", "duplicate_of:")
+    MANUAL_FILTER_PREFIXES = (
+        "tier3_cutoff", "duplicate_of", "surname_not_sm", "age_over_32",
+        "italian_club", "insufficient_data", "non_diaspora", "national_team_entry",
+    )
     manual_filters: dict[int, str] = {}
     for c in candidates:
         reason = c.get("filter_reason") or ""
@@ -561,6 +564,8 @@ def cmd_score(ctx):
             career_start_year=c["career_start_year"],
             cemla_hit=bool(c["cemla_hit"]),
             ellis_island_hit=bool(c["ellis_island_hit"]),
+            is_filtered_out=bool(c["is_filtered_out"]),
+            filter_reason=c["filter_reason"],
         )
 
         # Parse DOB

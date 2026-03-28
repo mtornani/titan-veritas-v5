@@ -37,6 +37,16 @@ ITALIAN_LEAGUES = {
     "seconda categoria", "terza categoria",
 }
 
+ITALIAN_CLUB_PATTERNS = {
+    "atalanta", "bologna", "cagliari", "como", "empoli", "fiorentina",
+    "genoa", "inter", "juventus", "lazio", "lecce", "milan", "monza",
+    "napoli", "parma", "roma", "torino", "udinese", "venezia", "verona",
+    "ascoli", "bari", "brescia", "catanzaro", "cesena", "cittadella",
+    "cosenza", "cremonese", "frosinone", "juve stabia", "mantova",
+    "modena", "palermo", "pisa", "reggiana", "salernitana", "sassuolo",
+    "spezia", "sudtirol", "sampdoria",
+}
+
 
 def _is_elite_noise(p: PlayerProfile) -> str | None:
     full = p.full_name.lower()
@@ -70,6 +80,15 @@ def _is_in_italian_league(p: PlayerProfile) -> str | None:
     return None
 
 
+def _is_in_italian_club(p: PlayerProfile) -> str | None:
+    if p.current_club:
+        club_l = p.current_club.lower()
+        for pattern in ITALIAN_CLUB_PATTERNS:
+            if pattern in club_l:
+                return f"Italian club: {p.current_club}"
+    return None
+
+
 def _age_out_of_range(p: PlayerProfile) -> str | None:
     age = p.estimated_age
     if age is not None and (age < 16 or age > 38):
@@ -82,6 +101,7 @@ LETHAL_FILTERS = [
     _has_sm_or_italian_nationality,
     _is_in_sm_club,
     _is_in_italian_league,
+    _is_in_italian_club,
     _age_out_of_range,
 ]
 
@@ -192,8 +212,11 @@ def score_player(p: PlayerProfile) -> PlayerProfile:
             p.titan_score = 0.0
             return p
 
-    # Step 1b: Preserve manual filters (tier3_cutoff, duplicate_of)
-    _MANUAL_PREFIXES = ("tier3_cutoff", "duplicate_of")
+    # Step 1b: Preserve manual/external filters
+    _MANUAL_PREFIXES = (
+        "tier3_cutoff", "duplicate_of", "surname_not_sm", "age_over_32",
+        "italian_club", "insufficient_data", "non_diaspora", "national_team_entry",
+    )
     existing_reason = getattr(p, "filter_reason", None) or ""
     if existing_reason.startswith(_MANUAL_PREFIXES):
         # Keep the manual filter — only update the score, don't un-filter
