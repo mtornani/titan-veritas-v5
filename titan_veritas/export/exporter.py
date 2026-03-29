@@ -48,6 +48,8 @@ def export_json(db: Database, output_path: str | Path, include_filtered: bool = 
             "score_breakdown": json.loads(c["score_breakdown"]) if c["score_breakdown"] else {},
             "cemla_hit": bool(c["cemla_hit"]),
             "ellis_island_hit": bool(c["ellis_island_hit"]),
+            "familysearch_hit": bool(c["familysearch_hit"]),
+            "cognomix_hit": bool(c["cognomix_hit"]),
             "wikidata_qid": c["wikidata_qid"],
             "wikidata_url": f"https://www.wikidata.org/wiki/{c['wikidata_qid']}" if c["wikidata_qid"] else None,
             "bdfa_id": c["bdfa_id"],

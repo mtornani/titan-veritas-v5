@@ -43,7 +43,7 @@ function App() {
           const nats = (p.nationalities || []).join(' ').toLowerCase();
           if (!bc.includes(filters.cluster) && !nats.includes(filters.cluster)) return false;
         }
-        if (filters.osintOnly && !p.cemla_hit && !p.ellis_island_hit) return false;
+        if (filters.osintOnly && !p.cemla_hit && !p.ellis_island_hit && !p.familysearch_hit && !p.cognomix_hit) return false;
         if (filters.hasAge && p.age == null) return false;
         return true;
       })
@@ -52,6 +52,34 @@ function App() {
   }, [filters]);
 
   const scoreLevel = (s) => s >= 70 ? 'elite' : s >= 50 ? 'high' : s >= 30 ? 'mid' : 'low';
+
+  const exportCSV = (players) => {
+    const headers = ['Score','Nome','Eta','Posizione','Club','Lega','Paese','Tier','CEMLA','Ellis','FamilySearch','Cognomix','BDFA URL','Wikidata URL'];
+    const rows = players.map(p => [
+      p.titan_score,
+      p.full_name || `${p.first_name} ${p.last_name}`,
+      p.age || '',
+      p.position || '',
+      p.current_club || '',
+      p.current_league || '',
+      p.birth_country || '',
+      `Tier ${p.tier}`,
+      p.cemla_hit ? 'Si' : 'No',
+      p.ellis_island_hit ? 'Si' : 'No',
+      p.familysearch_hit ? 'Si' : 'No',
+      p.cognomix_hit ? 'Si' : 'No',
+      p.bdfa_url || '',
+      p.wikidata_url || ''
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `titan_veritas_export_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="hud-container">
@@ -131,7 +159,10 @@ function App() {
       </div>
 
       <div className="results-count">
-        {filteredPlayers.length} risultati {filteredPlayers.length === 150 ? '(top 150)' : ''}
+        <span>{filteredPlayers.length} risultati {filteredPlayers.length === 150 ? '(top 150)' : ''}</span>
+        <button onClick={() => exportCSV(filteredPlayers)} className="export-btn">
+          Esporta CSV
+        </button>
       </div>
 
       <div className="players-grid">
@@ -155,6 +186,8 @@ function App() {
                     ))}
                     {p.cemla_hit && <span className="meta-tag osint-tag">CEMLA</span>}
                     {p.ellis_island_hit && <span className="meta-tag osint-tag">ELLIS</span>}
+                    {p.familysearch_hit && <span className="meta-tag osint-tag">FS</span>}
+                    {p.cognomix_hit && <span className="meta-tag osint-tag">CGX</span>}
                   </div>
                 </div>
               </div>
@@ -203,8 +236,8 @@ function App() {
                       <span className="formula-val">{bd.M_athletic > 0 ? '✓ Sì' : '—'}</span>
                     </div>
                     <div className="formula-section">
-                      <span className="formula-label">OSINT archivi navali</span>
-                      <span className="formula-val">{bd.V_osint >= 1.8 ? '✓✓ Doppio' : bd.V_osint >= 1.5 ? '✓ Parziale' : 'In attesa'}</span>
+                      <span className="formula-label">OSINT verifiche</span>
+                      <span className="formula-val">{bd.V_osint >= 1.8 ? '✓✓✓ Forte' : bd.V_osint >= 1.5 ? '✓✓ Buono' : bd.V_osint >= 1.3 ? '✓ Parziale' : 'In attesa'}</span>
                     </div>
                     <div className="formula-section">
                       <span className="formula-label">Età</span>

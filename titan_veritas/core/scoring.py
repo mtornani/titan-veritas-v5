@@ -151,11 +151,27 @@ def _athletic_score(p: PlayerProfile) -> float:
 
 
 def _osint_multiplier(p: PlayerProfile) -> float:
-    """V_osint — CEMLA/Ellis Island confirmation multiplier."""
-    if p.cemla_hit and p.ellis_island_hit:
-        return 1.8  # Both sources confirm
-    if p.cemla_hit or p.ellis_island_hit:
-        return 1.5  # One source confirms
+    """V_osint — multi-source OSINT confirmation multiplier.
+
+    Sources: CEMLA, Ellis Island, FamilySearch (full weight),
+    Cognomix (half weight — indirect geographic evidence).
+    """
+    weight = 0.0
+    if p.cemla_hit:
+        weight += 1.0
+    if p.ellis_island_hit:
+        weight += 1.0
+    if p.familysearch_hit:
+        weight += 1.0
+    if p.cognomix_hit:
+        weight += 0.5  # Indirect — geographic distribution, not immigration record
+
+    if weight >= 2.5:
+        return 1.8  # Strong multi-source confirmation
+    if weight >= 1.5:
+        return 1.5  # Good confirmation
+    if weight >= 1.0:
+        return 1.3  # Single source
     return 1.0  # No OSINT confirmation
 
 

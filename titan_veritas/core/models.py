@@ -38,6 +38,8 @@ class PlayerProfile:
     # OSINT
     cemla_hit: bool = False
     ellis_island_hit: bool = False
+    familysearch_hit: bool = False
+    cognomix_hit: bool = False
     osint_details: dict = field(default_factory=dict)
 
     @property
