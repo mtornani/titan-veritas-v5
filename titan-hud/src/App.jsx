@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import playersData from './data.json';
 
 const COUNTRY_LABELS_IT = { 'Argentina': 'Argentina', 'France': 'Francia', 'Chile': 'Cile', 'Unknown': 'Sconosciuto' };
@@ -59,7 +59,19 @@ function App() {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [showMap, setShowMap] = useState(true);
   const [showSummary, setShowSummary] = useState(true);
+  const [theme, setTheme] = useState(() => localStorage.getItem('titan-theme') || 'dark');
+  const [showGuide, setShowGuide] = useState(() => !localStorage.getItem('titan-guide-dismissed'));
   const cardRefs = useRef({});
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('titan-theme', theme);
+  }, [theme]);
+
+  const dismissGuide = () => {
+    setShowGuide(false);
+    localStorage.setItem('titan-guide-dismissed', '1');
+  };
 
   const stats = useMemo(() => {
     const data = playersData || [];
@@ -219,7 +231,13 @@ function App() {
       <header>
         <div className="logo-group">
           <h1>TITAN VERITAS <span className="v-tag">v6.4</span></h1>
-          <span className="subtitle">Identificazione Oriundi Sammarinesi</span>
+          <span className="subtitle">Identificazione calciatori oriundi sammarinesi</span>
+        </div>
+        <div className="header-actions">
+          <span className="last-update">Dati aggiornati al: 30 marzo 2026</span>
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="theme-toggle">
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
         </div>
       </header>
 
@@ -257,6 +275,22 @@ function App() {
         )}
       </div>
 
+      {/* ── STEP 3b: Tutorial Banner ──────────────────────────────────── */}
+      {showGuide && (
+        <div className="guide-banner">
+          <div className="guide-content">
+            <span className="guide-title">Come navigare TITAN VERITAS</span>
+            <div className="guide-steps">
+              <span>1. Scorri le schede per vedere i candidati</span>
+              <span>2. Clicca su un giocatore per il profilo completo</span>
+              <span>3. Usa i filtri per affinare la ricerca</span>
+              <span>4. Usa il toggle {theme === 'dark' ? '☀️' : '🌙'} in alto per la modalità {theme === 'dark' ? 'chiara' : 'scura'}</span>
+            </div>
+          </div>
+          <button className="guide-close" onClick={dismissGuide}>✕</button>
+        </div>
+      )}
+
       {/* ── KPI Stats ─────────────────────────────────────────────────── */}
       <div className="stats-grid">
         <div className="stat-card"><span className="stat-value">{stats.total}</span><span className="stat-label">Oriundi Identificati</span></div>
@@ -284,8 +318,8 @@ function App() {
           <option value="chile">Cile</option>
         </select>
         <div className="score-slider">
-          <label>Min Punteggio: <strong>{filters.minScore}</strong></label>
-          <input type="range" min="0" max="200" value={filters.minScore} onChange={(e) => setFilters({...filters, minScore: parseInt(e.target.value)})} />
+          <label>Priorità: <strong>{filters.minScore >= 60 ? 'Alta' : filters.minScore >= 30 ? 'Media' : 'Tutti'}</strong></label>
+          <input type="range" min="0" max="100" step="30" value={filters.minScore} onChange={(e) => setFilters({...filters, minScore: parseInt(e.target.value)})} />
         </div>
         <label className="toggle-label">
           <input type="checkbox" checked={filters.hasAge} onChange={(e) => setFilters({...filters, hasAge: e.target.checked})} />
@@ -415,7 +449,7 @@ function App() {
       </div>
 
       <footer className="hud-footer">
-        TITAN VERITAS v6.4 &mdash; Federazione Sammarinese Giuoco Calcio
+        TITAN VERITAS v6.4 &mdash; Federazione Sammarinese Giuoco Calcio &mdash; Dati al 30/03/2026
       </footer>
 
       {/* ── STEP 3: Player Modal ──────────────────────────────────────── */}

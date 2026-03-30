@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN VERITAS — Proposta per FSGC</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --fsgc-blue: #003DA5;
+            --fsgc-blue-light: #1a5cbf;
+            --fsgc-blue-dark: #002a73;
+            --fsgc-white: #FFFFFF;
+            --fsgc-gold: #C5A55A;
+            --fsgc-gold-light: #d4b86e;
+            --bg: #f8f9fc;
+            --bg-white: #ffffff;
+            --text-dark: #1a1a2e;
+            --text-body: #3d3d56;
+            --text-muted: #7a7a94;
+            --border: #e2e4ec;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-body);
+            font-size: 15px;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-white);
+            min-height: 100vh;
+        }
+
+        /* === HEADER === */
+        .header {
+            background: linear-gradient(135deg, var(--fsgc-blue-dark) 0%, var(--fsgc-blue) 50%, var(--fsgc-blue-light) 100%);
+            color: var(--fsgc-white);
+            padding: 40px 48px 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(197, 165, 90, 0.08);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 30%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-badge {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--fsgc-gold);
+            font-weight: 600;
+        }
+
+        .header-date {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .header h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 36px;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-sub {
+            font-size: 16px;
+            opacity: 0.85;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === CONTENT === */
+        .content {
+            padding: 40px 48px;
+        }
+
+        /* === PROBLEM / SOLUTION === */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 36px;
+        }
+
+        .col-box {
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .col-box.problem {
+            background: linear-gradient(135deg, #fef3f2, #fefaf5);
+            border-color: #fecaca;
+        }
+
+        .col-box.solution {
+            background: linear-gradient(135deg, #f0fdf4, #f0f9ff);
+            border-color: #bbf7d0;
+        }
+
+        .col-box h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .col-box.problem h3 { color: #991b1b; }
+        .col-box.solution h3 { color: #065f46; }
+
+        .col-box p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-body);
+        }
+
+        .col-box .highlight {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* === CASE STUDY === */
+        .case-study {
+            background: var(--fsgc-blue);
+            color: var(--fsgc-white);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin-bottom: 36px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .case-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .case-study h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .case-study .case-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--fsgc-gold);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .case-study p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* === LAW BOX === */
+        .law-box {
+            background: linear-gradient(135deg, #fffbeb, #fef9f0);
+            border: 1px solid #fde68a;
+            border-left: 4px solid var(--fsgc-gold);
+            border-radius: 0 12px 12px 0;
+            padding: 20px 24px;
+            margin-bottom: 36px;
+        }
+
+        .law-box h4 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 16px;
+            color: #92400e;
+            margin-bottom: 6px;
+        }
+
+        .law-box p {
+            font-size: 14px;
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        /* === STATS ROW === */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .stat-value {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 32px;
+            color: var(--fsgc-blue);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* === WHAT WE ASK === */
+        .ask-section {
+            margin-bottom: 36px;
+        }
+
+        .ask-section h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .ask-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .ask-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            background: var(--bg);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .ask-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 61, 165, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .ask-item p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .ask-item strong {
+            color: var(--text-dark);
+        }
+
+        /* === NEXT STEPS === */
+        .steps {
+            display: flex;
+            gap: 0;
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 20px 16px;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--text-muted);
+            z-index: 1;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--fsgc-blue);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            padding: 24px 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer-contact {
+            font-weight: 600;
+            color: var(--fsgc-blue);
+        }
+
+        /* === PRINT === */
+        @media print {
+            body { background: white; }
+            .page { box-shadow: none; max-width: 100%; }
+            .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .case-study { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+
+        @media (max-width: 700px) {
+            .content { padding: 24px 20px; }
+            .header { padding: 28px 20px; }
+            .header h1 { font-size: 26px; }
+            .two-col { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .ask-grid { grid-template-columns: 1fr; }
+            .steps { flex-direction: column; }
+            .step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -4px; transform: translateX(50%); }
+            .footer { flex-direction: column; gap: 8px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-top">
+                <div class="header-badge">Proposta Riservata</div>
+                <div class="header-date">Marzo 2026</div>
+            </div>
+            <h1>TITAN VERITAS</h1>
+            <div class="header-sub">Sistema di identificazione calciatori oriundi sammarinesi nella diaspora</div>
+        </div>
+
+        <div class="content">
+
+            <!-- PROBLEMA / SOLUZIONE -->
+            <div class="two-col">
+                <div class="col-box problem">
+                    <h3>Il problema</h3>
+                    <p>
+                        Oggi gli oriundi vengono scoperti <span class="highlight">per caso</span>.
+                        Con 33.000 cittadini e un campionato dilettantistico, ogni talento
+                        perso è irrecuperabile. Non esiste un processo sistematico per
+                        cercare nella diaspora sammarinese — stimata in oltre
+                        <span class="highlight">15.000 discendenti</span> tra Argentina,
+                        Brasile, USA, Francia e Belgio.
+                    </p>
+                </div>
+                <div class="col-box solution">
+                    <h3>La soluzione</h3>
+                    <p>
+                        TITAN VERITAS incrocia <span class="highlight">48 cognomi
+                        sammarinesi</span> con i database calcistici internazionali,
+                        archivi migratori e fonti OSINT. Il sistema identifica, verifica
+                        e classifica automaticamente i candidati eleggibili per
+                        <span class="highlight">jus sanguinis</span>,
+                        fornendo profili pronti per la valutazione tecnica.
+                    </p>
+                </div>
+            </div>
+
+            <!-- CASE STUDY HOEL -->
+            <div class="case-study">
+                <div class="case-icon">🧤</div>
+                <div>
+                    <div class="case-label">Case Study — 27 Marzo 2026</div>
+                    <h3>Lyes Hoël — da scoperta casuale a metodo</h3>
+                    <p>
+                        Portiere classe 2007, nato a Thionville (Francia), doppia cittadinanza
+                        franco-sammarinese, ex Metz U17 — convocato per la prima volta in
+                        nazionale maggiore. Scoperto tramite rete informale.
+                        <strong>Con TITAN VERITAS, sarebbe stato identificato sistematicamente.</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- LEGGE 27/2026 -->
+            <div class="law-box">
+                <h4>⚖️ Legge 27/2026 — Nuovo scenario operativo</h4>
+                <p>
+                    L'entrata in vigore della Legge 27/2026 ha modificato il quadro
+                    normativo sulla cittadinanza per naturalizzazione. La FSGC ha
+                    il compito di valutare le implicazioni sportive di questo
+                    cambiamento: i discendenti sammarinesi all'estero possono ora
+                    accedere alla cittadinanza mantenendo quella d'origine,
+                    ampliando il bacino di atleti eleggibili.
+                </p>
+            </div>
+
+            <!-- DISCOVERY: FRATELLI CENCI -->
+            <div class="case-study" style="background: linear-gradient(135deg, #065f46, #047857);">
+                <div class="case-icon">🔍</div>
+                <div>
+                    <div class="case-label">Scoperta TITAN VERITAS</div>
+                    <h3>Fratelli Cenci — ex vivaio Boca Juniors</h3>
+                    <p>
+                        Bruno (22, centrocampista, Almirante Brown — Primera Nacional),
+                        Marco (23, terzino, CD Laferrere) e Santiago (22).
+                        Tre fratelli argentini con cognome sammarinese endemico,
+                        formati nelle giovanili del Boca Juniors.
+                        <strong>Identificati sistematicamente dal sistema, non per caso.</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- STATISTICHE SISTEMA -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-value">16</div>
+                    <div class="stat-label">Candidati verificati</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2.149</div>
+                    <div class="stat-label">Profili analizzati</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">Cognomi tracciati</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Fonti integrate</div>
+                </div>
+            </div>
+
+            <!-- TOP 5 CANDIDATI -->
+            <div style="margin-bottom: 36px;">
+                <h3 style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; color: #1a1a2e; margin-bottom: 16px;">
+                    Top 5 candidati identificati
+                </h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #e2e4ec;">
+                            <th style="text-align: left; padding: 8px 12px; color: #7a7a94; font-weight: 600;">Nome</th>
+                            <th style="text-align: left; padding: 8px 12px; color: #7a7a94; font-weight: 600;">Età</th>
+                            <th style="text-align: left; padding: 8px 12px; color: #7a7a94; font-weight: 600;">Ruolo</th>
+                            <th style="text-align: left; padding: 8px 12px; color: #7a7a94; font-weight: 600;">Club</th>
+                            <th style="text-align: left; padding: 8px 12px; color: #7a7a94; font-weight: 600;">Paese</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e4ec;">
+                            <td style="padding: 10px 12px; font-weight: 600;">Tomas Rossi</td>
+                            <td style="padding: 10px 12px;">26</td>
+                            <td style="padding: 10px 12px;">Difensore centrale</td>
+                            <td style="padding: 10px 12px;">Godoy Cruz (Liga Profesional)</td>
+                            <td style="padding: 10px 12px;">🇦🇷 Argentina</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e4ec;">
+                            <td style="padding: 10px 12px; font-weight: 600;">Milton Zanotti</td>
+                            <td style="padding: 10px 12px;">22</td>
+                            <td style="padding: 10px 12px;">Attaccante</td>
+                            <td style="padding: 10px 12px;">Almirante Brown (Primera Nacional)</td>
+                            <td style="padding: 10px 12px;">🇦🇷 Argentina</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e4ec;">
+                            <td style="padding: 10px 12px; font-weight: 600;">Bruno Cenci</td>
+                            <td style="padding: 10px 12px;">22</td>
+                            <td style="padding: 10px 12px;">Centrocampista</td>
+                            <td style="padding: 10px 12px;">Almirante Brown (Primera Nacional)</td>
+                            <td style="padding: 10px 12px;">🇦🇷 Argentina</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e4ec;">
+                            <td style="padding: 10px 12px; font-weight: 600;">Nicolás Stefanelli</td>
+                            <td style="padding: 10px 12px;">31</td>
+                            <td style="padding: 10px 12px;">Attaccante</td>
+                            <td style="padding: 10px 12px;">Dep. La Serena (Primera B, Cile)</td>
+                            <td style="padding: 10px 12px;">🇦🇷 Argentina</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 12px; font-weight: 600;">Dominique Guidi</td>
+                            <td style="padding: 10px 12px;">30</td>
+                            <td style="padding: 10px 12px;">Difensore centrale</td>
+                            <td style="padding: 10px 12px;">Gazélec Ajaccio (National 2, Francia)</td>
+                            <td style="padding: 10px 12px;">🇫🇷 Francia</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 12px; color: #7a7a94; margin-top: 8px; font-style: italic;">
+                    Lista completa di 16 candidati disponibile nella dashboard interattiva.
+                </p>
+            </div>
+
+            <!-- COSA CHIEDIAMO -->
+            <div class="ask-section">
+                <h3>Cosa proponiamo</h3>
+                <div class="ask-grid">
+                    <div class="ask-item">
+                        <div class="ask-icon">💰</div>
+                        <p><strong>Costo zero.</strong> Il sistema è già operativo e basato su fonti aperte. Nessun investimento richiesto.</p>
+                    </div>
+                    <div class="ask-item">
+                        <div class="ask-icon">🔒</div>
+                        <p><strong>Solo dati pubblici.</strong> Nessuna violazione privacy. Profili da database calcistici e archivi storici.</p>
+                    </div>
+                    <div class="ask-item">
+                        <div class="ask-icon">⚽</div>
+                        <p><strong style="font-size: 15px;">⚽ Il CT decide sempre.</strong> TITAN VERITAS identifica e classifica i candidati. La valutazione tecnica e la convocazione restano <em>esclusiva competenza</em> della Commissione Tecnica.</p>
+                    </div>
+                    <div class="ask-item">
+                        <div class="ask-icon">🤝</div>
+                        <p><strong>Mandato esplorativo.</strong> Chiediamo solo l'autorizzazione a condividere i risultati con lo staff tecnico.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROSSIMI PASSI -->
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Validazione</div>
+                    <div class="step-desc">CF approva mandato esplorativo</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Report</div>
+                    <div class="step-desc">Top 20 candidati verificati</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Consegna</div>
+                    <div class="step-desc">Lista allo staff tecnico</div>
+                </div>
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-title">Monitoraggio</div>
+                    <div class="step-desc">Aggiornamento periodico</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div>Progetto TITAN VERITAS — Per informazioni e approfondimenti, contattare tramite la Coordinazione Marketing FSGC</div>
+            <div class="footer-contact">Documento riservato — FSGC</div>
+        </div>
+
+    </div>
+</body>
+</html>
