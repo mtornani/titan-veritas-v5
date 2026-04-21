@@ -112,7 +112,7 @@
     "full_name": "Fabrizio Guidi",
     "age": 23,
     "date_of_birth": "2003-02-10",
-    "birth_place": "Posición:  Defensor",
+    "birth_place": null,
     "birth_country": "Argentina",
     "nationalities": [
       "Argentina"
@@ -292,7 +292,7 @@
     "full_name": "Jonathan Casalis Casali",
     "age": 28,
     "date_of_birth": "1997-08-04",
-    "birth_place": "Posición:  Volante",
+    "birth_place": null,
     "birth_country": "Argentina",
     "nationalities": [
       "Argentina"
@@ -400,7 +400,7 @@
     "full_name": "Martin Montanari",
     "age": 28,
     "date_of_birth": "1997-08-22",
-    "birth_place": "Posición:  Delantero",
+    "birth_place": null,
     "birth_country": "Argentina",
     "nationalities": [
       "Argentina"
@@ -472,7 +472,7 @@
     "full_name": "Mateo Tamagnini",
     "age": 22,
     "date_of_birth": "2003-09-13",
-    "birth_place": "Posición:  Defensor",
+    "birth_place": null,
     "birth_country": "Argentina",
     "nationalities": [
       "Argentina"
