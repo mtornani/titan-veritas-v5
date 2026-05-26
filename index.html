@@ -35,8 +35,8 @@
   <!-- HERO BANNER -->
   <div class="hero-banner">
     <p class="hero-primary">
-      <strong>6 giocatori sammarinesi identificati nel mondo</strong> —
-      1 cittadinanza confermata, 9 comunità in dialogo.
+      <strong><span id="hero-leads">6</span> giocatori sammarinesi identificati nel mondo</strong> —
+      <span id="hero-confirmed">2</span> cittadinanze confermate, <span id="hero-communities">9</span> comunità in dialogo.
     </p>
     <p class="hero-secondary">
       Clicca su <strong>Argentina</strong> sulla mappa per vedere i dettagli di ogni lead.
@@ -107,6 +107,13 @@
       <div style="width:10px;height:10px;border-radius:50%;background:#d4af37;display:inline-block"></div>
       Pin comunità/lead
     </div>
+  </div>
+
+  <!-- MOBILE QUICK ACCESS — visible only on mobile -->
+  <div class="map-quick-access" id="map-quick-access" style="display:none">
+    <button class="map-quick-btn" id="quick-ar-btn" aria-label="Apri Argentina">
+      🇦🇷 Argentina — 6 lead, 7 comunità
+    </button>
   </div>
 
   <!-- STATS BAR -->
@@ -200,14 +207,20 @@
     const res  = await fetch('data/leads.json');
     const data = await res.json();
 
-    // Update stats from live data
+    // Stats — computed from live data
+    const confirmed = data.leads.filter(l => l.citizenship_sm === 'confirmed').length;
+    const countries = new Set([...data.communities, ...data.leads].map(x => x.country_code)).size;
+
     document.getElementById('stat-leads').textContent       = data.metadata.total_leads;
     document.getElementById('stat-active').textContent      = data.metadata.active_leads;
     document.getElementById('stat-communities').textContent = data.communities.length;
-    const countries = new Set([...data.communities, ...data.leads].map(x => x.country_code)).size;
     document.getElementById('stat-countries').textContent   = countries;
-    const confirmed = data.leads.filter(l => l.citizenship_sm === 'confirmed').length;
     document.getElementById('stat-confirmed').textContent   = confirmed;
+
+    // Hero line — fully data-driven
+    document.getElementById('hero-leads').textContent       = data.metadata.total_leads;
+    document.getElementById('hero-confirmed').textContent   = confirmed;
+    document.getElementById('hero-communities').textContent = data.communities.length;
 
     // Init map
     const map = new TitanMap(document.getElementById('map-container'), data);
@@ -215,6 +228,15 @@
 
     // Mobile country list
     buildMobileList(data, map.countryStats);
+
+    // Mobile quick-access buttons (one per active country with leads)
+    buildQuickAccess(data, map.countryStats);
+
+    // URL param: ?country=AR → auto-open panel (from leads.html click)
+    const urlCountry = new URLSearchParams(location.search).get('country');
+    if (urlCountry && map.countryStats[urlCountry]) {
+      setTimeout(() => PanelController.openCountry(urlCountry, map.countryStats, data), 300);
+    }
 
   } catch (e) {
     console.error('Init failed:', e);
@@ -225,6 +247,36 @@
     `;
   }
 })();
+
+function buildQuickAccess(data, countryStats) {
+  const wrap = document.getElementById('map-quick-access');
+  const btn  = document.getElementById('quick-ar-btn');
+  if (!wrap || !btn) return;
+
+  // Show only countries that have leads
+  const countriesWithLeads = Object.entries(countryStats)
+    .filter(([, s]) => s.leads.length > 0)
+    .sort((a, b) => b[1].leads.length - a[1].leads.length);
+
+  if (!countriesWithLeads.length) return;
+
+  const flags = { AR:'🇦🇷', US:'🇺🇸', SM:'🇸🇲' };
+  wrap.innerHTML = countriesWithLeads.map(([code, s]) => {
+    const flag = flags[code] || '🌍';
+    const name = s.communities[0]?.country || code;
+    return `<button class="map-quick-btn"
+      onclick="PanelController.openCountry('${code}', window._countryStats, window._data)"
+      aria-label="Apri ${name}">
+      ${flag} ${name} — ${s.leads.length} lead, ${s.communities.length} comunità
+    </button>`;
+  }).join('');
+
+  window._countryStats = countryStats;
+  window._data = data;
+
+  // Show only on mobile
+  if (window.innerWidth <= 768) wrap.style.display = 'flex';
+}
 
 function buildMobileList(data, countryStats) {
   const list = document.getElementById('mobile-country-list');

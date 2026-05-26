@@ -145,7 +145,10 @@ function renderCard(l) {
     : '—';
 
   return `
-    <article class="lead-card" data-id="${escHtml(l.id)}">
+    <article class="lead-card lead-card-clickable" data-id="${escHtml(l.id)}"
+      onclick="location.href='index.html?country=${encodeURIComponent(l.country_code)}'"
+      role="link" tabindex="0"
+      title="Vedi ${escHtml(l.country)} sulla mappa">
       <div class="lead-card-header">
         <div>
           <div class="lead-alias">${escHtml(l.alias)}</div>
@@ -167,6 +170,7 @@ function renderCard(l) {
         <span class="badge ${fifaInfo.cls}">${fifaInfo.label}</span>
       </div>
       ${buildGeneaChip(l.ancestor, l.country_code)}
+      <div class="lead-card-map-cta">Vedi sulla mappa →</div>
     </article>`;
 }
 
