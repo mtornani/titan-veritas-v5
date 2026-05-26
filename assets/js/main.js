@@ -44,17 +44,73 @@ function communityStatusBadge(v) { return badge(COMMUNITY_STATUS_LABELS, v); }
 
 function countryFlag(code) { return COUNTRY_FLAGS[code] || '🌍'; }
 
+function buildGenealogyChip(ancestor, playerCountryCode) {
+  if (!ancestor) return '';
+  const origin = ancestor.born_in || 'San Marino';
+  const year = ancestor.year_emigration ? ` ${ancestor.year_emigration}` : '';
+  const rel = ancestor.relation_to_player || ancestor.surname_origin || '—';
+  const dest = playerCountryCode || '?';
+  return `
+    <div class="genealogy-chip">
+      🇸🇲 ${origin}${year}
+      <span class="sep">→</span>
+      ${countryFlag(dest)} ${dest}
+      <span class="sep">|</span>
+      ${rel}
+    </div>`;
+}
+
 function formatDate(iso) {
   if (!iso) return '—';
   const [y, m, d] = iso.split('-');
   return `${d}/${m}/${y}`;
 }
 
+// Active nav link + mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {
   const page = location.pathname.split('/').pop() || 'index.html';
+
   document.querySelectorAll('.navbar-nav a').forEach(a => {
     if (a.getAttribute('href') === page || (page === '' && a.getAttribute('href') === 'index.html')) {
       a.classList.add('active');
+    }
+  });
+
+  // Mobile nav
+  const menuBtn = document.getElementById('nav-menu-btn');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  if (!menuBtn || !overlay) return;
+
+  // Mark active link in overlay
+  overlay.querySelectorAll('a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === page || (page === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+
+  function openMenu() {
+    overlay.classList.add('open');
+    menuBtn.textContent = '✕';
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu() {
+    overlay.classList.remove('open');
+    menuBtn.textContent = '☰';
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  menuBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    overlay.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  document.addEventListener('click', e => {
+    if (overlay.classList.contains('open') && !overlay.contains(e.target) && e.target !== menuBtn) {
+      closeMenu();
     }
   });
 });
