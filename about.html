@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — TITAN VERITAS</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    .about-hero{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;display:flex;gap:1.5rem;align-items:flex-start}
+    .about-avatar{width:64px;height:64px;border-radius:50%;background:var(--gold-deep);border:2px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+    .about-hero-name{font-size:1.1rem;font-weight:800;margin-bottom:.25rem}
+    .about-hero-roles{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+    .role-chip{display:inline-flex;align-items:center;gap:.25rem;background:rgba(212,175,55,.08);border:1px solid var(--gold-deep);border-radius:999px;padding:.2rem .6rem;font-size:.72rem;color:var(--text-secondary)}
+    .timeline{display:flex;flex-direction:column;gap:0}
+    .timeline-item{display:flex;gap:1rem;padding-bottom:1.25rem}
+    .timeline-item:last-child{padding-bottom:0}
+    .timeline-date{font-family:var(--mono);font-size:.72rem;color:var(--gold);width:60px;flex-shrink:0;padding-top:.2rem}
+    .timeline-content{flex:1}
+    .timeline-title{font-weight:700;font-size:.88rem;margin-bottom:.2rem}
+    .timeline-desc{font-size:.8rem;color:var(--text-secondary)}
+    @media(max-width:600px){.about-hero{flex-direction:column}}
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand"><div class="navbar-logo">TV</div><span>TITAN <span class="brand-gold">VERITAS</span></span></a>
+  <ul class="navbar-nav">
+    <li><a href="index.html">Mappa</a></li>
+    <li><a href="leads.html">Lead Database</a></li>
+    <li><a href="methodology.html">Metodologia</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+  </ul>
+  <div class="navbar-status"><div class="status-dot"></div>outreach_phase</div>
+</nav>
+<main class="page">
+<div class="content-page">
+  <h1>About</h1>
+  <div class="about-hero">
+    <div class="about-avatar">⚽</div>
+    <div>
+      <div class="about-hero-name">Mirko Tornani</div>
+      <div style="font-size:.85rem;color:var(--text-secondary)">Residente a San Marino · Allenatore FSGC settore giovanile</div>
+      <div class="about-hero-roles">
+        <span class="role-chip">🇸🇲 San Marino</span>
+        <span class="role-chip">🏟 Allenatore FSGC</span>
+        <span class="role-chip">🔍 Ricercatore indipendente</span>
+        <span class="role-chip">🌎 Diaspora scout</span>
+      </div>
+    </div>
+  </div>
+  <h2>Chi sono</h2>
+  <p>Sono italiano, vivo e lavoro a San Marino da anni. Come allenatore nel settore giovanile della FSGC, ho vissuto in prima persona le sfide di una piccola federazione che compete a livello internazionale con risorse limitate.</p>
+  <h2>Perché lo faccio</h2>
+  <div class="info-box">"Sono italiano che vive e lavora a San Marino. Questa ricerca è il modo in cui restituisco quello che la Repubblica mi ha dato. Non cerco un ruolo operativo — voglio consegnare strumenti concreti a chi deve decidere."</div>
+  <p>San Marino ha una diaspora di centinaia di migliaia di discendenti nel mondo. Il gap non è normativo — è informativo. Nessuno stava sistematicamente cercando.</p>
+  <h2>Posizionamento</h2>
+  <ul>
+    <li>Questa è una <strong>ricerca indipendente</strong>, condotta a titolo personale</li>
+    <li>Non ho un mandato formale dalla FSGC</li>
+    <li>Non rappresento nessun organo istituzionale di San Marino</li>
+    <li>Le decisioni di contattare o convocare un giocatore restano <strong>esclusivamente alla FSGC</strong></li>
+  </ul>
+  <h2>Timeline</h2>
+  <div class="timeline">
+    <div class="timeline-item"><div class="timeline-date">2024</div><div class="timeline-content"><div class="timeline-title">Fase OSINT</div><div class="timeline-desc">Primo approccio con database pubblici. Risultati scarsi, molti falsi positivi.</div></div></div>
+    <div class="timeline-item"><div class="timeline-date">2025</div><div class="timeline-content"><div class="timeline-title">Cambio di approccio</div><div class="timeline-desc">Identificazione delle comunità sammarinesi nel mondo. Costruzione mappa delle associazioni (CGIE, AISS).</div></div></div>
+    <div class="timeline-item"><div class="timeline-date">Mag 2026</div><div class="timeline-content"><div class="timeline-title">Primo contatto — Argentina</div><div class="timeline-desc">German Tura, ABSAS, Comunità Argentina Centrale e Centro-Est. 6 lead in due settimane.</div></div></div>
+    <div class="timeline-item"><div class="timeline-date">Prossimo</div><div class="timeline-content"><div class="timeline-title">Espansione USA</div><div class="timeline-desc">Fratellanza New York (500 soci) e Comunità Sammarinese Detroit (1.150 soci).</div></div></div>
+  </div>
+</div>
+</main>
+<footer class="footer">
+  <div class="footer-disclaimer"><strong>Disclaimer:</strong> Ricerca indipendente condotta a titolo personale. Non affiliata con FSGC né con organi istituzionali di San Marino. Dati anonimizzati. Nessun nome completo di minori pubblicato.</div>
+  <p style="margin-top:1rem">© 2026 Titan Veritas</p>
+</footer>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
