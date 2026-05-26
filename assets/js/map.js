@@ -67,9 +67,9 @@ class TitanMap {
 
     const hasActiveComm = stats.communities.some(c =>
       c.status === 'active_dialogue' || c.status === 'primary_amplifier');
-    if (hasActiveComm || stats.leads.length > 0) return '#b8941f';
+    if (hasActiveComm || stats.leads.length > 0) return '#c49a1a';
 
-    if (stats.communities.length > 0) return '#3a3320';
+    if (stats.communities.length > 0) return '#5c5030';
 
     return null; // keep default
   }
@@ -77,7 +77,7 @@ class TitanMap {
   colorCountries() {
     // Default: ensure all paths have base fill
     this.svg.querySelectorAll('.country-path').forEach(p => {
-      p.setAttribute('fill', '#1e2536');
+      p.setAttribute('fill', '#2a3550');
     });
 
     Object.entries(this.countryStats).forEach(([code, stats]) => {
@@ -270,9 +270,9 @@ class TitanMap {
     const nLead = stats.leads.length;
     if (!nComm && !nLead) return;
 
-    const countryName = stats.communities[0]?.name.split(' ')[0] || id;
+    const countryName = stats.communities[0]?.country || id;
     this.tooltip.innerHTML = `
-      <div class="tooltip-country">${countryFlag(id)} ${stats.communities[0]?.name.includes(id) ? id : id}</div>
+      <div class="tooltip-country">${countryFlag(id)} ${countryName}</div>
       <div class="tooltip-stats">
         ${nComm ? `<span class="tooltip-stat">🏛 ${nComm} comunità</span>` : ''}
         ${nLead ? `<span class="tooltip-stat">⚽ ${nLead} lead</span>` : ''}

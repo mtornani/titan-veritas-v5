@@ -31,11 +31,16 @@
 
 <main class="page">
 
-  <!-- HERO LINE -->
-  <p class="hero-line">
-    Una <strong>ricerca indipendente</strong> sugli oriundi sammarinesi nel mondo.
-    Clicca un paese o un punto sulla mappa per esplorare.
-  </p>
+  <!-- HERO BANNER -->
+  <div class="hero-banner">
+    <p class="hero-primary">
+      <strong>6 giocatori sammarinesi identificati nel mondo</strong> —
+      1 cittadinanza confermata, 9 comunità in dialogo.
+    </p>
+    <p class="hero-secondary">
+      Clicca su <strong>Argentina</strong> sulla mappa per vedere i dettagli di ogni lead.
+    </p>
+  </div>
 
   <!-- MAP SECTION -->
   <section class="map-wrapper" aria-label="Mappa interattiva diaspora sammarinese">
@@ -56,6 +61,7 @@
 
     <!-- Side Panel -->
     <aside id="side-panel" role="complementary" aria-label="Dettagli paese">
+      <div class="panel-drag-handle" aria-hidden="true"></div>
       <div class="panel-header">
         <div class="panel-country-info">
           <div class="panel-flag" id="panel-flag">🌍</div>
@@ -85,15 +91,15 @@
       Lead verificati
     </div>
     <div class="legend-item">
-      <div class="legend-dot" style="background:#b8941f"></div>
+      <div class="legend-dot" style="background:#c49a1a"></div>
       Dialogo attivo
     </div>
     <div class="legend-item">
-      <div class="legend-dot" style="background:#3a3320"></div>
+      <div class="legend-dot" style="background:#5c5030"></div>
       Comunità note
     </div>
     <div class="legend-item">
-      <div class="legend-dot" style="background:#1e2536"></div>
+      <div class="legend-dot" style="background:#2a3550"></div>
       Nessuna presenza
     </div>
     <div class="legend-item">
@@ -121,13 +127,18 @@
     <div class="stat-divider"></div>
     <div class="stat-item">
       <div class="stat-value" id="stat-countries">2</div>
-      <div class="stat-label">Paesi attivi</div>
+      <div class="stat-label">Paesi</div>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
       <div class="stat-value" id="stat-confirmed">1</div>
       <div class="stat-label">Cittadinanze conf.</div>
     </div>
+  </div>
+
+  <!-- CTA LEADS -->
+  <div class="cta-leads">
+    <a href="leads.html" class="btn-cta">Visualizza tutti i lead verificati →</a>
   </div>
 
   <!-- MOBILE COUNTRY LIST -->
@@ -198,7 +209,11 @@
 
   } catch (e) {
     console.error('Init failed:', e);
-    document.querySelector('.map-loading p').textContent = 'Errore caricamento dati.';
+    const loading = document.querySelector('.map-loading');
+    if (loading) loading.innerHTML = `
+      <p style="color:var(--text-secondary);margin-bottom:0.75rem">Errore nel caricamento.</p>
+      <button onclick="location.reload()" style="padding:0.5rem 1.25rem;background:var(--gold);color:var(--bg);border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:0.9rem">Ricarica pagina</button>
+    `;
   }
 })();
 
