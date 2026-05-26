@@ -13,10 +13,11 @@ titan_veritas.db
 # Environment
 .env
 
-# Data exports (but keep seed file for offline mode)
+# Data exports (but keep seed + dashboard data files)
 data/*.csv
 data/*.json
 !data/seed_candidates.json
+!data/leads.json
 
 # JS / React
 node_modules/

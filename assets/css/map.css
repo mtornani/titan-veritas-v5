@@ -1,0 +1,463 @@
+/* TITAN VERITAS — Map styles */
+
+/* ─── MAP CONTAINER ─── */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  min-height: 420px;
+  max-height: 720px;
+  background: var(--bg);
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+#map-container {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+#map-container:active { cursor: grabbing; }
+
+#map-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* ─── COUNTRY PATHS ─── */
+.country-path {
+  cursor: pointer;
+  transition: fill 0.2s ease, opacity 0.2s;
+}
+
+.country-path:hover { opacity: 0.8; }
+
+/* San Marino always glows */
+#SM {
+  filter: drop-shadow(0 0 6px var(--gold));
+  cursor: pointer;
+}
+
+/* Active country highlight */
+.country-path.country-selected {
+  filter: brightness(1.4);
+  stroke: var(--gold) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* ─── DIASPORA ROUTES ─── */
+.diaspora-routes-layer {
+  pointer-events: none;
+}
+
+.diaspora-route {
+  fill: none;
+  stroke: rgba(212, 175, 55, 0.25);
+  stroke-width: 1px;
+  stroke-dasharray: 4 8;
+  animation: flow 30s linear infinite;
+}
+
+.diaspora-route.route-active {
+  stroke: rgba(212, 175, 55, 0.5);
+  stroke-width: 1.5px;
+}
+
+@keyframes flow {
+  to { stroke-dashoffset: -100; }
+}
+
+/* ─── PINS ─── */
+.pins-layer { pointer-events: none; }
+
+.pin-group {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.pin-circle {
+  transition: r 0.2s;
+}
+
+.pin-group:hover .pin-circle { r: 14; }
+
+/* Pulse animation */
+@keyframes pin-pulse {
+  0%, 100% { r: 9; opacity: 0.6; }
+  50%       { r: 14; opacity: 0; }
+}
+
+.pin-pulse {
+  animation: pin-pulse 2.5s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Origin (SM) pin */
+.pin-origin .pin-circle {
+  fill: var(--gold);
+  filter: drop-shadow(0 0 4px var(--gold));
+}
+
+/* Active dialogue */
+.pin-active .pin-circle { fill: var(--gold); }
+.pin-active .pin-pulse  { fill: var(--gold); }
+
+/* Amplifier */
+.pin-amplifier .pin-circle { fill: var(--blue); }
+.pin-amplifier .pin-pulse  { fill: var(--blue); }
+
+/* Pending */
+.pin-pending .pin-circle { fill: var(--gold-dim); opacity: 0.7; }
+
+/* ─── MAP TOOLTIP ─── */
+#map-tooltip {
+  position: absolute;
+  background: rgba(20, 25, 39, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.78rem;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+  white-space: nowrap;
+  z-index: 20;
+  display: none;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+#map-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: rgba(20,25,39,0.95);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip-country {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.tooltip-stats {
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.tooltip-stat { display: flex; gap: 0.4rem; align-items: center; }
+
+/* ─── SIDE PANEL ─── */
+#side-panel {
+  position: absolute;
+  top: 0; right: 0;
+  width: 380px;
+  height: 100%;
+  background: rgba(14, 20, 35, 0.97);
+  backdrop-filter: blur(16px);
+  border-left: 1px solid var(--border);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+#side-panel.open {
+  transform: translateX(0);
+}
+
+.panel-header {
+  padding: 1.25rem 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.panel-country-info { flex: 1; }
+
+.panel-flag {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.panel-country-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.panel-country-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.panel-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.panel-close:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Panel tabs */
+.panel-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-tab {
+  flex: 1;
+  padding: 0.7rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.panel-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.panel-tab:hover:not(.active) { color: var(--text); }
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.panel-body::-webkit-scrollbar { width: 4px; }
+.panel-body::-webkit-scrollbar-track { background: transparent; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Panel content sections */
+.panel-tab-content { display: none; }
+.panel-tab-content.active { display: block; }
+
+/* Community cards in panel */
+.panel-community-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-community-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 0.3rem;
+}
+
+.panel-community-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Lead cards in panel */
+.panel-lead-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-lead-alias {
+  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+}
+
+.panel-lead-meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-lead-badges { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+
+.panel-genealogy {
+  font-size: 0.7rem;
+  font-family: var(--mono);
+  color: var(--text-secondary);
+  background: rgba(212,175,55,0.05);
+  border: 1px solid var(--gold-deep);
+  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Origin panel */
+.origin-panel-content { text-align: center; padding: 1rem 0.5rem; }
+
+.origin-flag { font-size: 3.5rem; margin-bottom: 0.75rem; }
+
+.origin-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.origin-sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+.origin-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.origin-stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem;
+}
+
+.origin-stat-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--gold);
+  font-family: var(--mono);
+}
+
+.origin-stat-lbl {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── MAP LOADING ─── */
+.map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--bg);
+  z-index: 10;
+}
+
+.map-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.map-loading p { font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ─── MOBILE MAP ─── */
+@media (max-width: 768px) {
+  .map-wrapper { height: 50vh; min-height: 280px; }
+
+  #side-panel {
+    width: 100%;
+    height: 85vh;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%);
+  }
+
+  #side-panel.open { transform: translateY(0); }
+}
+
+/* ─── MOBILE LIST (below map) ─── */
+.mobile-country-list {
+  display: none;
+  padding: 1rem;
+}
+
+.mobile-country-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.mobile-country-card:hover { border-color: var(--gold-dim); }
+
+.mobile-country-left { display: flex; align-items: center; gap: 0.75rem; }
+.mobile-country-flag { font-size: 1.5rem; }
+.mobile-country-name { font-weight: 700; font-size: 0.9rem; }
+.mobile-country-sub { font-size: 0.75rem; color: var(--text-secondary); }
+.mobile-country-arrow { color: var(--text-secondary); }
+
+@media (max-width: 768px) {
+  .mobile-country-list { display: block; }
+}
+
+/* Panel backdrop (mobile) */
+#panel-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 25;
+  backdrop-filter: blur(2px);
+}
+
+#panel-backdrop.active { display: block; }

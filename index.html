@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TITAN VERITAS — Mappa Diaspora Sammarinese</title>
+  <meta name="description" content="Ricerca indipendente sulla diaspora sammarinese nel mondo. Visualizzazione geografica delle comunità e dei lead calcistici.">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/map.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <div class="navbar-logo">TV</div>
+    <span>TITAN <span class="brand-gold">VERITAS</span></span>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="index.html" class="active">Mappa</a></li>
+    <li><a href="leads.html">Lead Database</a></li>
+    <li><a href="methodology.html">Metodologia</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="navbar-status">
+    <div class="status-dot"></div>
+    outreach_phase
+  </div>
+  <button class="nav-mobile-menu" id="nav-menu-btn" aria-label="Menu">☰</button>
+</nav>
+
+<main class="page">
+
+  <!-- HERO LINE -->
+  <p class="hero-line">
+    Una <strong>ricerca indipendente</strong> sugli oriundi sammarinesi nel mondo.
+    Clicca un paese o un punto sulla mappa per esplorare.
+  </p>
+
+  <!-- MAP SECTION -->
+  <section class="map-wrapper" aria-label="Mappa interattiva diaspora sammarinese">
+    <!-- Loading state -->
+    <div class="map-loading">
+      <div class="map-loading-spinner"></div>
+      <p>Caricamento mappa...</p>
+    </div>
+
+    <!-- Tooltip -->
+    <div id="map-tooltip">
+      <div class="tooltip-country"></div>
+      <div class="tooltip-stats"></div>
+    </div>
+
+    <!-- Map SVG container -->
+    <div id="map-container"></div>
+
+    <!-- Side Panel -->
+    <aside id="side-panel" role="complementary" aria-label="Dettagli paese">
+      <div class="panel-header">
+        <div class="panel-country-info">
+          <div class="panel-flag" id="panel-flag">🌍</div>
+          <div class="panel-country-name" id="panel-country-name">—</div>
+          <div class="panel-country-sub" id="panel-country-sub"></div>
+        </div>
+        <button class="panel-close" id="panel-close" aria-label="Chiudi pannello">✕</button>
+      </div>
+      <div class="panel-tabs">
+        <button class="panel-tab active" data-tab="communities">Comunità</button>
+        <button class="panel-tab" data-tab="leads">Lead</button>
+      </div>
+      <div class="panel-body">
+        <div class="panel-tab-content active" data-tab-content="communities" id="panel-communities"></div>
+        <div class="panel-tab-content" data-tab-content="leads" id="panel-leads"></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Panel backdrop (mobile) -->
+  <div id="panel-backdrop"></div>
+
+  <!-- MAP LEGEND -->
+  <div class="map-legend" aria-label="Legenda mappa">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#d4af37"></div>
+      Lead verificati
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#b8941f"></div>
+      Dialogo attivo
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#3a3320"></div>
+      Comunità note
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:#1e2536"></div>
+      Nessuna presenza
+    </div>
+    <div class="legend-item">
+      <div style="width:10px;height:10px;border-radius:50%;background:#d4af37;display:inline-block"></div>
+      Pin comunità/lead
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" aria-label="Statistiche progetto">
+    <div class="stat-item">
+      <div class="stat-value" id="stat-leads">6</div>
+      <div class="stat-label">Lead totali</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="stat-active">4</div>
+      <div class="stat-label">Lead attivi</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="stat-communities">9</div>
+      <div class="stat-label">Comunità</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="stat-countries">2</div>
+      <div class="stat-label">Paesi attivi</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-value" id="stat-confirmed">1</div>
+      <div class="stat-label">Cittadinanze conf.</div>
+    </div>
+  </div>
+
+  <!-- MOBILE COUNTRY LIST -->
+  <div class="mobile-country-list" id="mobile-country-list" aria-label="Lista paesi su mobile">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" aria-label="Come funziona">
+    <div class="section-title">Come funziona</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Outreach alle comunità</h3>
+        <p>Contatto diretto con presidenti di comunità sammarinesi nel mondo attraverso la rete FSGC e contatti personali.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>Verifica genealogica</h3>
+        <p>Ogni lead richiede documentazione della catena: antenato sammarinese → emigrazione → giocatore. Verifica FIFA eleggibilità.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Presentazione dossier</h3>
+        <p>Lead verificati presentati in dossier anonimizzato. Decisione di contatto e convocazione rimane esclusivamente alla FSGC.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-disclaimer">
+    <strong>Disclaimer:</strong> Questo sito è una <strong>ricerca indipendente</strong> condotta a titolo personale.
+    Non rappresenta, non è affiliata e non agisce per conto della FSGC (Federazione Sammarinese Giuoco Calcio)
+    né di alcun organo istituzionale della Repubblica di San Marino.
+    Tutti i dati sono gestiti nel rispetto della privacy: nessun nome completo di minorenni,
+    nessun contatto telefonico privato è pubblicato. I dati sono aggiornati manualmente.
+  </div>
+  <p style="margin-top:1rem">© 2026 Titan Veritas — Ricerca indipendente sulla diaspora sammarinese</p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/panel.js"></script>
+<script src="assets/js/map.js"></script>
+<script>
+(async () => {
+  try {
+    const res  = await fetch('data/leads.json');
+    const data = await res.json();
+
+    // Update stats from live data
+    document.getElementById('stat-leads').textContent       = data.metadata.total_leads;
+    document.getElementById('stat-active').textContent      = data.metadata.active_leads;
+    document.getElementById('stat-communities').textContent = data.communities.length;
+    const countries = new Set([...data.communities, ...data.leads].map(x => x.country_code)).size;
+    document.getElementById('stat-countries').textContent   = countries;
+    const confirmed = data.leads.filter(l => l.citizenship_sm === 'confirmed').length;
+    document.getElementById('stat-confirmed').textContent   = confirmed;
+
+    // Init map
+    const map = new TitanMap(document.getElementById('map-container'), data);
+    await map.init();
+
+    // Mobile country list
+    buildMobileList(data, map.countryStats);
+
+  } catch (e) {
+    console.error('Init failed:', e);
+    document.querySelector('.map-loading p').textContent = 'Errore caricamento dati.';
+  }
+})();
+
+function buildMobileList(data, countryStats) {
+  const list = document.getElementById('mobile-country-list');
+  if (!list) return;
+  const flags = { AR:'🇦🇷', US:'🇺🇸', SM:'🇸🇲' };
+  const entries = Object.entries(countryStats).sort((a, b) => {
+    return (b[1].leads.length + b[1].communities.length) - (a[1].leads.length + a[1].communities.length);
+  });
+  list.innerHTML = `<div class="section-title" style="padding:0 0 0.75rem">Paesi nella rete</div>` +
+    entries.map(([code, stats]) => {
+      const name = stats.communities[0]?.country || code;
+      const flag = flags[code] || '🌍';
+      return `
+        <div class="mobile-country-card" onclick="PanelController.openCountry('${code}', window._countryStats, window._data)">
+          <div class="mobile-country-left">
+            <span class="mobile-country-flag">${flag}</span>
+            <div>
+              <div class="mobile-country-name">${name}</div>
+              <div class="mobile-country-sub">${stats.communities.length} comunità · ${stats.leads.length} lead</div>
+            </div>
+          </div>
+          <span class="mobile-country-arrow">›</span>
+        </div>`;
+    }).join('');
+  window._countryStats = countryStats;
+  window._data = data;
+}
+</script>
+
+</body>
+</html>

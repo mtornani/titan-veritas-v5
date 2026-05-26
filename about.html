@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — TITAN VERITAS</title>
+  <meta name="description" content="Chi conduce la ricerca e perché. Ricerca indipendente sulla diaspora calcistica sammarinese.">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    .about-hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    .about-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--gold-deep);
+      border: 2px solid var(--gold-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .about-hero-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.25rem;
+    }
+    .about-hero-roles {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .role-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: rgba(212,175,55,0.08);
+      border: 1px solid var(--gold-deep);
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      position: relative;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--gold);
+      width: 60px;
+      flex-shrink: 0;
+      padding-top: 0.2rem;
+    }
+    .timeline-content { flex: 1; }
+    .timeline-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem; }
+    .timeline-desc { font-size: 0.8rem; color: var(--text-secondary); }
+    @media (max-width: 600px) {
+      .about-hero { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <div class="navbar-logo">TV</div>
+    <span>TITAN <span class="brand-gold">VERITAS</span></span>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="index.html">Mappa</a></li>
+    <li><a href="leads.html">Lead Database</a></li>
+    <li><a href="methodology.html">Metodologia</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+  </ul>
+  <div class="navbar-status">
+    <div class="status-dot"></div>
+    outreach_phase
+  </div>
+</nav>
+
+<main class="page">
+<div class="content-page">
+
+  <h1>About</h1>
+
+  <!-- Researcher card -->
+  <div class="about-hero">
+    <div class="about-avatar">⚽</div>
+    <div>
+      <div class="about-hero-name">Mirko Tornani</div>
+      <div style="font-size:.85rem;color:var(--text-secondary)">
+        Residente a San Marino · Allenatore FSGC settore giovanile
+      </div>
+      <div class="about-hero-roles">
+        <span class="role-chip">🇸🇲 San Marino</span>
+        <span class="role-chip">🏟 Allenatore FSGC</span>
+        <span class="role-chip">🔍 Ricercatore indipendente</span>
+        <span class="role-chip">🌎 Diaspora scout</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>Chi sono</h2>
+  <p>
+    Sono italiano, vivo e lavoro a San Marino da anni. Come allenatore nel settore giovanile della FSGC,
+    ho vissuto in prima persona le sfide di una piccola federazione che compete a livello internazionale
+    con risorse limitate.
+  </p>
+  <p>
+    In questo contesto ho iniziato a chiedermi: quanti discendenti sammarinesi ci sono nel mondo?
+    Quanti di loro giocano a calcio e potrebbero teoricamente rappresentare la Serenissima?
+    Da questa domanda è nato il progetto Titan Veritas.
+  </p>
+
+  <h2>Perché lo faccio</h2>
+  <div class="info-box">
+    "Sono italiano che vive e lavora a San Marino. Questa ricerca è il modo in cui restituisco
+    quello che la Repubblica mi ha dato. Non cerco un ruolo operativo — voglio consegnare
+    strumenti concreti a chi deve decidere."
+  </div>
+  <p>
+    San Marino ha una diaspora di centinaia di migliaia di discendenti sparsi nel mondo, in particolare
+    in Sud America. La FIFA permette ai giocatori con cittadinanza sammarinese di rappresentare la nazionale.
+    Il gap non è normativo — è informativo. Nessuno stava sistematicamente cercando.
+  </p>
+
+  <h2>Posizionamento (importante)</h2>
+  <ul>
+    <li>Questa è una <strong>ricerca indipendente</strong>, condotta a titolo personale</li>
+    <li>Non ho un mandato formale dalla FSGC</li>
+    <li>Non rappresento nessun organo istituzionale di San Marino</li>
+    <li>Le decisioni di contattare, convocare o ingaggiare un giocatore restano <strong>esclusivamente alla FSGC</strong></li>
+    <li>Il mio ruolo si ferma alla consegna di un dossier documentato e verificato</li>
+  </ul>
+
+  <h2>Timeline del progetto</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-date">2024</div>
+      <div class="timeline-content">
+        <div class="timeline-title">Fase OSINT</div>
+        <div class="timeline-desc">Primo approccio: incrocio di database pubblici con cognomi tipicamente sammarinesi.
+        Risultati scarsi, qualità bassa, molti falsi positivi.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">2025</div>
+      <div class="timeline-content">
+        <div class="timeline-title">Cambio di approccio</div>
+        <div class="timeline-desc">Identificazione delle principali comunità sammarinesi nel mondo.
+        Costruzione della mappa delle associazioni ufficiali (CGIE, AISS).</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Mag 2026</div>
+      <div class="timeline-content">
+        <div class="timeline-title">Primo contatto — Argentina</div>
+        <div class="timeline-desc">Contatto con German Tura (Anello Argentino), ABSAS Buenos Aires,
+        Comunità Argentina Centrale e Centro-Est. 6 lead identificati in due settimane.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Prossimo</div>
+      <div class="timeline-content">
+        <div class="timeline-title">Espansione USA</div>
+        <div class="timeline-desc">Outreach pianificato verso Fratellanza New York (500 soci) e
+        Comunità Sammarinese Detroit (1.150 soci).</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Futuro</div>
+      <div class="timeline-content">
+        <div class="timeline-title">Europa e resto del mondo</div>
+        <div class="timeline-desc">Comunità in Australia, Europa (CH, DE, BE), resto del Sud America.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Contatti</h2>
+  <p style="color:var(--text-secondary);font-size:.88rem">
+    Per segnalazioni, collaborazioni o feedback: le informazioni di contatto sono disponibili
+    tramite canali privati. Non viene pubblicato nessun contatto diretto su questo sito
+    per ragioni di privacy e per evitare richieste non pertinenti.
+  </p>
+
+</div>
+</main>
+
+<footer class="footer">
+  <div class="footer-disclaimer">
+    <strong>Disclaimer:</strong> Questo sito è una ricerca indipendente condotta a titolo personale.
+    Non rappresenta, non è affiliata e non agisce per conto della FSGC né di alcun organo istituzionale
+    della Repubblica di San Marino. Tutti i dati personali dei giocatori (minorenni) sono trattati
+    in forma anonimizzata. Nessun nome completo, nessun contatto telefonico privato è pubblicato.
+  </div>
+  <p style="margin-top:1rem">© 2026 Titan Veritas — Ricerca indipendente sulla diaspora sammarinese</p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

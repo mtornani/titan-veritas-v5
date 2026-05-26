@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Database — TITAN VERITAS</title>
+  <meta name="description" content="Database leads calcistici sammarinesi nel mondo. Dati anonimizzati.">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <div class="navbar-logo">TV</div>
+    <span>TITAN <span class="brand-gold">VERITAS</span></span>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="index.html">Mappa</a></li>
+    <li><a href="leads.html" class="active">Lead Database</a></li>
+    <li><a href="methodology.html">Metodologia</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="navbar-status">
+    <div class="status-dot"></div>
+    outreach_phase
+  </div>
+</nav>
+
+<main class="page">
+  <div class="leads-page">
+
+    <div class="page-header">
+      <h1>Lead Database</h1>
+      <p>Tutti i lead identificati, dati anonimizzati. Aggiornato: <span id="last-updated">—</span></p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input
+        type="search"
+        class="filter-search"
+        id="search-input"
+        placeholder="Cerca per paese, club, cognome antenato..."
+        aria-label="Cerca lead">
+      <select class="filter-select" id="filter-status" aria-label="Filtra per status">
+        <option value="">Tutti gli status</option>
+        <option value="registered">Registrato</option>
+        <option value="data_pending">In attesa dati</option>
+        <option value="verified">Verificato</option>
+        <option value="inactive_football">Inattivo (calcio)</option>
+      </select>
+      <select class="filter-select" id="filter-country" aria-label="Filtra per paese">
+        <option value="">Tutti i paesi</option>
+      </select>
+      <select class="filter-select" id="filter-eligibility" aria-label="Filtra per eleggibilità FIFA">
+        <option value="">Eleggibilità FIFA</option>
+        <option value="verified">Verificata</option>
+        <option value="to_verify">Da verificare</option>
+        <option value="not_eligible">Non eleggibile</option>
+      </select>
+    </div>
+
+    <!-- Results count -->
+    <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:1rem">
+      Mostrando <strong id="result-count">—</strong> lead
+    </p>
+
+    <!-- Grid -->
+    <div class="leads-grid" id="leads-grid">
+      <p style="color:var(--text-secondary)">Caricamento...</p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-disclaimer">
+    <strong>Disclaimer:</strong> Ricerca indipendente. Nessun nome completo di minori. Dati gestiti nel rispetto della privacy.
+    Non affiliato con FSGC né con alcun organo istituzionale di San Marino.
+  </div>
+  <p style="margin-top:1rem">© 2026 Titan Veritas</p>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script>
+let allLeads = [];
+
+const COUNTRY_NAMES = {};
+const FLAGS = { AR:'🇦🇷', US:'🇺🇸', SM:'🇸🇲' };
+
+function flag(code) { return FLAGS[code] || '🌍'; }
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildGeneaChip(ancestor, countryCode) {
+  if (!ancestor) return '';
+  const origin = ancestor.born_in || 'San Marino';
+  const year   = ancestor.year_emigration ? ` ${ancestor.year_emigration}` : '';
+  const rel    = ancestor.relation_to_player || ancestor.surname_origin || '?';
+  return `<div class="genealogy-chip">
+    🇸🇲 ${escHtml(origin)}${year}
+    <span class="sep">→</span>
+    ${flag(countryCode)} ${escHtml(countryCode)}
+    <span class="sep">|</span>
+    ${escHtml(rel)}
+  </div>`;
+}
+
+function renderCard(l) {
+  const statusInfo = {
+    registered:        { label: 'Registrato',       cls: 'badge-verified' },
+    data_pending:      { label: 'In attesa dati',   cls: 'badge-pending'  },
+    verified:          { label: 'Verificato',       cls: 'badge-verified' },
+    inactive_football: { label: 'Inattivo',         cls: 'badge-inactive' },
+    not_eligible:      { label: 'Non eleggibile',   cls: 'badge-inactive' },
+    archived:          { label: 'Archiviato',       cls: 'badge-inactive' },
+  }[l.status] || { label: l.status, cls: 'badge-inactive' };
+
+  const citInfo = {
+    confirmed: { label: '🇸🇲 Cittad. confermata', cls: 'badge-confirmed' },
+    to_verify: { label: '🇸🇲 Da verificare',      cls: 'badge-pending'  },
+  }[l.citizenship_sm] || { label: '?', cls: 'badge-inactive' };
+
+  const fifaInfo = {
+    verified:    { label: 'FIFA ✓', cls: 'badge-verified' },
+    to_verify:   { label: 'FIFA ?', cls: 'badge-pending'  },
+    not_eligible:{ label: 'FIFA ✗', cls: 'badge-inactive' },
+  }[l.fifa_eligibility] || { label: '?', cls: 'badge-inactive' };
+
+  const firstContact = l.first_contact_date
+    ? l.first_contact_date.split('-').reverse().join('/')
+    : '—';
+
+  return `
+    <article class="lead-card" data-id="${escHtml(l.id)}">
+      <div class="lead-card-header">
+        <div>
+          <div class="lead-alias">${escHtml(l.alias)}</div>
+          <div style="font-size:.78rem;color:var(--text-secondary)">
+            ${flag(l.country_code)} ${escHtml(l.country)}${l.city ? ` · ${escHtml(l.city)}` : ''}
+          </div>
+        </div>
+        <div class="lead-year">${l.year_of_birth ? `n. ${l.year_of_birth}` : 'Anno ?'}</div>
+      </div>
+      <div class="lead-meta">
+        ${l.club     ? `<span>⚽ <strong>${escHtml(l.club)}</strong></span>` : ''}
+        ${l.position ? `<span>🎯 ${escHtml(l.position)}</span>` : ''}
+        <span>📡 ${escHtml(l.source || '—')}</span>
+        <span>📅 Primo contatto: ${firstContact}</span>
+      </div>
+      <div class="lead-badges">
+        <span class="badge ${statusInfo.cls}">${statusInfo.label}</span>
+        <span class="badge ${citInfo.cls}">${citInfo.label}</span>
+        <span class="badge ${fifaInfo.cls}">${fifaInfo.label}</span>
+      </div>
+      ${buildGeneaChip(l.ancestor, l.country_code)}
+    </article>`;
+}
+
+function applyFilters() {
+  const q       = document.getElementById('search-input').value.toLowerCase();
+  const status  = document.getElementById('filter-status').value;
+  const country = document.getElementById('filter-country').value;
+  const fifa    = document.getElementById('filter-eligibility').value;
+
+  const filtered = allLeads.filter(l => {
+    if (status  && l.status !== status)             return false;
+    if (country && l.country_code !== country)      return false;
+    if (fifa    && l.fifa_eligibility !== fifa)     return false;
+    if (q) {
+      const haystack = [
+        l.alias, l.country, l.city, l.club, l.position, l.source,
+        l.ancestor?.name, l.ancestor?.surname_origin, l.ancestor?.born_in,
+      ].filter(Boolean).join(' ').toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const grid = document.getElementById('leads-grid');
+  document.getElementById('result-count').textContent = filtered.length;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<p style="color:var(--text-secondary);grid-column:1/-1">Nessun lead corrisponde ai filtri.</p>';
+    return;
+  }
+  grid.innerHTML = filtered.map(renderCard).join('');
+}
+
+(async () => {
+  const res  = await fetch('data/leads.json');
+  const data = await res.json();
+  allLeads   = data.leads;
+
+  document.getElementById('last-updated').textContent = data.metadata.last_updated;
+
+  // Populate country filter
+  const countries = [...new Set(data.leads.map(l => l.country_code))];
+  const sel = document.getElementById('filter-country');
+  countries.forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = `${flag(code)} ${data.leads.find(l => l.country_code === code)?.country || code}`;
+    sel.appendChild(opt);
+  });
+
+  applyFilters();
+
+  document.getElementById('search-input').addEventListener('input',   applyFilters);
+  document.getElementById('filter-status').addEventListener('change',  applyFilters);
+  document.getElementById('filter-country').addEventListener('change', applyFilters);
+  document.getElementById('filter-eligibility').addEventListener('change', applyFilters);
+})();
+</script>
+</body>
+</html>
