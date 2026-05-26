@@ -66,12 +66,51 @@ function formatDate(iso) {
   return `${d}/${m}/${y}`;
 }
 
-// Active nav link
+// Active nav link + mobile nav toggle
 document.addEventListener('DOMContentLoaded', () => {
   const page = location.pathname.split('/').pop() || 'index.html';
+
   document.querySelectorAll('.navbar-nav a').forEach(a => {
     if (a.getAttribute('href') === page || (page === '' && a.getAttribute('href') === 'index.html')) {
       a.classList.add('active');
+    }
+  });
+
+  // Mobile nav
+  const menuBtn = document.getElementById('nav-menu-btn');
+  const overlay = document.getElementById('mobile-nav-overlay');
+  if (!menuBtn || !overlay) return;
+
+  // Mark active link in overlay
+  overlay.querySelectorAll('a').forEach(a => {
+    const href = a.getAttribute('href');
+    if (href === page || (page === '' && href === 'index.html')) {
+      a.classList.add('active');
+    }
+  });
+
+  function openMenu() {
+    overlay.classList.add('open');
+    menuBtn.textContent = '✕';
+    menuBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMenu() {
+    overlay.classList.remove('open');
+    menuBtn.textContent = '☰';
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  menuBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    overlay.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  document.addEventListener('click', e => {
+    if (overlay.classList.contains('open') && !overlay.contains(e.target) && e.target !== menuBtn) {
+      closeMenu();
     }
   });
 });

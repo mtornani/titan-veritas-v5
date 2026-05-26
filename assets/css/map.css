@@ -125,6 +125,7 @@
   white-space: nowrap;
   z-index: 20;
   display: none;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
@@ -166,6 +167,7 @@
   width: 380px;
   height: 100%;
   background: rgba(14, 20, 35, 0.97);
+  -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-left: 1px solid var(--border);
   z-index: 30;
@@ -415,16 +417,20 @@
 @media (max-width: 768px) {
   .map-wrapper { height: 40vh; min-height: 240px; }
 
+  /* position: fixed so map-wrapper overflow:hidden doesn't clip the panel */
   #side-panel {
+    position: fixed;
     width: 100%;
     height: 62vh;
     top: auto;
     bottom: 0;
+    left: 0;
     right: 0;
     border-left: none;
     border-top: 1px solid var(--border);
     border-radius: 16px 16px 0 0;
     transform: translateY(100%);
+    z-index: 50;
   }
 
   #side-panel.open { transform: translateY(0); }

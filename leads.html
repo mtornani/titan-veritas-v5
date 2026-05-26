@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lead Database — TITAN VERITAS</title>
   <meta name="description" content="Database leads calcistici sammarinesi nel mondo. Dati anonimizzati.">
+  <link rel="icon" href="assets/img/sm-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
@@ -24,6 +25,7 @@
     <div class="status-dot"></div>
     outreach_phase
   </div>
+  <button class="nav-mobile-menu" id="nav-menu-btn" aria-label="Menu" aria-expanded="false">☰</button>
 </nav>
 
 <main class="page">
@@ -80,6 +82,14 @@
   </div>
   <p style="margin-top:1rem">© 2026 Titan Veritas</p>
 </footer>
+
+<!-- Mobile nav overlay -->
+<nav class="mobile-nav-overlay" id="mobile-nav-overlay" aria-label="Menu mobile">
+  <a href="index.html">Mappa</a>
+  <a href="leads.html">Lead Database</a>
+  <a href="methodology.html">Metodologia</a>
+  <a href="about.html">About</a>
+</nav>
 
 <script src="assets/js/main.js"></script>
 <script>
@@ -191,28 +201,37 @@ function applyFilters() {
 }
 
 (async () => {
-  const res  = await fetch('data/leads.json');
-  const data = await res.json();
-  allLeads   = data.leads;
+  try {
+    const res  = await fetch('data/leads.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    allLeads   = data.leads;
 
-  document.getElementById('last-updated').textContent = data.metadata.last_updated;
+    document.getElementById('last-updated').textContent = data.metadata.last_updated;
 
-  // Populate country filter
-  const countries = [...new Set(data.leads.map(l => l.country_code))];
-  const sel = document.getElementById('filter-country');
-  countries.forEach(code => {
-    const opt = document.createElement('option');
-    opt.value = code;
-    opt.textContent = `${flag(code)} ${data.leads.find(l => l.country_code === code)?.country || code}`;
-    sel.appendChild(opt);
-  });
+    // Populate country filter
+    const countries = [...new Set(data.leads.map(l => l.country_code))];
+    const sel = document.getElementById('filter-country');
+    countries.forEach(code => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = `${flag(code)} ${data.leads.find(l => l.country_code === code)?.country || code}`;
+      sel.appendChild(opt);
+    });
 
-  applyFilters();
+    applyFilters();
 
-  document.getElementById('search-input').addEventListener('input',   applyFilters);
-  document.getElementById('filter-status').addEventListener('change',  applyFilters);
-  document.getElementById('filter-country').addEventListener('change', applyFilters);
-  document.getElementById('filter-eligibility').addEventListener('change', applyFilters);
+    document.getElementById('search-input').addEventListener('input',   applyFilters);
+    document.getElementById('filter-status').addEventListener('change',  applyFilters);
+    document.getElementById('filter-country').addEventListener('change', applyFilters);
+    document.getElementById('filter-eligibility').addEventListener('change', applyFilters);
+  } catch (e) {
+    console.error('Failed to load leads:', e);
+    document.getElementById('leads-grid').innerHTML =
+      '<p style="color:var(--text-secondary);grid-column:1/-1">Errore nel caricamento dei dati. ' +
+      '<button onclick="location.reload()" style="padding:0.4rem 1rem;background:var(--gold);color:var(--bg);border:none;border-radius:6px;font-weight:700;cursor:pointer;margin-left:0.5rem">Ricarica</button></p>';
+    document.getElementById('result-count').textContent = '0';
+  }
 })();
 </script>
 </body>

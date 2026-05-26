@@ -48,6 +48,7 @@ a:hover { text-decoration: underline; }
   padding: 0 2rem;
   height: 56px;
   background: rgba(10, 14, 26, 0.92);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
@@ -629,7 +630,7 @@ a:hover { text-decoration: underline; }
   .map-legend { gap: 0.6rem; font-size: 0.82rem; }
 }
 
-/* ─── MOBILE NAV (hamburger placeholder) ─── */
+/* ─── MOBILE NAV ─── */
 .nav-mobile-menu {
   display: none;
   background: none;
@@ -639,8 +640,65 @@ a:hover { text-decoration: underline; }
   cursor: pointer;
   color: var(--text-secondary);
   font-size: 1rem;
+  touch-action: manipulation;
+  line-height: 1;
+  min-width: 36px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
   .nav-mobile-menu { display: block; }
+}
+
+/* Mobile nav dropdown overlay */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: rgba(10, 14, 26, 0.98);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 99;
+  flex-direction: column;
+}
+
+.mobile-nav-overlay.open {
+  display: flex;
+}
+
+.mobile-nav-overlay a {
+  display: block;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+  touch-action: manipulation;
+}
+
+.mobile-nav-overlay a:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav-overlay a:hover,
+.mobile-nav-overlay a.active {
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.06);
+  text-decoration: none;
+}
+
+/* Touch-action on all interactive elements */
+button,
+.country-path,
+.pin-group,
+.mobile-country-card,
+.btn-cta,
+.panel-tab,
+.panel-close {
+  touch-action: manipulation;
 }
