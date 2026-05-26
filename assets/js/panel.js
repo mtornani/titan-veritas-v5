@@ -14,6 +14,8 @@ const PanelController = (() => {
   function close() {
     panel?.classList.remove('open');
     backdrop?.classList.remove('active');
+
+    // Clear selected country highlights
     document.querySelectorAll('.country-path.country-selected').forEach(el => {
       el.classList.remove('country-selected');
     });
@@ -32,18 +34,34 @@ const PanelController = (() => {
 
   function openCountry(countryCode, countryStats, data, filterCity) {
     if (!panel) return;
+
+    // Special case: origin
     if (countryCode === 'SM') {
       renderOriginPanel(data);
       open();
       return;
     }
+
     const stats = countryStats[countryCode];
     if (!stats) return;
+
     activeCountry = countryCode;
-    document.querySelectorAll('.country-path.country-selected').forEach(el => el.classList.remove('country-selected'));
-    document.getElementById(countryCode)?.classList.add('country-selected');
-    let communities = filterCity ? stats.communities.filter(c => !c.city || c.city === filterCity) : stats.communities;
-    let leads = filterCity ? stats.leads.filter(l => !l.city || l.city === filterCity) : stats.leads;
+
+    // Highlight on map
+    document.querySelectorAll('.country-path.country-selected').forEach(el => {
+      el.classList.remove('country-selected');
+    });
+    const path = document.getElementById(countryCode);
+    path?.classList.add('country-selected');
+
+    let communities = stats.communities;
+    let leads       = stats.leads;
+
+    if (filterCity) {
+      communities = communities.filter(c => !c.city || c.city === filterCity);
+      leads       = leads.filter(l => !l.city || l.city === filterCity);
+    }
+
     renderPanel(countryCode, communities, leads, data);
     open();
     setTab(leads.length ? 'leads' : 'communities');
@@ -52,72 +70,173 @@ const PanelController = (() => {
   function renderPanel(countryCode, communities, leads, data) {
     const flag = countryFlag(countryCode);
     const name = communities[0]?.country || countryCode;
-    document.getElementById('panel-flag').textContent = flag;
+
+    // Header
+    document.getElementById('panel-flag').textContent  = flag;
     document.getElementById('panel-country-name').textContent = name;
-    document.getElementById('panel-country-sub').textContent = `${communities.length} comunità · ${leads.length} lead`;
-    document.getElementById('panel-communities').innerHTML = communities.length
-      ? communities.map(renderCommunityCard).join('')
+    document.getElementById('panel-country-sub').textContent  =
+      `${communities.length} comunità · ${leads.length} lead`;
+
+    // Communities tab
+    const commContainer = document.getElementById('panel-communities');
+    commContainer.innerHTML = communities.length
+      ? communities.map(c => renderCommunityCard(c)).join('')
       : '<p style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:1rem 0">Nessuna comunità registrata.</p>';
-    document.getElementById('panel-leads').innerHTML = leads.length
-      ? leads.map(renderLeadCard).join('')
+
+    // Leads tab
+    const leadsContainer = document.getElementById('panel-leads');
+    leadsContainer.innerHTML = leads.length
+      ? leads.map(l => renderLeadCard(l)).join('')
       : '<p style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:1rem 0">Nessun lead per questo filtro.</p>';
   }
 
   function renderOriginPanel(data) {
-    const countries = new Set(data.communities.map(c => c.country_code)).size;
+    const totalLeads = data.metadata.total_leads;
+    const activeLeads = data.metadata.active_leads;
+    const totalComm   = data.communities.length;
+    const countries   = new Set(data.communities.map(c => c.country_code)).size;
+
+    // Hide tabs, show origin content
     document.getElementById('panel-flag').textContent = '🇸🇲';
     document.getElementById('panel-country-name').textContent = 'San Marino';
-    document.getElementById('panel-country-sub').textContent = 'Origine — La Serenissima Repubblica';
-    document.getElementById('panel-communities').innerHTML = `
+    document.getElementById('panel-country-sub').textContent  = 'Origine — La Serenissima Repubblica';
+
+    const commContainer = document.getElementById('panel-communities');
+    commContainer.innerHTML = `
       <div class="origin-panel-content">
         <div class="origin-flag">🇸🇲</div>
         <div class="origin-title">Progetto Titan Veritas</div>
         <div class="origin-sub">Ricerca indipendente sulla diaspora sammarinese</div>
         <div class="origin-stats-grid">
-          <div class="origin-stat-card"><div class="origin-stat-val">${data.metadata.total_leads}</div><div class="origin-stat-lbl">Lead totali</div></div>
-          <div class="origin-stat-card"><div class="origin-stat-val">${data.metadata.active_leads}</div><div class="origin-stat-lbl">Lead attivi</div></div>
-          <div class="origin-stat-card"><div class="origin-stat-val">${data.communities.length}</div><div class="origin-stat-lbl">Comunità</div></div>
-          <div class="origin-stat-card"><div class="origin-stat-val">${countries}</div><div class="origin-stat-lbl">Paesi</div></div>
+          <div class="origin-stat-card">
+            <div class="origin-stat-val">${totalLeads}</div>
+            <div class="origin-stat-lbl">Lead totali</div>
+          </div>
+          <div class="origin-stat-card">
+            <div class="origin-stat-val">${activeLeads}</div>
+            <div class="origin-stat-lbl">Lead attivi</div>
+          </div>
+          <div class="origin-stat-card">
+            <div class="origin-stat-val">${totalComm}</div>
+            <div class="origin-stat-lbl">Comunità</div>
+          </div>
+          <div class="origin-stat-card">
+            <div class="origin-stat-val">${countries}</div>
+            <div class="origin-stat-lbl">Paesi</div>
+          </div>
         </div>
-        <p style="font-size:.78rem;color:var(--text-secondary);text-align:left">Stato: <strong style="color:var(--gold)">${data.metadata.project_status.replace(/_/g,' ')}</strong><br>Aggiornato: ${data.metadata.last_updated}</p>
+        <p style="font-size:.78rem;color:var(--text-secondary);text-align:left">
+          Stato progetto: <strong style="color:var(--gold)">${data.metadata.project_status.replace(/_/g,' ')}</strong>
+          <br>Aggiornato: ${data.metadata.last_updated}
+        </p>
       </div>`;
-    document.getElementById('panel-leads').innerHTML = '';
+
+    const leadsContainer = document.getElementById('panel-leads');
+    leadsContainer.innerHTML = '';
+
     setTab('communities');
   }
 
   function renderCommunityCard(c) {
-    const statusLabel = {active_dialogue:['Dialogo attivo','badge-verified'],primary_amplifier:['Amplificatore','badge-amplifier'],pending_outreach:['Da contattare','badge-pending'],informed:['Informata','badge-inactive']}[c.status]||[c.status,'badge-inactive'];
+    const statusLabel = {
+      active_dialogue:   ['Dialogo attivo',  'badge-verified'],
+      primary_amplifier: ['Amplificatore',   'badge-amplifier'],
+      pending_outreach:  ['Da contattare',   'badge-pending'],
+      informed:          ['Informata',       'badge-inactive'],
+    }[c.status] || [c.status, 'badge-inactive'];
+
     const membersTxt = c.members_estimated ? `${c.members_estimated.toLocaleString('it-IT')} iscritti est.` : '';
-    return `<div class="panel-community-card"><div class="panel-community-name">${escHtml(c.name)}</div><div class="panel-community-meta">${c.city?`<span>📍 ${escHtml(c.city)}</span>`:''} ${c.president?`<span>👤 Pres. ${escHtml(c.president)}</span>`:''} ${membersTxt?`<span>👥 ${membersTxt}</span>`:''} ${c.first_contact?`<span>📅 Primo contatto: ${formatDate(c.first_contact)}</span>`:''}</div><span class="badge ${statusLabel[1]}">${statusLabel[0]}</span></div>`;
+    const presidentTxt = c.president ? `Pres. ${c.president}` : '';
+    const contactTxt   = c.first_contact ? `Primo contatto: ${formatDate(c.first_contact)}` : '';
+
+    return `
+      <div class="panel-community-card">
+        <div class="panel-community-name">${escHtml(c.name)}</div>
+        <div class="panel-community-meta">
+          ${c.city ? `<span>📍 ${escHtml(c.city)}</span>` : ''}
+          ${presidentTxt ? `<span>👤 ${escHtml(presidentTxt)}</span>` : ''}
+          ${membersTxt   ? `<span>👥 ${membersTxt}</span>` : ''}
+          ${contactTxt   ? `<span>📅 ${contactTxt}</span>` : ''}
+        </div>
+        <span class="badge ${statusLabel[1]}">${statusLabel[0]}</span>
+      </div>`;
   }
 
   function renderLeadCard(l) {
-    const citizenshipInfo = {confirmed:{label:'🇸🇲 Cittad. confermata',cls:'badge-confirmed'},to_verify:{label:'🇸🇲 Da verificare',cls:'badge-pending'}}[l.citizenship_sm]||{label:'?',cls:'badge-inactive'};
-    const fifaInfo = {verified:{label:'FIFA ✓',cls:'badge-verified'},to_verify:{label:'FIFA ?',cls:'badge-pending'},not_eligible:{label:'FIFA ✗',cls:'badge-inactive'}}[l.fifa_eligibility]||{label:'?',cls:'badge-inactive'};
-    const statusInfo = {registered:{label:'Registrato',cls:'badge-verified'},data_pending:{label:'In attesa dati',cls:'badge-pending'},verified:{label:'Verificato',cls:'badge-verified'},inactive_football:{label:'Inattivo',cls:'badge-inactive'}}[l.status]||{label:l.status,cls:'badge-inactive'};
+    const citizenshipInfo = {
+      confirmed: { label: '🇸🇲 Cittad. confermata', cls: 'badge-confirmed' },
+      to_verify: { label: '🇸🇲 Da verificare',      cls: 'badge-pending'  },
+    }[l.citizenship_sm] || { label: '?', cls: 'badge-inactive' };
+
+    const fifaInfo = {
+      verified:    { label: 'FIFA ✓', cls: 'badge-verified' },
+      to_verify:   { label: 'FIFA ?', cls: 'badge-pending'  },
+      not_eligible:{ label: 'FIFA ✗', cls: 'badge-inactive' },
+    }[l.fifa_eligibility] || { label: '?', cls: 'badge-inactive' };
+
+    const statusInfo = {
+      registered:        { label: 'Registrato',       cls: 'badge-verified' },
+      data_pending:      { label: 'In attesa dati',   cls: 'badge-pending'  },
+      verified:          { label: 'Verificato',       cls: 'badge-verified' },
+      inactive_football: { label: 'Inattivo',         cls: 'badge-inactive' },
+    }[l.status] || { label: l.status, cls: 'badge-inactive' };
+
     const ancestor = l.ancestor;
-    const geneaHtml = ancestor ? `<div class="panel-genealogy">🇸🇲 ${escHtml(ancestor.born_in||'San Marino')}${ancestor.year_emigration?` ${ancestor.year_emigration}`:''} → 🇦🇷 ${escHtml(l.country_code)} · <em>${escHtml(ancestor.relation_to_player||ancestor.surname_origin||'?')}</em></div>` : '';
-    return `<div class="panel-lead-card"><div class="panel-lead-alias">${escHtml(l.alias)}</div><div class="panel-lead-meta">${l.year_of_birth?`<span>📅 Nato/a nel ${l.year_of_birth}</span>`:''} ${l.city?`<span>📍 ${escHtml(l.city)}</span>`:''} ${l.club?`<span>⚽ ${escHtml(l.club)}</span>`:''} ${l.position?`<span>🎯 ${escHtml(l.position)}</span>`:''}<span>📡 ${escHtml(l.source||'')}</span></div><div class="panel-lead-badges"><span class="badge ${statusInfo.cls}">${statusInfo.label}</span> <span class="badge ${citizenshipInfo.cls}">${citizenshipInfo.label}</span> <span class="badge ${fifaInfo.cls}">${fifaInfo.label}</span></div>${geneaHtml}</div>`;
+    let geneaHtml = '';
+    if (ancestor) {
+      const origin = ancestor.born_in || 'San Marino';
+      const year   = ancestor.year_emigration ? ` ${ancestor.year_emigration}` : '';
+      const rel    = ancestor.relation_to_player || ancestor.surname_origin || '?';
+      geneaHtml = `
+        <div class="panel-genealogy">
+          🇸🇲 ${escHtml(origin)}${year} → 🇦🇷 ${escHtml(l.country_code)} · <em>${escHtml(rel)}</em>
+        </div>`;
+    }
+
+    return `
+      <div class="panel-lead-card">
+        <div class="panel-lead-alias">${escHtml(l.alias)}</div>
+        <div class="panel-lead-meta">
+          ${l.year_of_birth  ? `<span>📅 Nato/a nel ${l.year_of_birth}</span>` : ''}
+          ${l.city           ? `<span>📍 ${escHtml(l.city)}</span>` : ''}
+          ${l.club           ? `<span>⚽ ${escHtml(l.club)}</span>` : ''}
+          ${l.position       ? `<span>🎯 ${escHtml(l.position)}</span>` : ''}
+          <span>📡 ${escHtml(l.source || '')}</span>
+        </div>
+        <div class="panel-lead-badges">
+          <span class="badge ${statusInfo.cls}">${statusInfo.label}</span>
+          <span class="badge ${citizenshipInfo.cls}">${citizenshipInfo.label}</span>
+          <span class="badge ${fifaInfo.cls}">${fifaInfo.label}</span>
+        </div>
+        ${geneaHtml}
+      </div>`;
   }
 
   function escHtml(str) {
     if (!str) return '';
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   function formatDate(iso) {
     if (!iso) return '—';
-    const [y,m,d] = iso.split('-');
+    const [y, m, d] = iso.split('-');
     return `${d}/${m}/${y}`;
   }
 
   function countryFlag(code) {
-    return {AR:'🇦🇷',US:'🇺🇸',SM:'🇸🇲',IT:'🇮🇹',BR:'🇧🇷',DE:'🇩🇪',FR:'🇫🇷',GB:'🇬🇧',ES:'🇪🇸'}[code]||'🌍';
+    const flags = { AR:'🇦🇷', US:'🇺🇸', SM:'🇸🇲', IT:'🇮🇹', BR:'🇧🇷', DE:'🇩🇪', FR:'🇫🇷', GB:'🇬🇧', ES:'🇪🇸' };
+    return flags[code] || '🌍';
   }
 
+  // Wire up static DOM events
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('panel-close')?.addEventListener('click', close);
     backdrop?.addEventListener('click', close);
+
     document.querySelectorAll('.panel-tab').forEach(btn => {
       btn.addEventListener('click', () => setTab(btn.dataset.tab));
     });

@@ -397,6 +397,24 @@ a:hover { text-decoration: underline; }
   background: var(--card-hover);
 }
 
+.lead-card-clickable {
+  cursor: pointer;
+}
+
+.lead-card-clickable:active {
+  transform: scale(0.99);
+  border-color: var(--gold);
+}
+
+.lead-card-map-cta {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--gold-dim);
+  font-weight: 600;
+  text-align: right;
+  letter-spacing: 0.02em;
+}
+
 .lead-card-header {
   display: flex;
   justify-content: space-between;
@@ -628,6 +646,36 @@ a:hover { text-decoration: underline; }
 
 @media (max-width: 480px) {
   .map-legend { gap: 0.6rem; font-size: 0.82rem; }
+}
+
+/* ─── MAP QUICK ACCESS (mobile shortcut) ─── */
+.map-quick-access {
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem 0;
+  flex-wrap: wrap;
+}
+
+.map-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.15s;
+  touch-action: manipulation;
+}
+
+.map-quick-btn:hover,
+.map-quick-btn:active {
+  background: rgba(212, 175, 55, 0.22);
 }
 
 /* ─── MOBILE NAV ─── */
