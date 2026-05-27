@@ -75,7 +75,7 @@ const PanelController = (() => {
     document.getElementById('panel-flag').textContent  = flag;
     document.getElementById('panel-country-name').textContent = name;
     document.getElementById('panel-country-sub').textContent  =
-      `${communities.length} comunità · ${leads.length} lead`;
+      `${communities.length} comunità · ${leads.length} giocatori`;
 
     // Communities tab
     const commContainer = document.getElementById('panel-communities');
@@ -87,7 +87,7 @@ const PanelController = (() => {
     const leadsContainer = document.getElementById('panel-leads');
     leadsContainer.innerHTML = leads.length
       ? leads.map(l => renderLeadCard(l)).join('')
-      : '<p style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:1rem 0">Nessun lead per questo filtro.</p>';
+      : '<p style="color:var(--text-secondary);font-size:.82rem;text-align:center;padding:1rem 0">Nessun giocatore trovato.</p>';
   }
 
   function renderOriginPanel(data) {
@@ -164,21 +164,22 @@ const PanelController = (() => {
 
   function renderLeadCard(l) {
     const citizenshipInfo = {
-      confirmed: { label: '🇸🇲 Cittad. confermata', cls: 'badge-confirmed' },
-      to_verify: { label: '🇸🇲 Da verificare',      cls: 'badge-pending'  },
+      confirmed: { label: '🇸🇲 Cittadino SM',   cls: 'badge-confirmed' },
+      to_verify: { label: '🇸🇲 Da verificare',  cls: 'badge-pending'  },
     }[l.citizenship_sm] || { label: '?', cls: 'badge-inactive' };
 
     const fifaInfo = {
-      verified:    { label: 'FIFA ✓', cls: 'badge-verified' },
-      to_verify:   { label: 'FIFA ?', cls: 'badge-pending'  },
-      not_eligible:{ label: 'FIFA ✗', cls: 'badge-inactive' },
-    }[l.fifa_eligibility] || { label: '?', cls: 'badge-inactive' };
+      verified:               { label: 'FIFA: eleggibile',     cls: 'badge-verified' },
+      to_verify:              { label: 'FIFA: da verificare',  cls: 'badge-pending'  },
+      to_verify_complex_case: { label: 'FIFA: caso speciale',  cls: 'badge-pending'  },
+      not_eligible:           { label: 'FIFA: non eleggibile', cls: 'badge-inactive' },
+    }[l.fifa_eligibility] || { label: 'FIFA: ?', cls: 'badge-inactive' };
 
     const statusInfo = {
-      registered:        { label: 'Registrato',       cls: 'badge-verified' },
-      data_pending:      { label: 'In attesa dati',   cls: 'badge-pending'  },
-      verified:          { label: 'Verificato',       cls: 'badge-verified' },
-      inactive_football: { label: 'Inattivo',         cls: 'badge-inactive' },
+      registered:        { label: 'Registrato',     cls: 'badge-verified' },
+      data_pending:      { label: 'Dati mancanti',  cls: 'badge-pending'  },
+      verified:          { label: 'Verificato',     cls: 'badge-verified' },
+      inactive_football: { label: 'Non gioca più',  cls: 'badge-inactive' },
     }[l.status] || { label: l.status, cls: 'badge-inactive' };
 
     const ancestor = l.ancestor;

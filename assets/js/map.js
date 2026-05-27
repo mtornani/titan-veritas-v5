@@ -275,7 +275,7 @@ class TitanMap {
       <div class="tooltip-country">${countryFlag(id)} ${countryName}</div>
       <div class="tooltip-stats">
         ${nComm ? `<span class="tooltip-stat">🏛 ${nComm} comunità</span>` : ''}
-        ${nLead ? `<span class="tooltip-stat">⚽ ${nLead} lead</span>` : ''}
+        ${nLead ? `<span class="tooltip-stat">⚽ ${nLead} giocatori</span>` : ''}
       </div>`;
     this.tooltip.style.display = 'block';
     this.onTooltipMove(e);
@@ -292,7 +292,7 @@ class TitanMap {
       <div class="tooltip-country">${flag} ${city || country}</div>
       <div class="tooltip-stats">
         ${comms.length ? `<span class="tooltip-stat">🏛 ${comms.length} comunità</span>` : ''}
-        ${leads.length ? `<span class="tooltip-stat">⚽ ${leads.length} lead</span>` : ''}
+        ${leads.length ? `<span class="tooltip-stat">⚽ ${leads.length} giocatori</span>` : ''}
       </div>`;
     this.tooltip.style.display = 'block';
     this.onTooltipMove(e);

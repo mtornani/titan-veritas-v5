@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TITAN VERITAS — Mappa Diaspora Sammarinese</title>
-  <meta name="description" content="Ricerca indipendente sulla diaspora sammarinese nel mondo. Visualizzazione geografica delle comunità e dei lead calcistici.">
+  <meta name="description" content="Ricerca indipendente sulla diaspora sammarinese nel mondo. Visualizzazione geografica delle comunità e dei calciatori identificati.">
   <link rel="icon" href="assets/img/sm-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/map.css">
@@ -19,13 +19,13 @@
   </a>
   <ul class="navbar-nav">
     <li><a href="index.html" class="active">Mappa</a></li>
-    <li><a href="leads.html">Lead Database</a></li>
+    <li><a href="leads.html">Giocatori</a></li>
     <li><a href="methodology.html">Metodologia</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
   <div class="navbar-status">
     <div class="status-dot"></div>
-    outreach_phase
+    Ricerca in corso
   </div>
   <button class="nav-mobile-menu" id="nav-menu-btn" aria-label="Menu" aria-expanded="false">☰</button>
 </nav>
@@ -35,11 +35,11 @@
   <!-- HERO BANNER -->
   <div class="hero-banner">
     <p class="hero-primary">
-      <strong><span id="hero-leads">6</span> giocatori sammarinesi identificati nel mondo</strong> —
-      <span id="hero-confirmed">2</span> cittadinanze confermate, <span id="hero-communities">9</span> comunità in dialogo.
+      <strong><span id="hero-leads">7</span> calciatori di origine sammarinese trovati nel mondo</strong> —
+      <span id="hero-confirmed">3</span> già cittadini sammarinesi, <span id="hero-communities">9</span> comunità contattate.
     </p>
     <p class="hero-secondary">
-      Clicca su <strong>Argentina</strong> sulla mappa per vedere i dettagli di ogni lead.
+      Tutti in Argentina. Tocca la mappa — o il pulsante qui sotto — per vedere i profili.
     </p>
   </div>
 
@@ -73,7 +73,7 @@
       </div>
       <div class="panel-tabs">
         <button class="panel-tab active" data-tab="communities">Comunità</button>
-        <button class="panel-tab" data-tab="leads">Lead</button>
+        <button class="panel-tab" data-tab="leads">Giocatori</button>
       </div>
       <div class="panel-body">
         <div class="panel-tab-content active" data-tab-content="communities" id="panel-communities"></div>
@@ -89,43 +89,43 @@
   <div class="map-legend" aria-label="Legenda mappa">
     <div class="legend-item">
       <div class="legend-dot" style="background:#d4af37"></div>
-      Lead verificati
+      Giocatore verificato
     </div>
     <div class="legend-item">
       <div class="legend-dot" style="background:#c49a1a"></div>
-      Dialogo attivo
+      Contatto attivo
     </div>
     <div class="legend-item">
       <div class="legend-dot" style="background:#5c5030"></div>
-      Comunità note
+      Comunità nota
     </div>
     <div class="legend-item">
       <div class="legend-dot" style="background:#2a3550"></div>
-      Nessuna presenza
+      Nessun contatto
     </div>
     <div class="legend-item">
       <div style="width:10px;height:10px;border-radius:50%;background:#d4af37;display:inline-block"></div>
-      Pin comunità/lead
+      Pin sulla mappa
     </div>
   </div>
 
   <!-- MOBILE QUICK ACCESS — visible only on mobile -->
   <div class="map-quick-access" id="map-quick-access" style="display:none">
     <button class="map-quick-btn" id="quick-ar-btn" aria-label="Apri Argentina">
-      🇦🇷 Argentina — 6 lead, 7 comunità
+      🇦🇷 Argentina — 7 giocatori trovati
     </button>
   </div>
 
   <!-- STATS BAR -->
   <div class="stats-bar" aria-label="Statistiche progetto">
     <div class="stat-item">
-      <div class="stat-value" id="stat-leads">6</div>
-      <div class="stat-label">Lead totali</div>
+      <div class="stat-value" id="stat-leads">7</div>
+      <div class="stat-label">Calciatori trovati</div>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-      <div class="stat-value" id="stat-active">4</div>
-      <div class="stat-label">Lead attivi</div>
+      <div class="stat-value" id="stat-active">6</div>
+      <div class="stat-label">Profili attivi</div>
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
@@ -139,14 +139,14 @@
     </div>
     <div class="stat-divider"></div>
     <div class="stat-item">
-      <div class="stat-value" id="stat-confirmed">1</div>
-      <div class="stat-label">Cittadinanze conf.</div>
+      <div class="stat-value" id="stat-confirmed">3</div>
+      <div class="stat-label">Già cittadini SM</div>
     </div>
   </div>
 
   <!-- CTA LEADS -->
   <div class="cta-leads">
-    <a href="leads.html" class="btn-cta">Visualizza tutti i lead verificati →</a>
+    <a href="leads.html" class="btn-cta">Vedi tutti i profili →</a>
   </div>
 
   <!-- MOBILE COUNTRY LIST -->
@@ -160,18 +160,18 @@
     <div class="steps">
       <div class="step">
         <div class="step-num">01</div>
-        <h3>Outreach alle comunità</h3>
-        <p>Contatto diretto con presidenti di comunità sammarinesi nel mondo attraverso la rete FSGC e contatti personali.</p>
+        <h3>Contatto con le comunità</h3>
+        <p>Parliamo con i presidenti delle comunità sammarinesi nel mondo per trovare calciatori con radici sammarinesi.</p>
       </div>
       <div class="step">
         <div class="step-num">02</div>
         <h3>Verifica genealogica</h3>
-        <p>Ogni lead richiede documentazione della catena: antenato sammarinese → emigrazione → giocatore. Verifica FIFA eleggibilità.</p>
+        <p>Verifichiamo la catena: antenato sammarinese → emigrazione → giocatore. Controlliamo anche le regole FIFA per l'eleggibilità.</p>
       </div>
       <div class="step">
         <div class="step-num">03</div>
-        <h3>Presentazione dossier</h3>
-        <p>Lead verificati presentati in dossier anonimizzato. Decisione di contatto e convocazione rimane esclusivamente alla FSGC.</p>
+        <h3>Dossier alla FSGC</h3>
+        <p>Consegniamo un dossier anonimizzato. La decisione su convocazioni e contatti spetta esclusivamente alla FSGC.</p>
       </div>
     </div>
   </section>
@@ -193,7 +193,7 @@
 <!-- Mobile nav overlay -->
 <nav class="mobile-nav-overlay" id="mobile-nav-overlay" aria-label="Menu mobile">
   <a href="index.html">Mappa</a>
-  <a href="leads.html">Lead Database</a>
+  <a href="leads.html">Giocatori</a>
   <a href="methodology.html">Metodologia</a>
   <a href="about.html">About</a>
 </nav>
@@ -232,7 +232,7 @@
     // Mobile quick-access buttons (one per active country with leads)
     buildQuickAccess(data, map.countryStats);
 
-    // URL param: ?country=AR → auto-open panel (from leads.html click)
+    // URL param: ?country=AR → auto-open panel (from giocatori/leads.html click)
     const urlCountry = new URLSearchParams(location.search).get('country');
     if (urlCountry && map.countryStats[urlCountry]) {
       setTimeout(() => PanelController.openCountry(urlCountry, map.countryStats, data), 300);
@@ -253,7 +253,6 @@ function buildQuickAccess(data, countryStats) {
   const btn  = document.getElementById('quick-ar-btn');
   if (!wrap || !btn) return;
 
-  // Show only countries that have leads
   const countriesWithLeads = Object.entries(countryStats)
     .filter(([, s]) => s.leads.length > 0)
     .sort((a, b) => b[1].leads.length - a[1].leads.length);
@@ -267,14 +266,13 @@ function buildQuickAccess(data, countryStats) {
     return `<button class="map-quick-btn"
       onclick="PanelController.openCountry('${code}', window._countryStats, window._data)"
       aria-label="Apri ${name}">
-      ${flag} ${name} — ${s.leads.length} lead, ${s.communities.length} comunità
+      ${flag} ${name} — ${s.leads.length} giocatori, ${s.communities.length} comunità
     </button>`;
   }).join('');
 
   window._countryStats = countryStats;
   window._data = data;
 
-  // Show only on mobile
   if (window.innerWidth <= 768) wrap.style.display = 'flex';
 }
 
@@ -295,7 +293,7 @@ function buildMobileList(data, countryStats) {
             <span class="mobile-country-flag">${flag}</span>
             <div>
               <div class="mobile-country-name">${name}</div>
-              <div class="mobile-country-sub">${stats.communities.length} comunità · ${stats.leads.length} lead</div>
+              <div class="mobile-country-sub">${stats.communities.length} comunità · ${stats.leads.length} giocatori</div>
             </div>
           </div>
           <span class="mobile-country-arrow">›</span>

@@ -1,23 +1,24 @@
 // main.js — shared utilities for TITAN VERITAS
 
 const STATUS_LABELS = {
-  registered:       { label: 'Registrato',   cls: 'badge-verified'  },
-  data_pending:     { label: 'In attesa',    cls: 'badge-pending'   },
-  verified:         { label: 'Verificato',   cls: 'badge-verified'  },
-  inactive_football:{ label: 'Inattivo (calcio)', cls: 'badge-inactive' },
-  not_eligible:     { label: 'Non eleggibile', cls: 'badge-inactive' },
-  archived:         { label: 'Archiviato',   cls: 'badge-inactive'  },
+  registered:       { label: 'Registrato',    cls: 'badge-verified'  },
+  data_pending:     { label: 'Dati mancanti', cls: 'badge-pending'   },
+  verified:         { label: 'Verificato',    cls: 'badge-verified'  },
+  inactive_football:{ label: 'Non gioca più', cls: 'badge-inactive'  },
+  not_eligible:     { label: 'Non eleggibile',cls: 'badge-inactive'  },
+  archived:         { label: 'Archiviato',    cls: 'badge-inactive'  },
 };
 
 const CITIZENSHIP_LABELS = {
-  confirmed: { label: '🇸🇲 Cittad. confermata', cls: 'badge-confirmed' },
-  to_verify: { label: '🇸🇲 Da verificare',      cls: 'badge-pending'  },
+  confirmed: { label: '🇸🇲 Cittadino SM',   cls: 'badge-confirmed' },
+  to_verify: { label: '🇸🇲 Da verificare',  cls: 'badge-pending'  },
 };
 
 const FIFA_LABELS = {
-  verified:    { label: 'FIFA ✓', cls: 'badge-verified' },
-  to_verify:   { label: 'FIFA ?', cls: 'badge-pending'  },
-  not_eligible:{ label: 'FIFA ✗', cls: 'badge-inactive' },
+  verified:               { label: 'FIFA: eleggibile',     cls: 'badge-verified' },
+  to_verify:              { label: 'FIFA: da verificare',  cls: 'badge-pending'  },
+  to_verify_complex_case: { label: 'FIFA: caso speciale',  cls: 'badge-pending'  },
+  not_eligible:           { label: 'FIFA: non eleggibile', cls: 'badge-inactive' },
 };
 
 const COMMUNITY_STATUS_LABELS = {
