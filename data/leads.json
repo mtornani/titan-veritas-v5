@@ -2,28 +2,271 @@
   "metadata": {
     "version": "6.0",
     "last_updated": "2026-05-26",
-    "total_leads": 6,
-    "active_leads": 4,
+    "total_leads": 7,
+    "active_leads": 6,
     "project_status": "outreach_phase"
   },
   "leads": [
-    {"id":"lead_001","alias":"M.G.","year_of_birth":2008,"country_code":"AR","country":"Argentina","city":"Córdoba","lat":-31.4201,"lng":-64.1888,"club":"Club Unión Florida","position":null,"citizenship_sm":"confirmed","fifa_eligibility":"verified","ancestor":{"name":"Mario Giardi","born_in":"San Marino","year_emigration":1945,"relation_to_player":"great-grandfather"},"source":"ABSAS network (Tura, Argentina Centrale)","first_contact_date":"2026-05-22","status":"registered"},
-    {"id":"lead_002","alias":"JP.Q.T.","year_of_birth":2006,"country_code":"AR","country":"Argentina","city":"Mendoza","lat":-32.8895,"lng":-68.8458,"club":null,"position":"ex-attaccante / ex-portiere","citizenship_sm":"confirmed","fifa_eligibility":"to_verify","ancestor":{"surname_origin":"Tetilla","born_in":"San Marino","relation_to_player":"unknown"},"source":"ABSAS network","first_contact_date":"2026-05-23","status":"inactive_football"},
-    {"id":"lead_003","alias":"N.B.","year_of_birth":2010,"country_code":"AR","country":"Argentina","city":"Córdoba","lat":-31.4201,"lng":-64.1888,"club":"Huracán de La France","position":"centrocampista mancino","citizenship_sm":"to_verify","fifa_eligibility":"to_verify","ancestor":{"surname_origin":"Blarasin","relation_to_player":"unknown"},"source":"ABSAS network","first_contact_date":"2026-05-24","status":"data_pending"},
-    {"id":"lead_004","alias":"G.P. (figlio)","year_of_birth":2011,"country_code":"AR","country":"Argentina","city":"Mendoza","lat":-32.8895,"lng":-68.8458,"club":"Andes Talleres","position":null,"citizenship_sm":"to_verify","fifa_eligibility":"to_verify","ancestor":{"name":"María Ida Ghiotti","relation_to_player":"great-grandmother"},"source":"Argentina Centrale network","first_contact_date":"2026-05-26","status":"data_pending"},
-    {"id":"lead_005","alias":"Nipote Graziani","year_of_birth":null,"country_code":"AR","country":"Argentina","city":"Pergamino","lat":-33.8954,"lng":-60.5728,"club":null,"position":null,"citizenship_sm":"to_verify","fifa_eligibility":"to_verify","ancestor":{"surname_origin":"Graziani","relation_to_player":"unknown"},"source":"Diretto — Presidente Comunità Pergamino","first_contact_date":"2026-05-25","status":"data_pending"},
-    {"id":"lead_006","alias":"Figlia M.M.","year_of_birth":2011,"country_code":"AR","country":"Argentina","city":null,"lat":-32.8895,"lng":-68.8458,"club":"Las Sallano","position":null,"citizenship_sm":"to_verify","fifa_eligibility":"to_verify","ancestor":{"relation_to_player":"unknown"},"source":"ABSAS network","first_contact_date":"2026-05-25","status":"data_pending"}
+    {
+      "id": "lead_001",
+      "alias": "M.G.",
+      "year_of_birth": 2008,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Córdoba",
+      "lat": -31.4201,
+      "lng": -64.1888,
+      "club": "Club Unión Florida",
+      "position": null,
+      "citizenship_sm": "confirmed",
+      "fifa_eligibility": "verified",
+      "ancestor": {
+        "name": "Mario Giardi",
+        "born_in": "San Marino",
+        "year_emigration": 1945,
+        "relation_to_player": "great-grandfather"
+      },
+      "source": "ABSAS network (Tura, Argentina Centrale)",
+      "first_contact_date": "2026-05-22",
+      "status": "registered"
+    },
+    {
+      "id": "lead_002",
+      "alias": "JP.Q.T.",
+      "year_of_birth": 2006,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Mendoza",
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "club": null,
+      "position": "ex-attaccante / ex-portiere",
+      "citizenship_sm": "confirmed",
+      "fifa_eligibility": "to_verify",
+      "ancestor": {
+        "surname_origin": "Tetilla",
+        "born_in": "San Marino",
+        "relation_to_player": "unknown"
+      },
+      "source": "ABSAS network",
+      "first_contact_date": "2026-05-23",
+      "status": "inactive_football"
+    },
+    {
+      "id": "lead_003",
+      "alias": "N.B.",
+      "year_of_birth": 2010,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Córdoba",
+      "lat": -31.4201,
+      "lng": -64.1888,
+      "club": "Huracán de La France",
+      "position": "centrocampista mancino",
+      "citizenship_sm": "to_verify",
+      "fifa_eligibility": "to_verify",
+      "ancestor": {
+        "surname_origin": "Blarasin",
+        "relation_to_player": "unknown"
+      },
+      "source": "ABSAS network",
+      "first_contact_date": "2026-05-24",
+      "status": "data_pending"
+    },
+    {
+      "id": "lead_004",
+      "alias": "G.P. (figlio)",
+      "year_of_birth": 2011,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Mendoza",
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "club": "Andes Talleres",
+      "position": null,
+      "citizenship_sm": "to_verify",
+      "fifa_eligibility": "to_verify",
+      "ancestor": {
+        "name": "María Ida Ghiotti",
+        "relation_to_player": "great-grandmother"
+      },
+      "source": "Argentina Centrale network",
+      "first_contact_date": "2026-05-26",
+      "status": "data_pending"
+    },
+    {
+      "id": "lead_005",
+      "alias": "Nipote Graziani",
+      "year_of_birth": null,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Pergamino",
+      "lat": -33.8954,
+      "lng": -60.5728,
+      "club": null,
+      "position": null,
+      "citizenship_sm": "to_verify",
+      "fifa_eligibility": "to_verify",
+      "ancestor": {
+        "surname_origin": "Graziani",
+        "relation_to_player": "unknown"
+      },
+      "source": "Diretto — Presidente Comunità Pergamino",
+      "first_contact_date": "2026-05-25",
+      "status": "data_pending"
+    },
+    {
+      "id": "lead_006",
+      "alias": "Figlia M.M.",
+      "year_of_birth": 2011,
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": null,
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "club": "Las Sallano",
+      "position": null,
+      "citizenship_sm": "to_verify",
+      "fifa_eligibility": "to_verify",
+      "ancestor": {
+        "relation_to_player": "unknown"
+      },
+      "source": "ABSAS network",
+      "first_contact_date": "2026-05-25",
+      "status": "data_pending"
+    },
+    {
+      "id": "lead_007",
+      "alias": "M.V.S.",
+      "year_of_birth": 2008,
+      "gender": "F",
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Mendoza",
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "club": "Club Sportivo Independiente Rivadavia Mendoza",
+      "club_secondary": "Club Deportivo Biritos (futsal)",
+      "club_tier": "professional (Primera División)",
+      "position": null,
+      "competition_level": "Liga Mendocina (fútbol 11) + Futsal",
+      "citizenship_sm": "confirmed",
+      "fifa_eligibility": "to_verify_complex_case",
+      "ancestor": {
+        "name": "Prieto Ghiotti",
+        "born_in": "San Marino",
+        "relation_to_player": "great-great-grandfather (maternal side, via father)",
+        "generation_distance": 4
+      },
+      "source": "Asociación Sanmarinense de Cuyo (Marcos Sánchez, Commissione Direttiva)",
+      "first_contact_date": "2026-05-26",
+      "status": "registered",
+      "notes_internal": "Linea sammarinese a 4 generazioni — fuori dai requisiti FIFA standard del nonno diretto. Però possiede già cittadinanza sammarinese confermata: verificare percorso alternativo. Cognome Ghiotti potenzialmente collegato a lead_004 (María Ida Ghiotti, Córdoba) — possibile parentela da approfondire."
+    }
   ],
   "communities": [
-    {"id":"com_001","name":"ABSAS Buenos Aires","country_code":"AR","city":"Buenos Aires","lat":-34.6037,"lng":-58.3816,"president":"Diego Andrés Pórtela Ceccoli","status":"active_dialogue","members_estimated":null,"first_contact":"2026-05-15"},
-    {"id":"com_002","name":"Comunità Argentina Centrale","country_code":"AR","city":"Córdoba","lat":-31.4201,"lng":-64.1888,"president":"Cecilia Santi","status":"active_dialogue","first_contact":"2026-05-22"},
-    {"id":"com_003","name":"Comunità Argentina Centro-Est","country_code":"AR","city":"Pergamino","lat":-33.8954,"lng":-60.5728,"president":"Myriam Francisconi","status":"active_dialogue","members_estimated":450,"first_contact":"2026-05-22"},
-    {"id":"com_004","name":"Anello Argentino (coord.)","country_code":"AR","city":null,"lat":-34.6037,"lng":-58.3816,"president":"German Tura","status":"primary_amplifier","first_contact":"2026-05-22"},
-    {"id":"com_005","name":"Fratellanza New York","country_code":"US","city":"New York","lat":40.7128,"lng":-74.0060,"president":"Gilberto Terenzi","members_estimated":500,"status":"pending_outreach"},
-    {"id":"com_006","name":"Comunità Sammarinese Detroit","country_code":"US","city":"Detroit","lat":42.3314,"lng":-83.0458,"president":"Marie Maiani Giulianelli","members_estimated":1150,"status":"pending_outreach"},
-    {"id":"com_007","name":"Comunità Cuyo","country_code":"AR","city":"Mendoza","lat":-32.8895,"lng":-68.8458,"status":"pending_outreach"},
-    {"id":"com_008","name":"Comunità Jujuy","country_code":"AR","city":"Jujuy","lat":-24.1858,"lng":-65.2995,"status":"pending_outreach"},
-    {"id":"com_009","name":"Comunità Patagonia","country_code":"AR","city":"Bariloche","lat":-41.1335,"lng":-71.3103,"status":"pending_outreach"}
+    {
+      "id": "com_001",
+      "name": "ABSAS Buenos Aires",
+      "country_code": "AR",
+      "city": "Buenos Aires",
+      "lat": -34.6037,
+      "lng": -58.3816,
+      "president": "Diego Andrés Pórtela Ceccoli",
+      "status": "active_dialogue",
+      "members_estimated": null,
+      "first_contact": "2026-05-15"
+    },
+    {
+      "id": "com_002",
+      "name": "Comunità Argentina Centrale",
+      "country_code": "AR",
+      "city": "Córdoba",
+      "lat": -31.4201,
+      "lng": -64.1888,
+      "president": "Cecilia Santi",
+      "status": "active_dialogue",
+      "first_contact": "2026-05-22"
+    },
+    {
+      "id": "com_003",
+      "name": "Comunità Argentina Centro-Est",
+      "country_code": "AR",
+      "city": "Pergamino",
+      "lat": -33.8954,
+      "lng": -60.5728,
+      "president": "Myriam Francisconi",
+      "status": "active_dialogue",
+      "members_estimated": 450,
+      "first_contact": "2026-05-22"
+    },
+    {
+      "id": "com_004",
+      "name": "Anello Argentino (coord.)",
+      "country_code": "AR",
+      "city": null,
+      "lat": -34.6037,
+      "lng": -58.3816,
+      "president": "German Tura",
+      "status": "primary_amplifier",
+      "first_contact": "2026-05-22"
+    },
+    {
+      "id": "com_005",
+      "name": "Fratellanza New York",
+      "country_code": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lng": -74.0060,
+      "president": "Gilberto Terenzi",
+      "members_estimated": 500,
+      "status": "pending_outreach"
+    },
+    {
+      "id": "com_006",
+      "name": "Comunità Sammarinese Detroit",
+      "country_code": "US",
+      "city": "Detroit",
+      "lat": 42.3314,
+      "lng": -83.0458,
+      "president": "Marie Maiani Giulianelli",
+      "members_estimated": 1150,
+      "status": "pending_outreach"
+    },
+    {
+      "id": "com_007",
+      "name": "Asociación Sanmarinense de Cuyo",
+      "country_code": "AR",
+      "city": "Mendoza",
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "referent": "Marcos Sánchez (Commissione Direttiva)",
+      "status": "active_dialogue",
+      "first_contact": "2026-05-26"
+    },
+    {
+      "id": "com_008",
+      "name": "Comunità Jujuy",
+      "country_code": "AR",
+      "city": "Jujuy",
+      "lat": -24.1858,
+      "lng": -65.2995,
+      "status": "pending_outreach"
+    },
+    {
+      "id": "com_009",
+      "name": "Comunità Patagonia",
+      "country_code": "AR",
+      "city": "Bariloche",
+      "lat": -41.1335,
+      "lng": -71.3103,
+      "status": "pending_outreach"
+    }
   ],
-  "origin": {"country_code":"SM","name":"San Marino","lat":43.9424,"lng":12.4578}
+  "origin": {
+    "country_code": "SM",
+    "name": "San Marino",
+    "lat": 43.9424,
+    "lng": 12.4578
+  }
 }
