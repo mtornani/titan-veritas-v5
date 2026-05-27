@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lead Database — TITAN VERITAS</title>
-  <meta name="description" content="Database leads calcistici sammarinesi nel mondo. Dati anonimizzati.">
+  <title>Giocatori — TITAN VERITAS</title>
+  <meta name="description" content="Profili calciatori di origine sammarinese nel mondo. Dati anonimizzati per tutela dei minori.">
   <link rel="icon" href="assets/img/sm-logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -17,13 +17,13 @@
   </a>
   <ul class="navbar-nav">
     <li><a href="index.html">Mappa</a></li>
-    <li><a href="leads.html" class="active">Lead Database</a></li>
+    <li><a href="leads.html" class="active">Giocatori</a></li>
     <li><a href="methodology.html">Metodologia</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
   <div class="navbar-status">
     <div class="status-dot"></div>
-    outreach_phase
+    Ricerca in corso
   </div>
   <button class="nav-mobile-menu" id="nav-menu-btn" aria-label="Menu" aria-expanded="false">☰</button>
 </nav>
@@ -32,8 +32,8 @@
   <div class="leads-page">
 
     <div class="page-header">
-      <h1>Lead Database</h1>
-      <p>Tutti i lead identificati, dati anonimizzati. Aggiornato: <span id="last-updated">—</span></p>
+      <h1>Giocatori trovati</h1>
+      <p>Tutti i profili identificati. Dati anonimizzati per tutela dei minori. Aggiornato: <span id="last-updated">—</span></p>
     </div>
 
     <!-- Filters -->
@@ -42,21 +42,21 @@
         type="search"
         class="filter-search"
         id="search-input"
-        placeholder="Cerca per paese, club, cognome antenato..."
-        aria-label="Cerca lead">
-      <select class="filter-select" id="filter-status" aria-label="Filtra per status">
-        <option value="">Tutti gli status</option>
+        placeholder="Cerca per città, club, cognome antenato..."
+        aria-label="Cerca giocatori">
+      <select class="filter-select" id="filter-status" aria-label="Filtra per stato">
+        <option value="">Tutti</option>
         <option value="registered">Registrato</option>
-        <option value="data_pending">In attesa dati</option>
+        <option value="data_pending">Documenti mancanti</option>
         <option value="verified">Verificato</option>
-        <option value="inactive_football">Inattivo (calcio)</option>
+        <option value="inactive_football">Non gioca più</option>
       </select>
       <select class="filter-select" id="filter-country" aria-label="Filtra per paese">
         <option value="">Tutti i paesi</option>
       </select>
       <select class="filter-select" id="filter-eligibility" aria-label="Filtra per eleggibilità FIFA">
         <option value="">Eleggibilità FIFA</option>
-        <option value="verified">Verificata</option>
+        <option value="verified">Eleggibile</option>
         <option value="to_verify">Da verificare</option>
         <option value="not_eligible">Non eleggibile</option>
       </select>
@@ -64,7 +64,7 @@
 
     <!-- Results count -->
     <p style="font-size:.82rem;color:var(--text-secondary);margin-bottom:1rem">
-      Mostrando <strong id="result-count">—</strong> lead
+      Mostrando <strong id="result-count">—</strong> giocatori
     </p>
 
     <!-- Grid -->
@@ -86,7 +86,7 @@
 <!-- Mobile nav overlay -->
 <nav class="mobile-nav-overlay" id="mobile-nav-overlay" aria-label="Menu mobile">
   <a href="index.html">Mappa</a>
-  <a href="leads.html">Lead Database</a>
+  <a href="leads.html">Giocatori</a>
   <a href="methodology.html">Metodologia</a>
   <a href="about.html">About</a>
 </nav>
@@ -95,7 +95,6 @@
 <script>
 let allLeads = [];
 
-const COUNTRY_NAMES = {};
 const FLAGS = { AR:'🇦🇷', US:'🇺🇸', SM:'🇸🇲' };
 
 function flag(code) { return FLAGS[code] || '🌍'; }
@@ -121,24 +120,25 @@ function buildGeneaChip(ancestor, countryCode) {
 
 function renderCard(l) {
   const statusInfo = {
-    registered:        { label: 'Registrato',       cls: 'badge-verified' },
-    data_pending:      { label: 'In attesa dati',   cls: 'badge-pending'  },
-    verified:          { label: 'Verificato',       cls: 'badge-verified' },
-    inactive_football: { label: 'Inattivo',         cls: 'badge-inactive' },
-    not_eligible:      { label: 'Non eleggibile',   cls: 'badge-inactive' },
-    archived:          { label: 'Archiviato',       cls: 'badge-inactive' },
+    registered:        { label: 'Registrato',      cls: 'badge-verified' },
+    data_pending:      { label: 'Dati mancanti',   cls: 'badge-pending'  },
+    verified:          { label: 'Verificato',      cls: 'badge-verified' },
+    inactive_football: { label: 'Non gioca più',   cls: 'badge-inactive' },
+    not_eligible:      { label: 'Non eleggibile',  cls: 'badge-inactive' },
+    archived:          { label: 'Archiviato',      cls: 'badge-inactive' },
   }[l.status] || { label: l.status, cls: 'badge-inactive' };
 
   const citInfo = {
-    confirmed: { label: '🇸🇲 Cittad. confermata', cls: 'badge-confirmed' },
-    to_verify: { label: '🇸🇲 Da verificare',      cls: 'badge-pending'  },
+    confirmed: { label: '🇸🇲 Cittadino SM',   cls: 'badge-confirmed' },
+    to_verify: { label: '🇸🇲 Da verificare',  cls: 'badge-pending'  },
   }[l.citizenship_sm] || { label: '?', cls: 'badge-inactive' };
 
   const fifaInfo = {
-    verified:    { label: 'FIFA ✓', cls: 'badge-verified' },
-    to_verify:   { label: 'FIFA ?', cls: 'badge-pending'  },
-    not_eligible:{ label: 'FIFA ✗', cls: 'badge-inactive' },
-  }[l.fifa_eligibility] || { label: '?', cls: 'badge-inactive' };
+    verified:               { label: 'FIFA: eleggibile',     cls: 'badge-verified' },
+    to_verify:              { label: 'FIFA: da verificare',  cls: 'badge-pending'  },
+    to_verify_complex_case: { label: 'FIFA: caso speciale',  cls: 'badge-pending'  },
+    not_eligible:           { label: 'FIFA: non eleggibile', cls: 'badge-inactive' },
+  }[l.fifa_eligibility] || { label: 'FIFA: ?', cls: 'badge-inactive' };
 
   const firstContact = l.first_contact_date
     ? l.first_contact_date.split('-').reverse().join('/')
@@ -198,7 +198,7 @@ function applyFilters() {
   document.getElementById('result-count').textContent = filtered.length;
 
   if (!filtered.length) {
-    grid.innerHTML = '<p style="color:var(--text-secondary);grid-column:1/-1">Nessun lead corrisponde ai filtri.</p>';
+    grid.innerHTML = '<p style="color:var(--text-secondary);grid-column:1/-1">Nessun giocatore corrisponde ai filtri.</p>';
     return;
   }
   grid.innerHTML = filtered.map(renderCard).join('');
@@ -213,7 +213,6 @@ function applyFilters() {
 
     document.getElementById('last-updated').textContent = data.metadata.last_updated;
 
-    // Populate country filter
     const countries = [...new Set(data.leads.map(l => l.country_code))];
     const sel = document.getElementById('filter-country');
     countries.forEach(code => {
@@ -230,7 +229,7 @@ function applyFilters() {
     document.getElementById('filter-country').addEventListener('change', applyFilters);
     document.getElementById('filter-eligibility').addEventListener('change', applyFilters);
   } catch (e) {
-    console.error('Failed to load leads:', e);
+    console.error('Failed to load:', e);
     document.getElementById('leads-grid').innerHTML =
       '<p style="color:var(--text-secondary);grid-column:1/-1">Errore nel caricamento dei dati. ' +
       '<button onclick="location.reload()" style="padding:0.4rem 1rem;background:var(--gold);color:var(--bg);border:none;border-radius:6px;font-weight:700;cursor:pointer;margin-left:0.5rem">Ricarica</button></p>';
