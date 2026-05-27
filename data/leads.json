@@ -2,8 +2,8 @@
   "metadata": {
     "version": "6.0",
     "last_updated": "2026-05-26",
-    "total_leads": 6,
-    "active_leads": 4,
+    "total_leads": 7,
+    "active_leads": 6,
     "project_status": "outreach_phase"
   },
   "leads": [
@@ -134,6 +134,34 @@
       "source": "ABSAS network",
       "first_contact_date": "2026-05-25",
       "status": "data_pending"
+    },
+    {
+      "id": "lead_007",
+      "alias": "M.V.S.",
+      "year_of_birth": 2008,
+      "gender": "F",
+      "country_code": "AR",
+      "country": "Argentina",
+      "city": "Mendoza",
+      "lat": -32.8895,
+      "lng": -68.8458,
+      "club": "Club Sportivo Independiente Rivadavia Mendoza",
+      "club_secondary": "Club Deportivo Biritos (futsal)",
+      "club_tier": "professional (Primera División)",
+      "position": null,
+      "competition_level": "Liga Mendocina (fútbol 11) + Futsal",
+      "citizenship_sm": "confirmed",
+      "fifa_eligibility": "to_verify_complex_case",
+      "ancestor": {
+        "name": "Prieto Ghiotti",
+        "born_in": "San Marino",
+        "relation_to_player": "great-great-grandfather (maternal side, via father)",
+        "generation_distance": 4
+      },
+      "source": "Asociación Sanmarinense de Cuyo (Marcos Sánchez, Commissione Direttiva)",
+      "first_contact_date": "2026-05-26",
+      "status": "registered",
+      "notes_internal": "Linea sammarinese a 4 generazioni — fuori dai requisiti FIFA standard del nonno diretto. Però possiede già cittadinanza sammarinese confermata: verificare percorso alternativo. Cognome Ghiotti potenzialmente collegato a lead_004 (María Ida Ghiotti, Córdoba) — possibile parentela da approfondire."
     }
   ],
   "communities": [
@@ -207,12 +235,14 @@
     },
     {
       "id": "com_007",
-      "name": "Comunità Cuyo",
+      "name": "Asociación Sanmarinense de Cuyo",
       "country_code": "AR",
       "city": "Mendoza",
       "lat": -32.8895,
       "lng": -68.8458,
-      "status": "pending_outreach"
+      "referent": "Marcos Sánchez (Commissione Direttiva)",
+      "status": "active_dialogue",
+      "first_contact": "2026-05-26"
     },
     {
       "id": "com_008",
