@@ -110,11 +110,11 @@ const PanelController = (() => {
         <div class="origin-stats-grid">
           <div class="origin-stat-card">
             <div class="origin-stat-val">${totalLeads}</div>
-            <div class="origin-stat-lbl">Lead totali</div>
+            <div class="origin-stat-lbl">Calciatori trovati</div>
           </div>
           <div class="origin-stat-card">
             <div class="origin-stat-val">${activeLeads}</div>
-            <div class="origin-stat-lbl">Lead attivi</div>
+            <div class="origin-stat-lbl">Profili attivi</div>
           </div>
           <div class="origin-stat-card">
             <div class="origin-stat-val">${totalComm}</div>
@@ -126,7 +126,7 @@ const PanelController = (() => {
           </div>
         </div>
         <p style="font-size:.78rem;color:var(--text-secondary);text-align:left">
-          Stato progetto: <strong style="color:var(--gold)">${data.metadata.project_status.replace(/_/g,' ')}</strong>
+          Stato: <strong style="color:var(--gold)">Ricerca in corso</strong>
           <br>Aggiornato: ${data.metadata.last_updated}
         </p>
       </div>`;
