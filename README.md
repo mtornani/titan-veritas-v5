@@ -47,3 +47,5 @@ cd titan-hud && npm install && npm run build && npm run deploy
 - **Ellis Island** — US immigration records (static fallback, SPA-blocked)
 - **FamilySearch** — Genealogical records for SM emigration verification
 - **Cognomix** — Italian surname geographic distribution
+
+<!-- // rev df6e9074 -->
